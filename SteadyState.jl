@@ -67,7 +67,7 @@ function steady_params(T0, kappa, D, f)
 #     m = Model()
 
     @defVar(m, current)
-    @defVar(m, 0 <= P0 <= 1)
+    @defVar(m, P0 >= 0)
 
     @setNLObjective(m, Min, objective_fun(current, P0) )
     @addNLConstraint(m, area(current, P0) == 1 ) # The density is normalized
