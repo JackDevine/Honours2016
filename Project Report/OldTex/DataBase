@@ -1,0 +1,117 @@
+% Encoding: UTF-8
+
+@Article{BlickleBechinger2011,
+  author =   {Valentin Blickle and Clemens Bechinger},
+  title =    {Realization of a micrometre-sized stochastic heat engine},
+  journal =  {Nature Physics},
+  year =     {2011},
+  abstract = {The conversion of energy into mechanical work is essential
+for almost any industrial process. The original description
+of classical heat engines by Sadi Carnot in 1824 has largely
+shaped our understanding of work and heat exchange during
+macroscopic thermodynamic processes1. Equipped with our
+present-day ability to design and control mechanical devices at
+micro- and nanometre length scales, we are now in a position
+to explore the limitations of classical thermodynamics, arising
+on scales for which thermal fluctuations are important2–5. Here
+we demonstrate the experimental realization of a microscopic
+heat engine, comprising a single colloidal particle subject to a
+time-dependent optical laser trap. The work associated with
+the system is a fluctuating quantity, and depends strongly
+on the cycle duration time, , which in turn determines the
+efficiency of our heat engine. Our experiments offer a rare
+insight into the conversion of thermal to mechanical energy on
+a microscopic level, and pave the way for the design of future
+micromechanical machines.},
+  file =     {:Realization of a micrometre-sized stochastic heat engine.pdf:PDF},
+  keywords = {Laser trap, coloidal particle, stirling cycle, rank4},
+  review =   {In this paper the authors create a molecular motor by using a time dependant laser trap as the potential for the motor. I am unable to easily infer the free energy landscape, so it would be hard to compare this with my model. In this paper the size of the colloidal particle (a melamime bead) is 2.94 micro meters.}
+}
+
+@Book{Gardiner2009,
+  title =     {Stochastic methods},
+  publisher = {Springer},
+  year =      {2009},
+  author =    {Crispin Gardiner},
+  editor =    {Hermann Haken}
+}
+
+@Article{JoelBader1999,
+  author =   {Joel S. Bader, Richard W. Hammond, Steven A. Henck, Michael W. Deem, Gregory A. McDermott, James M. Bustillo, John W. Simpson, Gregory T. Mulhern, and Jonathan M. Rothberg},
+  title =    {DNA transport by a micromachined Brownian ratchet device},
+  journal =  {PNAS},
+  year =     {1999},
+  abstract = {We have micromachined a silicon-chip device that transports DNA
+with a Brownian ratchet that rectifies the Brownian motion of
+microscopic particles. Transport properties for a DNA 50-mer agree
+with theoretical predictions, and the DNA diffusion constant
+agrees with previous experiments. This type of micromachine
+could provide a generic pump or separation component for DNA or
+other charged species as part of a microscale lab-on-a-chip. A
+device with reduced feature size could produce a size-based
+separation of DNA molecules, with applications including the
+detection of single-nucleotide polymorphisms.},
+  file =     {:DNA transport by a micromachined Brownian ratchet device.pdf:PDF},
+  keywords = {rank5, DNA, ratchet, transport, microscale},
+  review =   {Uses a ratchet based on a time dependant potential to make macroscopic movement of DNA. The relationship between t_on and t_off could describe the tilt that we have in our potential that is not time dependant. In this case, it should be easy to calculate the free energy landscape, therefore we can compare the measurements to our model.}
+}
+
+@Article{Pedro2014,
+  author =   {Pedro A. Quinto-Su},
+  title =    {A microscopic steam engine implemented in an optical tweezer},
+  journal =  {Nature Communications},
+  year =     {2014},
+  abstract = {The introduction of improved steam engines at the end of the 18th century marked the start
+of the industrial revolution and the birth of classical thermodynamics. Currently, there is great
+interest in miniaturizing heat engines, but so far traditional heat engines operating with the
+expansion and compression of gas have not reached length scales shorter than one millimeter.
+Here, a micrometer-sized piston steam engine is implemented in an optical tweezer.
+The piston is a single colloidal microparticle that is driven by explosive vapourization of the
+surrounding liquid (cavitation bubbles) and by optical forces at a rate between a few tens of
+Hertz and one kilo-Hertz. The operation of the engine allows to exert impulsive forces with
+optical tweezers and induce streaming in the liquid, similar to the effect of transducers when
+driven at acoustic and ultrasound frequencies.},
+  file =     {:C\:\\Users\\devja964\\Documents\\Project\\Papers\\A microscopic steam engine implemented using optical tweezers.pdf:PDF},
+  keywords = {rank4, optical tweezer, engine}
+}
+
+@Article{Reimann2001,
+  author =   {Peter Reimann},
+  title =    {Brownian Motors: noisy transport far from equilibrium},
+  journal =  {Physics Reports},
+  year =     {2001},
+  abstract = {Transport phenomena in spatially periodic systems far from thermal equilibrium are
+considered. The main emphasize is put on directed transport in so-called Brownian
+motors (ratchets), i.e. a dissipative dynamics in the presence of thermal noise and
+some prototypical perturbation that drives the system out of equilibrium without introducing
+a priori an obvious bias into one or the other direction of motion. Symmetry
+conditions for the appearance (or not) of directed current, its inversion upon variation
+of certain parameters, and quantitative theoretical predictions for specific models
+are reviewed as well as a wide variety of experimental realizations and biological applications,
+especially the modeling of molecular motors. Extensions include quantum
+mechanical and collective effects, Hamiltonian ratchets, the influence of spatial disorder,
+and diffusive transport.},
+  file =     {:Brownian motors noisy transport far from equilibrium.pdf:PDF},
+  keywords = {rank4, Smoluchoski equation, stochastic, steady state},
+  review =   {Explains the dynamics of Brownian motors from first principles including a section on biological cases. However, there is a large emphasis on time varying ptotentials and temperatures that are not useful for biological applications.}
+}
+
+@Article{KellerBustamante2000,
+  author =   {David Keller and Carlos Bustamante},
+  title =    {The Mechanochemistry of Molecular Motors},
+  journal =  {Biophysical Journal},
+  year =     {2000},
+  abstract = {ABSTRACT A theory of molecular motors is presented that explains how the energy released in single chemical reactions
+can generate mechanical motion and force. In the simplest case the fluctuating movements of a motor enzyme are well
+described by a diffusion process on a two-dimensional potential energy surface, where one dimension is a chemical reaction
+coordinate and the other is the spatial displacement of the motor. The coupling between chemistry and motion results from
+the shape of the surface, and motor velocities and forces result from diffusion currents on this surface. This microscopic
+description is shown to possess an equivalent kinetic mechanism in which the rate constants depend on externally applied
+forces. By using this equivalence we explore the characteristic properties of several broad classes of motor mechanisms and
+give general expressions for motor velocity versus load force for any member of each class. We show that in some cases
+simple plots of 1/velocity vs. 1/concentration can distinguish between classes of motor mechanisms and may be used to
+determine the step at which movement occurs.},
+  file =     {:Mechanochemistry_of_molecular_motors.pdf:PDF},
+  keywords = {Sochastic, free energy, Smoluchowski equation, Fokker Planck equation, Langevin equation, reaction coordinate, rank5},
+  review =   {Explanation of molecular motors starting from a midroscopic level. Explains how the potetnial and the free energy landscape can be used to describe the trajectory of particles. Also describes how the Smoluchowski equation comes out of the Langevin equations.}
+}

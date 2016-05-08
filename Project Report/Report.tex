@@ -1,0 +1,288 @@
+% !TEX TS-program = pdflatex
+% !TEX encoding = UTF-8 Unicode
+
+% This is a simple template for a LaTeX document using the "article" class.
+% See "book", "report", "letter" for other types of document.
+
+\documentclass[11pt]{article} % use larger type; default would be 10pt
+
+\usepackage[utf8]{inputenc} % set input encoding (not needed with XeLaTeX)
+
+%%% Examples of Article customizations
+% These packages are optional, depending whether you want the features they provide.
+% See the LaTeX Companion or other references for full information.
+
+%%% PAGE DIMENSIONS
+\usepackage{geometry} % to change the page dimensions
+\geometry{a4paper} % or letterpaper (US) or a5paper or....
+% \geometry{margin=2in} % for example, change the margins to 2 inches all round
+% \geometry{landscape} % set up the page for landscape
+%   read geometry.pdf for detailed page layout information
+
+\usepackage{graphicx} % support the \includegraphics command and options
+\graphicspath{{Figures/}} % Set the default folder for images
+
+% \usepackage[parfill]{parskip} % Activate to begin paragraphs with an empty line rather than an indent
+
+%%% PACKAGES
+\usepackage{booktabs} % for much better looking tables
+\usepackage{array} % for better arrays (eg matrices) in maths
+\usepackage{paralist} % very flexible & customisable lists (eg. enumerate/itemize, etc.)
+\usepackage{verbatim} % adds environment for commenting out blocks of text & for better verbatim
+\usepackage{subfigure} % make it possible to include more than one captioned figure/table in a single float
+% These packages are all incorporated in the memoir class to one degree or another...
+
+%%% HEADERS & FOOTERS
+\usepackage{fancyhdr} % This should be set AFTER setting up the page geometry
+\pagestyle{fancy} % options: empty , plain , fancy
+\renewcommand{\headrulewidth}{0pt} % customise the layout...
+\lhead{}\chead{}\rhead{}
+\lfoot{}\cfoot{\thepage}\rfoot{}
+
+%%% SECTION TITLE APPEARANCE
+\usepackage{sectsty}
+\allsectionsfont{\sffamily\mdseries\upshape} % (See the fntguide.pdf for font help)
+% (This matches ConTeXt defaults)
+
+%%% ToC (table of contents) APPEARANCE
+\usepackage[nottoc,notlof,notlot]{tocbibind} % Put the bibliography in the ToC
+\usepackage[titles,subfigure]{tocloft} % Alter the style of the Table of Contents
+\renewcommand{\cftsecfont}{\rmfamily\mdseries\upshape}
+\renewcommand{\cftsecpagefont}{\rmfamily\mdseries\upshape} % No bold!
+
+%%% END Article customizations
+
+%%% The "real" document content comes below...
+
+\title{Brownian motors thermally coupled to the environment}
+\author{Jack Devine}
+%\date{} % Activate to display a given date or no date (if empty),
+         % otherwise the current date is printed 
+
+\begin{document}
+\maketitle
+
+\tableofcontents
+
+%----------------------------------------------------------------------------------------
+%	ABSTRACT
+%----------------------------------------------------------------------------------------
+%
+%\section*{Abstract} % This section will not appear in the table of contents due to the star (\section*)
+%
+%Brownian motors are capable of converting chemical energy directly into work and are crucial for many biological processes. The purpose of this project is to consider the motors thermal interaction with  the environment, we want to know whether these thermal interactions will change the efficiency of the Brownian motors as compared to calculations made without considering coupling to the environment.
+
+%----------------------------------------------------------------------------------------
+
+%\newpage % Start the article content on the second page, remove this if you have a longer abstract that goes onto the second page
+
+%----------------------------------------------------------------------------------------
+%	INTRODUCTION
+%----------------------------------------------------------------------------------------
+
+\section{Introduction}
+
+Brownian motors are devices that can use stored energy to create directed motion, as well as being able to crank a rotor in the in the fashion of a traditional motor, they are also able to pump ions against a gradient and translocate molecules. In this project, we will model Brownian motors by using concepts from statistical mechanics. In particular, we will think of a Brownian motor as a Brownian particle diffusing over its free energy landscape, which in one dimension will be denoted by $x$. In the case of Brownian motion, it is natural to think of $x$ as a spatial coordinate, however in the case of Brownian motors this is not always the case. Often we will think of $x$ as a reaction coordinate for a chemical reaction, or in the case of a rotary motor, it could be the angle of the motor. We will think of a Brownian particle moving in titled periodic potential of the form $V(x) = f x + v_0(x)$ for some external forcing $f$ and some periodic function $v_0(x)$ with period $L$. This is shown schematically in figure \ref{fig:Schematic}, in this figure we have an ensemble of  particles with a certain known density. These particles are being pushed around by thermal vibrations in a random diffusive manner, however there is also a forcing on the particles that we describe using a potential.
+
+\begin{figure}[tb]
+	\centering
+	\subfigure{% 
+		\includegraphics[width=0.45\columnwidth]{SchematicConstantTempInit}
+	} 
+\quad
+	\subfigure{
+		\includegraphics[width=0.45\columnwidth]{SchematicConstantTempFinal}
+	}
+\caption{Schematic showing particles diffusing in a one dimensional periodic potential at a fixed temperature. We see that the particles tend to drift down the potential as they diffuse, this drift will be called the current $J$ which we will quantify in section \ref{Smoluchowski}.}
+\label{fig:Schematic} 
+\end{figure}
+
+As we will see, the diffusion is increased by increasing the temperature and the drift is increased by increasing $f$. In some cases such as the Landauer blowtorch, the environment is at different temperatures that are held fixed by an external heat source [citation]. When the temperature is non uniform, the particles diffuse by different amounts at different points in space.
+ 
+\subsection{The Smoluchowski equation coupled to the environment} \label{Smoluchowski}
+
+The main part of this project will be trying to understand the behavior of the coupled partial differential equations given by:
+
+\begin{eqnarray}
+J(x, t) &=& \gamma^{-1} \frac{\partial}{\partial x} \left ( \frac{\partial V(x, t)}{\partial x} P(x, t) + k_B \frac{\partial}{\partial x} \left [T(x, t) P(x, t) \right] \right )  \\
+\frac{\partial P(x, t)}{\partial t} &=& \frac{\partial J}{\partial x} \label{eqn:Smoluchowski} \\
+\frac{\partial T(x, t)}{\partial t} &=& \frac{\partial}{\partial x} \left ( -\kappa q(x, t) + D \frac{\partial T(x, t)}{\partial x} \right ) \label{eqn:TemperatureEvolution}
+\end{eqnarray} 
+
+Where $P(x, t)$ is the probability density as a function of time $t$ and reaction coordinate $x$, $J(x, t)$ is called the current,  $\gamma$ is the friction coefficient, $V(x, t)$ is the potential for the motor, $k_B$ is the Boltzmann constant, $T$ is the temperature, $\kappa$ is the thermal conductivity, $q(x, t) = \partial_x V(x, t) J(x, t)$ and $D$ is the diffusion coefficient for the temperature. Equation \ref{eqn:Smoluchowski} is called the Smoluschowski equation \cite{KellerBustamante2000} and equation \ref{eqn:TemperatureEvolution} is the equation that governs the evolution of the temperature.
+
+%----------------------------------------------------------------------------------------
+%	PRELIMINARY RESULTS
+%----------------------------------------------------------------------------------------
+
+\section{Preliminary results}
+ In order to see how these equations behave with time, we have to resort to numerical methods (see section \ref{numerics}). However we note that for a given potential there will be a stationary solution that we will refer to as the ``steady state'', given periodic boundary conditions, we will give an analytical form for this steady state. 
+
+\subsection{Steady state solution}
+In the steady state, we have: 
+
+\begin{eqnarray}
+\frac{\partial P(x, t)}{\partial t} &=&  0 = \frac{\partial J}{\partial x} \label{eqn:SmoluchowskiSteady} \\
+\frac{\partial T(x, t)}{\partial t} &=& 0 = \frac{\partial}{\partial x} \left ( -\kappa q(x, t) + D \frac{\partial T(x, t)}{\partial x} \right ) \label{eqn:TemperatureSteady}
+\end{eqnarray} 
+
+Suppose that we now impose periodic boundary conditions such that $P(0, t) = P(L, t)$ and $J(0) = J(L)$, for a given period $L$. Section 5.2 of \cite{Gardiner2009} gives the steady state current as:
+
+\begin{equation}
+J_s = \left [\frac{2 k_B T(L)}{\psi(L)} - \frac{2 k_B T(0)}{\psi(0)}  \right] P_s(0) \left [\int_0^L dx'/\psi(x') \right]^{-1}
+\label{eqn:SteadyCurrent}
+\end{equation}
+
+with $\psi(x) \equiv \exp[-\int_0^x dx' \frac{\partial_x V(x')}{2 k_B T(x')}]$. Meanwhile, the density is:
+
+\begin{equation}
+P_s(x) = P_s(0) \left [\frac{\int_0^x \frac{dx'}{\psi(x')} \frac{T(L)}{\psi(L)} + \int_x^L \frac{dx'}{\psi(x')} \frac{T(0)}{\psi(0)} }{\frac{T(x)}{\psi(x)} \int_0^L \frac{dx'}{\psi(x')} } \right]
+\label{eqn:DensitySteady}
+\end{equation}
+In this case, $J_s$ is a constant and $P_s(0)$ is also a constant that has to be found by applying the normalization condition\footnote{In practice it is very hard to estimate the steady state current and density from Equations [\ref{eqn:SteadyCurrent}, \ref{eqn:DensitySteady}] because we have to optimize $P_s(0)$ and $J_s$ so that we simultaneously satisfy Equation \ref{eqn:SteadyCurrent} and the normalization for Equation \ref{eqn:DensitySteady}, this is a constrained optimization problem that is soluble but not particularly enlightening given that we can find the same information through easier methods. In practice we will usually use finite differences to solve a boundary value problem as described in the methods section.} 
+$\int_0^L P(x) dx = 1$. Assuming that we know the steady state current $J_s$ it is now possible to find the steady state temperature under the assumption that the temperature has periodic boundary conditions as well $T(0) = T_0 = T(L)$, where $T_0$ is the bath temperature. We have:
+
+\begin{equation}
+\frac{\partial T}{\partial t} = 0 =  \partial_x S_s = \kappa \partial_x V J_s - D \frac{\partial T}{\partial x}
+\end{equation}
+Rearranging, we find
+\begin{equation}
+\frac{\partial T}{\partial x} = \frac{\kappa \partial_x V J_s - \partial_x S_s}{D}
+\end{equation}
+Integrating both sides:
+\begin{equation}
+\int_0^L \frac{\partial T}{\partial x} = T(L) - T(0) = 0 = \frac{\kappa J_s}{D} \int_0^L \partial_x V dx - \frac{S_s}{D}L
+\end{equation}
+
+Noticing that $V(x) = v_0(x) + f x$, where $v_0(0) = v_0(L)$, we get $\int_0^L \partial_x V dx = f L$, so 
+
+\begin{equation}
+S_s = \kappa J_s f
+\end{equation}
+
+and
+
+\begin{equation}T(x) = T(0) + \frac{\kappa J_s}{D} \int_0^x \partial_x V dx - \frac{S_s}{D}x = T(0) + \frac{\kappa J_s}{D} (v_0(x) - v_0(0))
+\end{equation}
+
+
+%----------------------------------------------------------------------------------------
+%	NUMERICS
+%----------------------------------------------------------------------------------------
+
+\subsection{Numerical simulation} \label{numerics}
+
+\subsubsection{Finite differences}
+The one dimensional equation can be solved on a discrete grid by using the finite differences method, the main idea behind this strategy is to approximate derivatives with equations of the form:
+
+\begin{equation}
+\frac{d f}{d x} \approx \frac{f(x - h) - f(x + h)}{2h}
+\end{equation}
+
+for some small $h$. The first thing to notice here is that our equation is ``flux conservative'', i.e. it can be written in the form 
+$$ \frac{\partial P}{\partial t} = \frac{\partial J(x)}{\partial x} $$
+In our case, $J(x) = \gamma^{-1} \left ( \frac{\partial V}{\partial x} P + k_B \frac{\partial}{\partial x} [T P] \right ) $. Now we will discretize space and time, we will split time into $N$ discrete times  $T_1, T_2, ..., T_n, ..., T_N$ and space into $K$ discrete points $x_1, x_2, ..., x_k, ..., x_K$. With this, we can approximate the partial derivatives that occur in our equation, first we can approximate $\frac{\partial J}{\partial x}$ with.
+
+$$ \left. \frac{\partial J}{\partial x} \right|_{k, n} = \frac{J_{k+1}^n - J_{k-1}^n}{2 \Delta x} + O(\Delta x^2) $$
+
+And we can approximate $\frac{\partial P}{\partial t}$ with
+
+$$ \left. \frac{\partial P}{\partial t} \right|_{k, n} = \frac{P_k^{n+1} - P_k^n}{\Delta t} + O(\Delta t) $$
+
+We would like to have the equation involving $J$ written in terms of $P$, by propagating these derivatives through the definition for $J$ we get.
+
+\begin{equation}
+P_{k}^{n+1} \approx P_{k-1}^n \left [ \frac{k_B \Delta t}{2 \Delta^2} T_{k-1} - \frac{\Delta t}{2 \Delta} \partial_x V_{k-1} \right ] +
+ P_k^n \left [1 - \frac{k_B \Delta t}{\Delta^2} T_k \right] +
+ P_{k+1}^n \left [ \frac{k_B \Delta t}{2 \Delta^2}T_{k+1} + \frac{\Delta t}{2 \Delta} \partial_x V_{k+1} \right]
+\end{equation}
+
+Using this equation we make a matrix that has the terms multiplying $P_{k-1}^n$ as its lower off diagonal, the terms multiplying $P_k^n$ as its main diagonal and the terms multiplying $P_{k+1}^n$ as the upper diagonal. From now on we will call this matrix $A$, in order to step the distribution $P(x, t)$ forward one step (i.e. to $P(x, t + \Delta t)$), we need to use the implicit equation 
+
+\begin{equation}
+\left (I - \frac{1}{2} A \right) P_{dis}(x, t + \Delta t) \approx \left(I + \frac{1}{2}A \right)P_{dis}(x, t)
+\end{equation}
+
+where $P_{dis}$ acknowledges that $P$ has been discretized. Fortunately the matrices that we are dealing with are very sparse, so the program used to solve this equation can save on memory by calling sparse matrix libraries.
+
+\subsubsection{Boundary value problem in the steady state}
+Often, we will not be interested in this transient behavior and instead we will want to obtain information about the system at the steady state. To do this, we create the same matrix $A$ described above and then solve the equation
+
+\begin{equation}
+A P_s = b 
+\end{equation}
+
+Where $b$ is a vector full of zeros, but with constant entries in its first and last elements. These constants ensure the boundary condition that $P(0) = P(L)$, a similar procedure is performed to find the temperature in the steady state.
+\subsection{Stochastic methods}
+We can simulate the path of a single particle by using stochastic methods to solve the Langevin equation. By simulating many times we should be able to recover the distributions that were found through finite differencing. When simulating the system  at the microscopic level, equation \ref{eqn:Smoluchowski} becomes \cite{Reimann2001}
+
+\begin{equation}
+\gamma \dot{x}(t) = -V'(x(t)) + \xi(t)
+\end{equation}
+
+Where $\xi(t)$ is called Gaussian white noise of zero mean and has the essential properties that: $\langle \xi(t) \rangle = 0$ and $\langle \xi(t) \xi(s) \rangle = 2 \gamma k_B T \delta(t - s) $. We can also consider the stochastic equation with time discretized, in which case we get:
+
+\begin{equation}
+x(t_{n+1}) = x(t_n) - \Delta t [V'(x(t_n)) + \xi_n]/\gamma
+\end{equation}
+
+This equation can be simulated numerically, or can be used to derive Equation \ref{eqn:Smoluchowski} by taking the limit $\Delta t \to 0$ as is done in Appendix B of \cite{Reimann2001}. In the results section, we will show some results of these numerical simulations.
+
+%----------------------------------------------------------------------------------------
+%	RESULTS
+%----------------------------------------------------------------------------------------
+\section{Results}
+Here we will show some results of finite differencing and of the stochastic methods. Figure~\ref{fig:FiniteDifferences} shows a simulation of a particle density for a certain amount of time. In this figure we see that the density tends to accumulate into the well and that wherever the density has a sharp peak, it will interact with the environment thermally. The strength of these thermal interactions depends on $\kappa$ and for a non vanishing $D$ they tend to diffuse away into a smoother shape.
+
+\begin{figure}[tb]
+	\centering
+	\subfigure{% 
+		\includegraphics[width=0.45\columnwidth]{CoupledEquationFiniteDifferencesInitial}
+	} 
+\quad
+	\subfigure{
+		\includegraphics[width=0.45\columnwidth]{CoupledEquationFiniteDifferences}
+	}
+\caption{Finite differencing simulation of a distribution of particles, we see that the particles are locally interacting with the environment thermally.}
+\label{fig:FiniteDifferences} 
+\end{figure}
+
+\begin{figure}[tb]
+	\centering
+	\subfigure{% 
+		\includegraphics[width=0.45\columnwidth]{CoupledEquationStochasticInitial}
+	} 
+\quad
+	\subfigure{
+		\includegraphics[width=0.45\columnwidth]{CoupledEquationStochastic}
+	}
+\caption{Stochastic simulation of a distribution of particles, In this simulation I have coupled the equations so that the diffusion of the particles is dependent on the temperature, however the temperature is not affected by the particles (i.e. in the case where
+ $\kappa \to 0$).}
+\label{fig:Stochastic} 
+\end{figure}
+
+If we allow these simulations to run for long enough, then eventually we will reach the predicted steady state.
+
+%------------------------------------------------
+
+%----------------------------------------------------------------------------------------
+%	RESULTS AND DISCUSSION
+%----------------------------------------------------------------------------------------
+
+%------------------------------------------------
+
+%------------------------------------------------
+
+%----------------------------------------------------------------------------------------
+%	BIBLIOGRAPHY
+%----------------------------------------------------------------------------------------
+
+%\renewcommand{\refname}{\spacedlowsmallcaps{References}} % For modifying the bibliography heading
+
+\clearpage{}   % Make sure that the references are on a new page.
+\bibliography{BibData}{} % The file containing the bibliography
+
+\bibliographystyle{ieeetr}
+%----------------------------------------------------------------------------------------
+
+\end{document}
