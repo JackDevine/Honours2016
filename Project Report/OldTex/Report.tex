@@ -30,8 +30,6 @@
 \usepackage{paralist} % very flexible & customisable lists (eg. enumerate/itemize, etc.)
 \usepackage{verbatim} % adds environment for commenting out blocks of text & for better verbatim
 \usepackage{subfigure} % make it possible to include more than one captioned figure/table in a single float
-\usepackage{cleveref}  % For referencing more than one equation at at time
-\usepackage{hyperref} % for hyper referencing
 % These packages are all incorporated in the memoir class to one degree or another...
 
 %%% HEADERS & FOOTERS
@@ -55,6 +53,7 @@
 %%% END Article customizations
 
 %%% The "real" document content comes below...
+
 \title{Brownian motors thermally coupled to the environment}
 \author{Jack Devine}
 %\date{} % Activate to display a given date or no date (if empty),
@@ -83,7 +82,7 @@
 
 \section{Introduction}
 
-Brownian motors are devices that can use stored energy to create directed motion, as well as being able to crank a rotor in the in the fashion of a traditional motor, they are also able to pump ions against a gradient and translocate molecules. In this project, we will model Brownian motors by using concepts from statistical mechanics. In particular, a Brownian motor will be modeled by a Brownian particle diffusing over its free energy landscape \cite{Reimann2001}, which in one dimension will be denoted by $x$. In the case of Brownian motion, it is natural to think of $x$ as a spatial coordinate, however in the case of Brownian motors this is not always the case. Often we will think of $x$ as a reaction coordinate for a chemical reaction, or in the case of a rotary motor, it could be the angle of the motor. We will think of a Brownian particle moving in titled periodic potential of the form $V(x) = f x + v_0(x)$ for some external forcing $f$ and some periodic function $v_0(x)$ with period $L$. This is shown schematically in figure \ref{fig:Schematic}, in this figure we have an ensemble of  particles with a certain known density. These particles are being pushed around by thermal vibrations in a random diffusive manner, however there is also a forcing on the particles that we describe using a potential.
+Brownian motors are devices that can use stored energy to create directed motion, as well as being able to crank a rotor in the in the fashion of a traditional motor, they are also able to pump ions against a gradient and translocate molecules. In this project, we will model Brownian motors by using concepts from statistical mechanics. In particular, we will think of a Brownian motor as a Brownian particle diffusing over its free energy landscape, which in one dimension will be denoted by $x$. In the case of Brownian motion, it is natural to think of $x$ as a spatial coordinate, however in the case of Brownian motors this is not always the case. Often we will think of $x$ as a reaction coordinate for a chemical reaction, or in the case of a rotary motor, it could be the angle of the motor. We will think of a Brownian particle moving in titled periodic potential of the form $V(x) = f x + v_0(x)$ for some external forcing $f$ and some periodic function $v_0(x)$ with period $L$. This is shown schematically in figure \ref{fig:Schematic}, in this figure we have an ensemble of  particles with a certain known density. These particles are being pushed around by thermal vibrations in a random diffusive manner, however there is also a forcing on the particles that we describe using a potential.
 
 \begin{figure}[tb]
 	\centering
@@ -98,7 +97,7 @@ Brownian motors are devices that can use stored energy to create directed motion
 \label{fig:Schematic} 
 \end{figure}
 
-As we will see, the diffusion is increased by increasing the temperature and the drift is increased by increasing $f$. In some cases such as the Landauer blowtorch, the environment has a non uniform temperature held fixed by an external heat source \cite{Landauer1988}. With this in mind, we interpret Figure \ref{fig:Schematic} as follows: Brownian particles are subject to a given potential and are agitated by thermal noise, these agitations can give the particles the energy to move over barriers as they move down the slope of the potential. As one could imagine, these thermal interactions draw energy from the environment causing the temperature of the environment to change. Normally two simplifying assumptions are made at this point \cite{Reimann2001}, (i) that the thermal fluctuations created by the motor are very small compared to the thermal energy of the surrounding environment which is assumed to be effectively infinite, (ii) that when these temperature fluctuations occur, they diffuse away so rapidly that they do not need to be accounted for. In this project, we will question the second assumption in the case of Brownian motors. It is important to note that assumption (ii) has been questioned by Streater in the context of Brownian motion \cite{Streater1997, Streater1997a}. In these articles, Streater investigates Brownian motion from a microscopic view and then comes up with a mathematical model to describe Brownian particles that are thermally coupled to the environment, he then goes on to prove that the model is thermostatistically consistent in the sense that energy is conserved and that entropy increases. We will explore a similar set of equations and we will try to determine the length scales at which the thermal coupling is important.
+As we will see, the diffusion is increased by increasing the temperature and the drift is increased by increasing $f$. In some cases such as the Landauer blowtorch, the environment is at different temperatures that are held fixed by an external heat source [citation]. When the temperature is non uniform, the particles diffuse by different amounts at different points in space.
  
 \subsection{The Smoluchowski equation coupled to the environment} \label{Smoluchowski}
 
@@ -110,19 +109,7 @@ J(x, t) &=& \gamma^{-1} \frac{\partial}{\partial x} \left ( \frac{\partial V(x, 
 \frac{\partial T(x, t)}{\partial t} &=& \frac{\partial}{\partial x} \left ( -\kappa q(x, t) + D \frac{\partial T(x, t)}{\partial x} \right ) \label{eqn:TemperatureEvolution}
 \end{eqnarray} 
 
-Where
-\begin{itemize}
-\item{$P(x, t)$ is the probability density as a function of time $t$  and reaction coordinate $x$}
-\item{$J(x, t)$ is called the current}
-\item{$\gamma$ is the friction coefficient}
-\item{$V(x, t)$ is the potential for the motor}
-\item{$k_B$ is the Boltzmann constant}
-\item{$q(x, t) = \partial_x V(x, t) J(x, t)$ is the heat from the motor}
-\item{$\kappa$ is the thermal conductivity}
-\item{$D$ is the thermal diffusivity}
-\end{itemize}
-
-Equation \ref{eqn:Smoluchowski} is called the Smoluschowski equation \cite{KellerBustamante2000} and equation \ref{eqn:TemperatureEvolution} is the heat equation. These equations make our intuitive notions more precise, we see that the first term on the right hand side of the Smoluchowski equation (equation \ref{eqn:Smoluchowski}) is a drift term that is forced by our potential and that the second term contains a diffusion term that is scaled by our temperature. In fact, Figure \ref{fig:Schematic} was made by solving equation \ref{eqn:Smoluchowski} numerically. Likewise, equation \ref{eqn:TemperatureEvolution} also appeals to how our intuition of how the motor should effect its environment. The first term represents the heat flux being produced by the motor \cite{M.W.Jack2016}, while the second term represents the diffusion of temperature into the environment.
+Where $P(x, t)$ is the probability density as a function of time $t$ and reaction coordinate $x$, $J(x, t)$ is called the current,  $\gamma$ is the friction coefficient, $V(x, t)$ is the potential for the motor, $k_B$ is the Boltzmann constant, $T$ is the temperature, $\kappa$ is the thermal conductivity, $q(x, t) = \partial_x V(x, t) J(x, t)$ and $D$ is the diffusion coefficient for the temperature. Equation \ref{eqn:Smoluchowski} is called the Smoluschowski equation \cite{KellerBustamante2000} and equation \ref{eqn:TemperatureEvolution} is the equation that governs the evolution of the temperature.
 
 %----------------------------------------------------------------------------------------
 %	PRELIMINARY RESULTS
@@ -150,9 +137,10 @@ with $\psi(x) \equiv \exp[-\int_0^x dx' \frac{\partial_x V(x')}{2 k_B T(x')}]$. 
 
 \begin{equation}
 P_s(x) = P_s(0) \left [\frac{\int_0^x \frac{dx'}{\psi(x')} \frac{T(L)}{\psi(L)} + \int_x^L \frac{dx'}{\psi(x')} \frac{T(0)}{\psi(0)} }{\frac{T(x)}{\psi(x)} \int_0^L \frac{dx'}{\psi(x')} } \right]
-\label{eqn:SteadyDensity}
+\label{eqn:DensitySteady}
 \end{equation}
-In this case, $J_s$ is a constant and $P_s(0)$ is also a constant. Assuming that we know the steady state current $J_s$ it is now possible to find the steady state temperature under the assumption that the temperature has periodic boundary conditions as well $T(0) = T_0 = T(L)$, where $T_0$ is the bath temperature. We have:
+In this case, $J_s$ is a constant and $P_s(0)$ is also a constant that has to be found by applying the normalization condition\footnote{In practice it is very hard to estimate the steady state current and density from Equations [\ref{eqn:SteadyCurrent}, \ref{eqn:DensitySteady}] because we have to optimize $P_s(0)$ and $J_s$ so that we simultaneously satisfy Equation \ref{eqn:SteadyCurrent} and the normalization for Equation \ref{eqn:DensitySteady}, this is a constrained optimization problem that is soluble but not particularly enlightening given that we can find the same information through easier methods. In practice we will usually use finite differences to solve a boundary value problem as described in the methods section.} 
+$\int_0^L P(x) dx = 1$. Assuming that we know the steady state current $J_s$ it is now possible to find the steady state temperature under the assumption that the temperature has periodic boundary conditions as well $T(0) = T_0 = T(L)$, where $T_0$ is the bath temperature. We have:
 
 \begin{equation}
 \frac{\partial T}{\partial t} = 0 =  \partial_x S_s = \kappa \partial_x V J_s - D \frac{\partial T}{\partial x}
@@ -174,16 +162,9 @@ S_s = \kappa J_s f
 
 and
 
-\begin{equation}T(x) = T(0) + \frac{\kappa J_s}{D} \int_0^x \partial_x V dx - \frac{S_s}{D}x = T(0) + \frac{\kappa J_s}{D} (v_0(x) - v_0(0)) \label{eqn:SteadyTemperature}
+\begin{equation}T(x) = T(0) + \frac{\kappa J_s}{D} \int_0^x \partial_x V dx - \frac{S_s}{D}x = T(0) + \frac{\kappa J_s}{D} (v_0(x) - v_0(0))
 \end{equation}
 
-It would seem that one should be able to calculate the steady state current and density directly from the equations shown above. However, we notice that the constants $J_s$ and $P_s(0)$ have to satisfy equations \ref{eqn:SteadyCurrent}, \ref{eqn:SteadyDensity} and \ref{eqn:SteadyTemperature} while also satisfying the normalization condition $\int_0^L P(x) dx = 1$. To do this we define an objective function given by
-
-\begin{equation}
-obj(J_s, P_s(0)) = \left (J_s - \left [\frac{2 k_B T(L)}{\psi(L)} - \frac{2 k_B T(0)}{\psi(0)}  \right] P_s(0) \left [\int_0^L dx'/\psi(x') \right]^{-1} \right)^2  \label{eqn:Objective}
-\end{equation}
-
-And we minimize this objective function with respect to $J_s$ and $P_s(0)$ under the constraint $\int_0^L P(x) dx = 1$. Another way to do this is to guess a steady state density and temperature and use finite differencing to simulate forward in time until the transients die out.
 
 %----------------------------------------------------------------------------------------
 %	NUMERICS
@@ -224,15 +205,15 @@ Using this equation we make a matrix that has the terms multiplying $P_{k-1}^n$ 
 
 where $P_{dis}$ acknowledges that $P$ has been discretized. Fortunately the matrices that we are dealing with are very sparse, so the program used to solve this equation can save on memory by calling sparse matrix libraries.
 
-%\subsubsection{Boundary value problem in the steady state}
-%Often, we will not be interested in this transient behavior and instead we will want to obtain information about the system at the steady state. To do this, we create the same matrix $A$ described above and then solve the equation
-%
-%\begin{equation}
-%A P_s = b 
-%\end{equation}
-%
-%Where $b$ is a vector full of zeros, but with constant entries in its first and last elements. These constants ensure the boundary condition that $P(0) = P(L)$, a similar procedure is performed to find the temperature in the steady state.
-\subsubsection{Stochastic methods}
+\subsubsection{Boundary value problem in the steady state}
+Often, we will not be interested in this transient behavior and instead we will want to obtain information about the system at the steady state. To do this, we create the same matrix $A$ described above and then solve the equation
+
+\begin{equation}
+A P_s = b 
+\end{equation}
+
+Where $b$ is a vector full of zeros, but with constant entries in its first and last elements. These constants ensure the boundary condition that $P(0) = P(L)$, a similar procedure is performed to find the temperature in the steady state.
+\subsection{Stochastic methods}
 We can simulate the path of a single particle by using stochastic methods to solve the Langevin equation. By simulating many times we should be able to recover the distributions that were found through finite differencing. When simulating the system  at the microscopic level, equation \ref{eqn:Smoluchowski} becomes \cite{Reimann2001}
 
 \begin{equation}
@@ -301,7 +282,7 @@ If we allow these simulations to run for long enough, then eventually we will re
 \clearpage{}   % Make sure that the references are on a new page.
 \bibliography{BibData}{} % The file containing the bibliography
 
-\bibliographystyle{unsrt}
+\bibliographystyle{ieeetr}
 %----------------------------------------------------------------------------------------
 
 \end{document}
