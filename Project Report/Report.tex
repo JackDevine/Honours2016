@@ -31,7 +31,8 @@
 \usepackage{verbatim} % adds environment for commenting out blocks of text & for better verbatim
 \usepackage{subfigure} % make it possible to include more than one captioned figure/table in a single float
 \usepackage{cleveref}  % For referencing more than one equation at at time
-\usepackage{hyperref} % for hyper referencing
+\usepackage[colorlinks=true,urlcolor=blue,citecolor=blue,linkcolor=magenta]{hyperref} % for hyper referencing
+\usepackage{amsmath}
 % These packages are all incorporated in the memoir class to one degree or another...
 
 %%% HEADERS & FOOTERS
@@ -83,7 +84,7 @@
 
 \section{Introduction}
 
-Brownian motors are devices that can use stored energy to create directed motion, as well as being able to crank a rotor in the in the fashion of a traditional motor, they are also able to pump ions against a gradient and translocate molecules. In this project, we will model Brownian motors by using concepts from statistical mechanics. In particular, a Brownian motor will be modeled by a Brownian particle diffusing over its free energy landscape \cite{Reimann2001}, which in one dimension will be denoted by $x$. In the case of Brownian motion, it is natural to think of $x$ as a spatial coordinate, however in the case of Brownian motors this is not always the case. Often we will think of $x$ as a reaction coordinate for a chemical reaction, or in the case of a rotary motor, it could be the angle of the motor. We will think of a Brownian particle moving in titled periodic potential of the form $V(x) = f x + v_0(x)$ for some external forcing $f$ and some periodic function $v_0(x)$ with period $L$. This is shown schematically in figure \ref{fig:Schematic}, in this figure we have an ensemble of  particles with a certain known density. These particles are being pushed around by thermal vibrations in a random diffusive manner, however there is also a forcing on the particles that we describe using a potential.
+Brownian motors are devices that can use stored energy to create directed motion on a microscopic scale, as well as being able to crank a rotor in the in the fashion of a traditional motor, they are also able to pump ions against a gradient and translocate molecules. In this project, we will model Brownian motors using concepts from statistical mechanics. In particular, a Brownian motor will be modeled by a Brownian particle diffusing over its free energy landscape \cite{Reimann2001}, which in one dimension will be denoted by $x$. In the case of Brownian motion, it is natural to think of $x$ as a spatial coordinate, however in the case of Brownian motors this is not always the case. Often we will think of $x$ as a reaction coordinate for a chemical reaction, or in the case of a rotary motor, it could be the angle of the motor. We will think of a Brownian particle moving in titled periodic potential of the form $V(x) = f x + v_0(x)$ for some external forcing $f$ and some periodic function $v_0(x)$ with period $L$. This is shown schematically in figure \ref{fig:Schematic}, in this figure we have an ensemble of  particles with a certain known density. These particles are being pushed around by thermal vibrations in a random diffusive manner, however there is also a forcing on the particles that we describe using a potential.
 
 \begin{figure}[tb]
 	\centering
@@ -135,11 +136,11 @@ Equation \ref{eqn:Smoluchowski} is called the Smoluschowski equation \cite{Kelle
 In the steady state, we have: 
 
 \begin{eqnarray}
-\frac{\partial P(x, t)}{\partial t} &=&  0 = \frac{\partial J}{\partial x} \label{eqn:SmoluchowskiSteady} \\
-\frac{\partial T(x, t)}{\partial t} &=& 0 = \frac{\partial}{\partial x} \left ( -\kappa q(x, t) + D \frac{\partial T(x, t)}{\partial x} \right ) \label{eqn:TemperatureSteady}
+\frac{\partial P(x, t)}{\partial t} &=&  0 \ = \ \frac{\partial J}{\partial x} \label{eqn:SmoluchowskiSteady} \\
+\frac{\partial T(x, t)}{\partial t} &=& 0 \ = \ \frac{\partial}{\partial x} \left ( -\kappa q(x, t) + D \frac{\partial T(x, t)}{\partial x} \right ) \label{eqn:TemperatureSteady}
 \end{eqnarray} 
 
-Suppose that we now impose periodic boundary conditions such that $P(0, t) = P(L, t)$ and $J(0) = J(L)$, for a given period $L$. Section 5.2 of \cite{Gardiner2009} gives the steady state current as:
+Suppose that we now impose periodic boundary conditions such that $P(0, t) = P(L, t)$,  $J(0, t) = J(L, t)$ and $T(0, t) = T_0 = T(L, t)$ where $L$ is the size of one period and $T_0$ is the temperature of the bath (room temperature). Section 5.2 of \cite{Gardiner2009} gives the steady state current as:
 
 \begin{equation}
 J_s = \left [\frac{2 k_B T(L)}{\psi(L)} - \frac{2 k_B T(0)}{\psi(0)}  \right] P_s(0) \left [\int_0^L dx'/\psi(x') \right]^{-1}
@@ -152,7 +153,7 @@ with $\psi(x) \equiv \exp[-\int_0^x dx' \frac{\partial_x V(x')}{2 k_B T(x')}]$. 
 P_s(x) = P_s(0) \left [\frac{\int_0^x \frac{dx'}{\psi(x')} \frac{T(L)}{\psi(L)} + \int_x^L \frac{dx'}{\psi(x')} \frac{T(0)}{\psi(0)} }{\frac{T(x)}{\psi(x)} \int_0^L \frac{dx'}{\psi(x')} } \right]
 \label{eqn:SteadyDensity}
 \end{equation}
-In this case, $J_s$ is a constant and $P_s(0)$ is also a constant. Assuming that we know the steady state current $J_s$ it is now possible to find the steady state temperature under the assumption that the temperature has periodic boundary conditions as well $T(0) = T_0 = T(L)$, where $T_0$ is the bath temperature. We have:
+In this case, $J_s$ is a constant and $P_s(0)$ is also a constant. Assuming that we know these constants it is now possible to find the steady state temperature. We have:
 
 \begin{equation}
 \frac{\partial T}{\partial t} = 0 =  \partial_x S_s = \kappa \partial_x V J_s - D \frac{\partial T}{\partial x}
@@ -163,7 +164,7 @@ Rearranging, we find
 \end{equation}
 Integrating both sides:
 \begin{equation}
-\int_0^L \frac{\partial T}{\partial x} = T(L) - T(0) = 0 = \frac{\kappa J_s}{D} \int_0^L \partial_x V dx - \frac{S_s}{D}L
+\int_0^L \frac{\partial T}{\partial x} dx = T(L) - T(0) = 0 = \frac{\kappa J_s}{D} \int_0^L \partial_x V dx - \frac{S_s}{D}L
 \end{equation}
 
 Noticing that $V(x) = v_0(x) + f x$, where $v_0(0) = v_0(L)$, we get $\int_0^L \partial_x V dx = f L$, so 
@@ -174,7 +175,8 @@ S_s = \kappa J_s f
 
 and
 
-\begin{equation}T(x) = T(0) + \frac{\kappa J_s}{D} \int_0^x \partial_x V dx - \frac{S_s}{D}x = T(0) + \frac{\kappa J_s}{D} (v_0(x) - v_0(0)) \label{eqn:SteadyTemperature}
+\begin{equation}
+T(x) = T(0) + \frac{\kappa J_s}{D} \int_0^x \partial_x V dx - \frac{S_s}{D}x = T(0) + \frac{\kappa J_s}{D} (v_0(x) - v_0(0)) \label{eqn:SteadyTemperature}
 \end{equation}
 
 It would seem that one should be able to calculate the steady state current and density directly from the equations shown above. However, we notice that the constants $J_s$ and $P_s(0)$ have to satisfy equations \ref{eqn:SteadyCurrent}, \ref{eqn:SteadyDensity} and \ref{eqn:SteadyTemperature} while also satisfying the normalization condition $\int_0^L P(x) dx = 1$. To do this we define an objective function given by
@@ -202,11 +204,15 @@ for some small $h$. The first thing to notice here is that our equation is ``flu
 $$ \frac{\partial P}{\partial t} = \frac{\partial J(x)}{\partial x} $$
 In our case, $J(x) = \gamma^{-1} \left ( \frac{\partial V}{\partial x} P + k_B \frac{\partial}{\partial x} [T P] \right ) $. Now we will discretize space and time, we will split time into $N$ discrete times  $T_1, T_2, ..., T_n, ..., T_N$ and space into $K$ discrete points $x_1, x_2, ..., x_k, ..., x_K$. With this, we can approximate the partial derivatives that occur in our equation, first we can approximate $\frac{\partial J}{\partial x}$ with.
 
-$$ \left. \frac{\partial J}{\partial x} \right|_{k, n} = \frac{J_{k+1}^n - J_{k-1}^n}{2 \Delta x} + O(\Delta x^2) $$
+\begin{equation}
+\left. \frac{\partial J}{\partial x} \right|_{k, n} = \frac{J_{k+1}^n - J_{k-1}^n}{2 \Delta x} + O(\Delta x^2) 
+\end{equation}
 
 And we can approximate $\frac{\partial P}{\partial t}$ with
 
-$$ \left. \frac{\partial P}{\partial t} \right|_{k, n} = \frac{P_k^{n+1} - P_k^n}{\Delta t} + O(\Delta t) $$
+\begin{equation}
+\left. \frac{\partial P}{\partial t} \right|_{k, n} = \frac{P_k^{n+1} - P_k^n}{\Delta t} + O(\Delta t)
+\end{equation}
 
 We would like to have the equation involving $J$ written in terms of $P$, by propagating these derivatives through the definition for $J$ we get.
 
@@ -222,7 +228,16 @@ Using this equation we make a matrix that has the terms multiplying $P_{k-1}^n$ 
 \left (I - \frac{1}{2} A \right) P_{dis}(x, t + \Delta t) \approx \left(I + \frac{1}{2}A \right)P_{dis}(x, t)
 \end{equation}
 
-where $P_{dis}$ acknowledges that $P$ has been discretized. Fortunately the matrices that we are dealing with are very sparse, so the program used to solve this equation can save on memory by calling sparse matrix libraries.
+where $P_{dis}$ acknowledges that $P$ has been discretized. Likewise, equation \ref{eqn:TemperatureEvolution} can be discretized to give
+
+\begin{multline}
+T^{n+1}_j \approx T^n_{j-1} \frac{\Delta t D}{2 \Delta^2} - T^n_j \left[1 + \frac{\Delta t \kappa k_B}{4 \Delta^2}(V_{j+1} - V_{j-1})(P^n_{j+1} - P^n_{j-1}) + \frac{\Delta t D}{\Delta^2} \right] + \\
+ T^n_{j+1} \left [\frac{\Delta t D}{2 \Delta^2} \right] - \Delta t \kappa \left(\frac{V_{j+1} - V_{j-1}}{2 \Delta} \right )^2 P^n_j
+\end{multline}
+
+and we can form a similar implicit equation to simulate this forward in time. If we know $P(x, t)$ and $T(x, t)$ at time $t$, then we can use these methods to simulate forward in time and obtain $T(x, t + \Delta t)$ and $P(x, t + \Delta t)$.
+
+Fortunately the matrices that we are dealing with are very sparse, so the program used to solve this equation can save on memory by calling sparse matrix libraries.
 
 %\subsubsection{Boundary value problem in the steady state}
 %Often, we will not be interested in this transient behavior and instead we will want to obtain information about the system at the steady state. To do this, we create the same matrix $A$ described above and then solve the equation
@@ -251,7 +266,7 @@ This equation can be simulated numerically, or can be used to derive Equation \r
 %	RESULTS
 %----------------------------------------------------------------------------------------
 \section{Results}
-Here we will show some results of finite differencing and of the stochastic methods. Figure~\ref{fig:FiniteDifferences} shows a simulation of a particle density for a certain amount of time. In this figure we see that the density tends to accumulate into the well and that wherever the density has a sharp peak, it will interact with the environment thermally. The strength of these thermal interactions depends on $\kappa$ and for a non vanishing $D$ they tend to diffuse away into a smoother shape.
+Here we will show some results of finite differencing and of the stochastic methods. Figure~\ref{fig:FiniteDifferences} shows a simulation of a particle density for a certain amount of time. In this figure we see that the density tends to accumulate into the wells and that wherever the density has a sharp peak, it will interact with the environment thermally. The strength of these thermal interactions depends on $\kappa$ and for a non vanishing $D$ they tend to diffuse away into a smoother shape.
 
 \begin{figure}[tb]
 	\centering
