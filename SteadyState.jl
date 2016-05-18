@@ -1,19 +1,16 @@
+# module SteadyState
 # Deal with the steady state by using the analytical solution given by
 # Gardiner
+export steady_params
 
 # Fisrt we create the objective function that needs to be optimized.
 
 using JuMP
 using NLopt
-using FastAnonymous
 
-const T0 = 300
-kappa = 0.3
-D = 0.025
-f = 1.0
-const L = 1.0
-const k_B = 0.01
-const v_0 = 1.0
+# alpha = 0.3 # alpha = kappa*k_B/D
+# beta = 0.2 # beta = v0/f
+# L = 0.1
 
 v0(x) =  v_0*sin((2*pi/L)*x)
 dv0(x) = v_0*(2*pi/L)*cos((2*pi/L)*x)
@@ -78,3 +75,5 @@ function steady_params(T0, kappa, D, f)
     status = solve(m)
     getValue(current), getValue(P0)
 end
+
+# end
