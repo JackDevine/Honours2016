@@ -59,7 +59,7 @@
 \title{Brownian motors thermally coupled to the environment}
 \author{Jack Devine}
 %\date{} % Activate to display a given date or no date (if empty),
-         % otherwise the current date is printed 
+         % otherwise the current date is printed
 
 \begin{document}
 \maketitle
@@ -84,23 +84,41 @@
 
 \section{Introduction}
 
-Brownian motors are devices that can use stored energy to create directed motion on a microscopic scale, as well as being able to crank a rotor in the in the fashion of a traditional motor, they are also able to pump ions against a gradient and translocate molecules. In this project, we will model Brownian motors using concepts from statistical mechanics. In particular, a Brownian motor will be modeled by a Brownian particle diffusing over its free energy landscape \cite{Reimann2001}, which in one dimension will be denoted by $x$. In the case of Brownian motion, it is natural to think of $x$ as a spatial coordinate, however in the case of Brownian motors this is not always the case. Often we will think of $x$ as a reaction coordinate for a chemical reaction, or in the case of a rotary motor, it could be the angle of the motor. We will think of a Brownian particle moving in titled periodic potential of the form $V(x) = f x + v_0(x)$ for some external forcing $f$ and some periodic function $v_0(x)$ with period $L$. This is shown schematically in figure \ref{fig:Schematic}, in this figure we have an ensemble of  particles with a certain known density. These particles are being pushed around by thermal vibrations in a random diffusive manner, however there is also a forcing on the particles that we describe using a potential.
+Brownian motors are devices that can use stored energy to create directed motion on a microscopic scale. As well as being able to crank a rotor in the in the fashion of a traditional motor, they are also able to pump ions against a gradient and translocate molecules. Brownian motors have been implemented in the laboratory for example by \cite{BlickleBechinger2011} created a stochastic heat engine by placing a single colloidal particle in a time dependent optical trap. Likewise, \cite{Pedro2014} placed a colloidal particle in an optical tweezer and drove the particle with explosive vaporization of the surrounding liquid, thus demonstrating a thermal mechanism for Brownian motors. Brownian motors also include devices that can transport molecules over a long distance, for example \cite{JoelBader1999} placed DNA molecules in a time dependent potential to transport the molecules. A very important class of Brownian motors is those motors where the energy in the power phase is given by a single chemical reaction. None of the above experiments fit this criteria, however these types of motors are ubiquitous in biology \cite{PhillipsQuakeMay2006}. Recently, thanks to improvements in imaging techniques, researchers have been able to make highly detailed images of these motors and their working components \cite{YiWeiChang2016}. In this project, we will be interested in creating a model for these biological motors, we want to create a model that can describe the biological motors broadly. Constructing a model of the full mechanics of a motor such as the one imaged in \cite{YiWeiChang2016} is beyond the scope of this project.
+
+In this project, we will model Brownian motors using concepts from statistical mechanics. In particular, a Brownian motor will be modeled by a Brownian particle diffusing over its free energy landscape \cite{Reimann2001}, which in one dimension will be denoted by $x$. In the case of Brownian motion, it is natural to think of $x$ as a spatial coordinate, however in the case of Brownian motors this is not always the case. Often we will think of $x$ as a reaction coordinate for a chemical reaction, or in the case of a rotary motor, it could be the angle of the motor. We will think of a Brownian particle moving in titled periodic potential of the form $V(x) = f x + v_0(x)$ for some external forcing $f$ and some periodic function $v_0(x)$ with period $L$. This is shown schematically in figure \ref{fig:Schematic}, in this figure we have an ensemble of  particles with a certain known density. These particles are being pushed around by thermal vibrations in a random diffusive manner, however there is also a forcing on the particles that we describe using the potential.
 
 \begin{figure}[tb]
 	\centering
-	\subfigure{% 
+	\subfigure{%
 		\includegraphics[width=0.45\columnwidth]{SchematicConstantTempInit}
-	} 
+	}
 \quad
 	\subfigure{
 		\includegraphics[width=0.45\columnwidth]{SchematicConstantTempFinal}
 	}
 \caption{Schematic showing particles diffusing in a one dimensional periodic potential at a fixed temperature. We see that the particles tend to drift down the potential as they diffuse, this drift will be called the current $J$ which we will quantify in section \ref{Smoluchowski}.}
-\label{fig:Schematic} 
+\label{fig:Schematic}
 \end{figure}
 
-As we will see, the diffusion is increased by increasing the temperature and the drift is increased by increasing $f$. In some cases such as the Landauer blowtorch, the environment has a non uniform temperature held fixed by an external heat source \cite{Landauer1988}. With this in mind, we interpret Figure \ref{fig:Schematic} as follows: Brownian particles are subject to a given potential and are agitated by thermal noise, these agitations can give the particles the energy to move over barriers as they move down the slope of the potential. As one could imagine, these thermal interactions draw energy from the environment causing the temperature of the environment to change. Normally two simplifying assumptions are made at this point \cite{Reimann2001}, (i) that the thermal fluctuations created by the motor are very small compared to the thermal energy of the surrounding environment which is assumed to be effectively infinite, (ii) that when these temperature fluctuations occur, they diffuse away so rapidly that they do not need to be accounted for. In this project, we will question the second assumption in the case of Brownian motors. It is important to note that assumption (ii) has been questioned by Streater in the context of Brownian motion \cite{Streater1997, Streater1997a}. In these articles, Streater investigates Brownian motion from a microscopic view and then comes up with a mathematical model to describe Brownian particles that are thermally coupled to the environment, he then goes on to prove that the model is thermostatistically consistent in the sense that energy is conserved and that entropy increases. We will explore a similar set of equations and we will try to determine the length scales at which the thermal coupling is important.
- 
+As we will see, the diffusion is increased by increasing the temperature and the drift is increased by increasing $f$. In some cases such as the Landauer blowtorch, the environment has a non uniform temperature held fixed by an external heat source \cite{Landauer1988}. With this in mind, we interpret Figure \ref{fig:Schematic} as follows: Brownian particles are subject to a given potential and are agitated by thermal noise, these agitations can give the particles the energy to move over barriers created by the potential. As one could imagine, these thermal interactions draw energy from the environment causing the temperature of the environment to change. Normally two simplifying assumptions are made at this point \cite{Reimann2001}, (i) that the thermal fluctuations created by the motor are very small compared to the thermal energy of the surrounding environment which is assumed to be effectively infinite, (ii) that when these temperature fluctuations occur, they diffuse away so rapidly that they do not need to be accounted for. In this project, we will question the second assumption in the case of Brownian motors. It is important to note that assumption (ii) has been questioned by Streater in the context of Brownian motion \cite{Streater1997, Streater1997a}. In these articles, Streater investigates Brownian motion from a microscopic view and then comes up with a mathematical model to describe Brownian particles that are thermally coupled to the environment, he then goes on to prove that the model is thermostatistically consistent in the sense that energy is conserved and that entropy increases. We will explore a similar set of equations and we will try to determine the length scales at which the thermal coupling is important.
+
+\subsection{Classes of Brownian motors} \label{BrownianMotorClasses}
+Here we will discuss different classes of Brownian motors and their relationship to this project.
+
+\subsubsection{Feynmann ratchet}
+
+\subsubsection{Landauer blowtorch}
+\cite{Landauer1988}
+
+\subsubsection{Thermal ratchet}
+\cite{Pedro2014}
+
+\subsubsection{Time dependent potentials}
+\cite{JoelBader1999}, \cite{BlickleBechinger2011}
+
+\subsubsection{Tilted potential}
+
 \subsection{The Smoluchowski equation coupled to the environment} \label{Smoluchowski}
 
 The main part of this project will be trying to understand the behavior of the coupled partial differential equations given by:
@@ -109,11 +127,11 @@ The main part of this project will be trying to understand the behavior of the c
 J(x, t) &=& \gamma^{-1} \frac{\partial}{\partial x} \left ( \frac{\partial V(x, t)}{\partial x} P(x, t) + k_B \frac{\partial}{\partial x} \left [T(x, t) P(x, t) \right] \right )  \\
 \frac{\partial P(x, t)}{\partial t} &=& \frac{\partial J}{\partial x} \label{eqn:Smoluchowski} \\
 \frac{\partial T(x, t)}{\partial t} &=& \frac{\partial}{\partial x} \left ( -\kappa q(x, t) + D \frac{\partial T(x, t)}{\partial x} \right ) \label{eqn:TemperatureEvolution}
-\end{eqnarray} 
+\end{eqnarray}
 
 Where
 \begin{itemize}
-\item{$P(x, t)$ is the probability density as a function of time $t$  and reaction coordinate $x$}
+\item{$P(x, t)$ is the probability density as a function of  reaction coordinate $x$ and time $t$}
 \item{$J(x, t)$ is called the current}
 \item{$\gamma$ is the friction coefficient}
 \item{$V(x, t)$ is the potential for the motor}
@@ -130,15 +148,15 @@ Equation \ref{eqn:Smoluchowski} is called the Smoluschowski equation \cite{Kelle
 %----------------------------------------------------------------------------------------
 
 \section{Preliminary results}
- In order to see how these equations behave with time, we have to resort to numerical methods (see section \ref{numerics}). However we note that for a given potential there will be a stationary solution that we will refer to as the ``steady state'', given periodic boundary conditions, we will give an analytical form for this steady state. 
+ In order to see how these equations behave with time, we have to resort to numerical methods (see section \ref{numerics}). However we note that for a given potential there will be a stationary solution that we will refer to as the ``steady state'', given periodic boundary conditions, we will give an analytical form for this steady state.
 
 \subsection{Steady state solution}
-In the steady state, we have: 
+In the steady state, we have:
 
 \begin{eqnarray}
 \frac{\partial P(x, t)}{\partial t} &=&  0 \ = \ \frac{\partial J}{\partial x} \label{eqn:SmoluchowskiSteady} \\
 \frac{\partial T(x, t)}{\partial t} &=& 0 \ = \ \frac{\partial}{\partial x} \left ( -\kappa q(x, t) + D \frac{\partial T(x, t)}{\partial x} \right ) \label{eqn:TemperatureSteady}
-\end{eqnarray} 
+\end{eqnarray}
 
 Suppose that we now impose periodic boundary conditions such that $P(0, t) = P(L, t)$,  $J(0, t) = J(L, t)$ and $T(0, t) = T_0 = T(L, t)$ where $L$ is the size of one period and $T_0$ is the temperature of the bath (room temperature). Section 5.2 of \cite{Gardiner2009} gives the steady state current as:
 
@@ -167,7 +185,7 @@ Integrating both sides:
 \int_0^L \frac{\partial T}{\partial x} dx = T(L) - T(0) = 0 = \frac{\kappa J_s}{D} \int_0^L \partial_x V dx - \frac{S_s}{D}L
 \end{equation}
 
-Noticing that $V(x) = v_0(x) + f x$, where $v_0(0) = v_0(L)$, we get $\int_0^L \partial_x V dx = f L$, so 
+Noticing that $V(x) = v_0(x) + f x$, where $v_0(0) = v_0(L)$, we get $\int_0^L \partial_x V dx = f L$, so
 
 \begin{equation}
 S_s = \kappa J_s f
@@ -200,12 +218,12 @@ The one dimensional equation can be solved on a discrete grid by using the finit
 \frac{d f}{d x} \approx \frac{f(x - h) - f(x + h)}{2h}
 \end{equation}
 
-for some small $h$. The first thing to notice here is that our equation is ``flux conservative'', i.e. it can be written in the form 
+for some small $h$. The first thing to notice here is that our equation is ``flux conservative'', i.e. it can be written in the form
 $$ \frac{\partial P}{\partial t} = \frac{\partial J(x)}{\partial x} $$
 In our case, $J(x) = \gamma^{-1} \left ( \frac{\partial V}{\partial x} P + k_B \frac{\partial}{\partial x} [T P] \right ) $. Now we will discretize space and time, we will split time into $N$ discrete times  $T_1, T_2, ..., T_n, ..., T_N$ and space into $K$ discrete points $x_1, x_2, ..., x_k, ..., x_K$. With this, we can approximate the partial derivatives that occur in our equation, first we can approximate $\frac{\partial J}{\partial x}$ with.
 
 \begin{equation}
-\left. \frac{\partial J}{\partial x} \right|_{k, n} = \frac{J_{k+1}^n - J_{k-1}^n}{2 \Delta x} + O(\Delta x^2) 
+\left. \frac{\partial J}{\partial x} \right|_{k, n} = \frac{J_{k+1}^n - J_{k-1}^n}{2 \Delta x} + O(\Delta x^2)
 \end{equation}
 
 And we can approximate $\frac{\partial P}{\partial t}$ with
@@ -222,7 +240,7 @@ P_{k}^{n+1} \approx P_{k-1}^n \left [ \frac{k_B \Delta t}{2 \Delta^2} T_{k-1} - 
  P_{k+1}^n \left [ \frac{k_B \Delta t}{2 \Delta^2}T_{k+1} + \frac{\Delta t}{2 \Delta} \partial_x V_{k+1} \right]
 \end{equation}
 
-Using this equation we make a matrix that has the terms multiplying $P_{k-1}^n$ as its lower off diagonal, the terms multiplying $P_k^n$ as its main diagonal and the terms multiplying $P_{k+1}^n$ as the upper diagonal. From now on we will call this matrix $A$, in order to step the distribution $P(x, t)$ forward one step (i.e. to $P(x, t + \Delta t)$), we need to use the implicit equation 
+Using this equation we make a matrix that has the terms multiplying $P_{k-1}^n$ as its lower off diagonal, the terms multiplying $P_k^n$ as its main diagonal and the terms multiplying $P_{k+1}^n$ as the upper diagonal. From now on we will call this matrix $A$, in order to step the distribution $P(x, t)$ forward one step (i.e. to $P(x, t + \Delta t)$), we need to use the implicit equation
 
 \begin{equation}
 \left (I - \frac{1}{2} A \right) P_{dis}(x, t + \Delta t) \approx \left(I + \frac{1}{2}A \right)P_{dis}(x, t)
@@ -243,7 +261,7 @@ Fortunately the matrices that we are dealing with are very sparse, so the progra
 %Often, we will not be interested in this transient behavior and instead we will want to obtain information about the system at the steady state. To do this, we create the same matrix $A$ described above and then solve the equation
 %
 %\begin{equation}
-%A P_s = b 
+%A P_s = b
 %\end{equation}
 %
 %Where $b$ is a vector full of zeros, but with constant entries in its first and last elements. These constants ensure the boundary condition that $P(0) = P(L)$, a similar procedure is performed to find the temperature in the steady state.
@@ -270,29 +288,29 @@ Here we will show some results of finite differencing and of the stochastic meth
 
 \begin{figure}[tb]
 	\centering
-	\subfigure{% 
+	\subfigure{%
 		\includegraphics[width=0.45\columnwidth]{CoupledEquationFiniteDifferencesInitial}
-	} 
+	}
 \quad
 	\subfigure{
 		\includegraphics[width=0.45\columnwidth]{CoupledEquationFiniteDifferences}
 	}
 \caption{Finite differencing simulation of a distribution of particles, we see that the particles are locally interacting with the environment thermally.}
-\label{fig:FiniteDifferences} 
+\label{fig:FiniteDifferences}
 \end{figure}
 
 \begin{figure}[tb]
 	\centering
-	\subfigure{% 
+	\subfigure{%
 		\includegraphics[width=0.45\columnwidth]{CoupledEquationStochasticInitial}
-	} 
+	}
 \quad
 	\subfigure{
 		\includegraphics[width=0.45\columnwidth]{CoupledEquationStochastic}
 	}
 \caption{Stochastic simulation of a distribution of particles, In this simulation I have coupled the equations so that the diffusion of the particles is dependent on the temperature, however the temperature is not affected by the particles (i.e. in the case where
  $\kappa \to 0$).}
-\label{fig:Stochastic} 
+\label{fig:Stochastic}
 \end{figure}
 
 If we allow these simulations to run for long enough, then eventually we will reach the predicted steady state.
