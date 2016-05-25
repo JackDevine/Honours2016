@@ -116,7 +116,24 @@ The Landauer blowtorch scheme involves a temperature that varies in space \cite{
 \cite{Pedro2014}
 
 \subsubsection{Time dependent potentials}
-Both \cite{JoelBader1999} and \cite{BlickleBechinger2011} are examples of experiments where a time dependent potential was used to do work on molecules. In \cite{JoelBader1999} DNA molecules are placed in a time dependent ratchet potential. When the electric field is on it creates a saw tooth shaped potential, molecules inside this potential will diffuse down to the bottom of these wells however the bottom of each well 
+
+\begin{figure}[tb]
+	\centering
+	\subfigure{%
+		\includegraphics[width=0.45\columnwidth]{TimeDependentInit}
+	}
+\quad
+	\subfigure{
+		\includegraphics[width=0.45\columnwidth]{TimeDependentLater}
+	}
+	\subfigure{
+		\includegraphics[width=0.45\columnwidth]{TimeDependentFinal}
+	}
+\caption{Schematic of particles diffusing in a time dependent potential, the blue line represents the potential and the black line represents the particle density. In (a) the particles are stuck in the first potential well, a certain time later the electric field is turned off and the particles diffuse freely as shown in part (b). When the potential is turned back on again, a large number of the particles will get stuck in the well to the left of the first one thus creating a net current to the left.}
+\label{fig:TimeDependent}
+\end{figure}
+
+Both \cite{JoelBader1999} and \cite{BlickleBechinger2011} are examples of experiments where a time dependent potential was used to do work on molecules. In \cite{JoelBader1999} DNA molecules are placed in a time dependent ratchet potential. When the electric field is on it creates a saw tooth shaped potential as shown in Figure \ref{fig:TimeDependent}, when the electric field is on, the molecules will go to the bottom of the wells and get stuck there. When the electric field is turned off however, the molecules will diffuse freely so that when the potential is turned back on a large number of the molecules will then get trapped in the well to the left of where they were originally. Thus there is a net drift to the left.
 
 \subsubsection{Tilted periodic potential}
 The tilted periodic potential is of particular interest for this project because it can be used to model biological motors \cite{Leibler1993,Magnasco1994}. One way to model Brownian motors of this class is to think of a reaction coordinate $x$ that describes the conformation of a molecule as
