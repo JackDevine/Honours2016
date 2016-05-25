@@ -84,7 +84,7 @@
 
 \section{Introduction}
 
-Brownian motors are devices that can use stored energy to create directed motion on a microscopic scale. As well as being able to crank a rotor in the in the fashion of a traditional motor, they are also able to pump ions against a gradient and translocate molecules. Brownian motors have been implemented in the laboratory for example by \cite{BlickleBechinger2011} created a stochastic heat engine by placing a single colloidal particle in a time dependent optical trap. Likewise, \cite{Pedro2014} placed a colloidal particle in an optical tweezer and drove the particle with explosive vaporization of the surrounding liquid, thus demonstrating a thermal mechanism for Brownian motors. Brownian motors also include devices that can transport molecules over a long distance, for example \cite{JoelBader1999} placed DNA molecules in a time dependent potential to transport the molecules. A very important class of Brownian motors is those motors where the energy in the power phase is given by a single chemical reaction. None of the above experiments fit this criteria, however these types of motors are ubiquitous in biology \cite{PhillipsQuakeMay2006}. Recently, thanks to improvements in imaging techniques, researchers have been able to make highly detailed images of these motors and their working components \cite{YiWeiChang2016}. In this project, we will be interested in creating a model for these biological motors, we want to create a model that can describe the biological motors broadly. Constructing a model of the full mechanics of a motor such as the one imaged in \cite{YiWeiChang2016} is beyond the scope of this project.
+Brownian motors are devices that can use stored energy to create directed motion on a microscopic scale. As well as being able to crank a rotor in the in the fashion of a traditional motor, they are also able to pump ions against a gradient and translocate molecules. Brownian motors have been implemented in the laboratory, for example \cite{BlickleBechinger2011} created a stochastic heat engine by placing a single colloidal particle in a time dependent optical trap. Likewise, \cite{Pedro2014} placed a colloidal particle in an optical tweezer and drove the particle with explosive vaporization of the surrounding liquid, thus demonstrating a thermal mechanism for Brownian motors. Brownian motors also include devices that can transport molecules over a long distance, for example \cite{JoelBader1999} placed DNA molecules in a time dependent potential to transport the molecules. A very important class of Brownian motors is those motors where the energy in the power phase is given by a single chemical reaction. None of the above experiments fit this criteria, however these types of motors are ubiquitous in biology \cite{PhillipsQuakeMay2006, Magnasco1994}. Recently, thanks to improvements in imaging techniques, researchers have been able to make highly detailed images of these motors and their working components \cite{YiWeiChang2016}. In this project, we will be interested in creating a model for these biological motors, we want to create a model that can describe the biological motors broadly. Constructing a model of the full mechanics of a motor such as the one imaged in \cite{YiWeiChang2016} is beyond the scope of this project.
 
 In this project, we will model Brownian motors using concepts from statistical mechanics. In particular, a Brownian motor will be modeled by a Brownian particle diffusing over its free energy landscape \cite{Reimann2001}, which in one dimension will be denoted by $x$. In the case of Brownian motion, it is natural to think of $x$ as a spatial coordinate, however in the case of Brownian motors this is not always the case. Often we will think of $x$ as a reaction coordinate for a chemical reaction, or in the case of a rotary motor, it could be the angle of the motor. We will think of a Brownian particle moving in titled periodic potential of the form $V(x) = f x + v_0(x)$ for some external forcing $f$ and some periodic function $v_0(x)$ with period $L$. This is shown schematically in figure \ref{fig:Schematic}, in this figure we have an ensemble of  particles with a certain known density. These particles are being pushed around by thermal vibrations in a random diffusive manner, however there is also a forcing on the particles that we describe using the potential.
 
@@ -106,18 +106,20 @@ As we will see, the diffusion is increased by increasing the temperature and the
 \subsection{Classes of Brownian motors} \label{BrownianMotorClasses}
 Here we will discuss different classes of Brownian motors and their relationship to this project.
 
-\subsubsection{Feynmann ratchet}
+\subsubsection{Feynman ratchet and pawl}
+The Feynman ratchet was initially discussed in the Feynman lectures \cite{Feynman1963} and was at first thought to be able to achieve greater than Carnot efficiency, however closer analysis showed that this was not possible \cite{ParrondoEspanol1996}. The system works as follows, we have two boxes that are thermally insulated from one another that are connected by an axle that can rotate. In one box there is a ratchet and pawl connected to the axle that makes it easy for the axle to turn one way (say clockwise), but hard to turn the other way (anti-clockwise). In the other box the axle is connected to paddles that are being buffeted by a gas (which we call the bath). The motion of the paddles are random since they are dictated by Brownian motion, so the purpose of the ratchet and pawl is to rectify the Brownian motion of these paddles. One may think that this could be used to do work (for example by using the axle to lift a weight), however this is not true. The problem is that the ratchet and pawl themselves will also be subject to random motion so they will sometimes allow the axle to turn anti-clockwise. To model the Feynman ratchet, we will need two degrees of freedom \cite{M.W.Jack2016}, this is beyond the scope of this project because we will only simulate systems with one degree of freedom.
 
 \subsubsection{Landauer blowtorch}
-\cite{Landauer1988}
+The Landauer blowtorch scheme involves a temperature that varies in space \cite{Landauer1988}. As noted earlier, in order for the particles in Figure \ref{fig:Schematic} to get out of potential wells, they will need to acquire thermal energy from the environment. Landauer's idea was to assist these particles by heating the environment at the hills that the particles need to climb. From this Landauer notes that \cite{Landauer1988} ``The relative occupation of competing states of local stability is not determined solely by the characteristics of the locally favored states, but depends on the noise along the whole path connecting the competing states." This means that when we are modeling our system, we need to take non-constant temperatures into account.
 
 \subsubsection{Thermal ratchet}
 \cite{Pedro2014}
 
 \subsubsection{Time dependent potentials}
-\cite{JoelBader1999}, \cite{BlickleBechinger2011}
+Both \cite{JoelBader1999} and \cite{BlickleBechinger2011} are examples of experiments where a time dependent potential was used to do work on molecules. In \cite{JoelBader1999} DNA molecules are placed in a time dependent ratchet potential. When the electric field is on it creates a saw tooth shaped potential, molecules inside this potential will diffuse down to the bottom of these wells however the bottom of each well 
 
-\subsubsection{Tilted potential}
+\subsubsection{Tilted periodic potential}
+The tilted periodic potential is of particular interest for this project because it can be used to model biological motors \cite{Leibler1993,Magnasco1994}. One way to model Brownian motors of this class is to think of a reaction coordinate $x$ that describes the conformation of a molecule as
 
 \subsection{The Smoluchowski equation coupled to the environment} \label{Smoluchowski}
 
@@ -284,7 +286,7 @@ This equation can be simulated numerically, or can be used to derive Equation \r
 %	RESULTS
 %----------------------------------------------------------------------------------------
 \section{Results}
-Here we will show some results of finite differencing and of the stochastic methods. Figure~\ref{fig:FiniteDifferences} shows a simulation of a particle density for a certain amount of time. In this figure we see that the density tends to accumulate into the wells and that wherever the density has a sharp peak, it will interact with the environment thermally. The strength of these thermal interactions depends on $\kappa$ and for a non vanishing $D$ they tend to diffuse away into a smoother shape.
+Here we will show some results of finite differencing and of the stochastic methods. Figure~\ref{fig:FiniteDifferences} shows a simulation of a particle density for a certain amount of time. In this figure we see that the density tends to accumulate into the wells and that wherever the density has a sharp peak, it will interact with the environment thermally. The strength of these thermal interactions depends on $\kappa$ and for a non vanishing $D$ they tend to diffuse away into a smoother shape. If we allow these simulations to run for long enough, then eventually we will reach the predicted steady state.
 
 \begin{figure}[tb]
 	\centering
@@ -308,17 +310,16 @@ Here we will show some results of finite differencing and of the stochastic meth
 	\subfigure{
 		\includegraphics[width=0.45\columnwidth]{CoupledEquationStochastic}
 	}
-\caption{Stochastic simulation of a distribution of particles, In this simulation I have coupled the equations so that the diffusion of the particles is dependent on the temperature, however the temperature is not affected by the particles (i.e. in the case where
- $\kappa \to 0$).}
+\caption{Stochastic simulation of a distribution of particles, In this simulation I have coupled the equations so that the diffusion of the particles is dependent on the temperature, however the temperature is not affected by the particles (i.e. in the case where $\kappa \to 0$).}
 \label{fig:Stochastic}
 \end{figure}
 
-If we allow these simulations to run for long enough, then eventually we will reach the predicted steady state.
+Meanwhile, figure \ref{fig:Stochastic} shows a similar situation that has been simulated stochastically. In this case, we  are able to deal with a temperature that is non constant in space, however we are not able to quantify the particles interaction with the environment. This means that $\kappa$ vanishes in our stochastic model. In the future, we aim to be able to deal with these thermal interactions by using the microscopic equations given by Streater \cite{Streater1997, Streater1997a}.
 
 %------------------------------------------------
 
 %----------------------------------------------------------------------------------------
-%	RESULTS AND DISCUSSION
+%	DISCUSSION
 %----------------------------------------------------------------------------------------
 
 %------------------------------------------------
