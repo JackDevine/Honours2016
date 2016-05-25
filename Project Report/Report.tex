@@ -31,7 +31,7 @@
 \usepackage{verbatim} % adds environment for commenting out blocks of text & for better verbatim
 \usepackage{subfigure} % make it possible to include more than one captioned figure/table in a single float
 \usepackage{cleveref}  % For referencing more than one equation at at time
-\usepackage[colorlinks=true,urlcolor=blue,citecolor=blue,linkcolor=magenta]{hyperref} % for hyper referencing
+\usepackage[colorlinks=true,urlcolor=blue,citecolor=blue,linkcolor=blue]{hyperref} % for hyper referencing
 \usepackage{amsmath}
 % These packages are all incorporated in the memoir class to one degree or another...
 
@@ -112,8 +112,8 @@ The Feynman ratchet was initially discussed in the Feynman lectures \cite{Feynma
 \subsubsection{Landauer blowtorch}
 The Landauer blowtorch scheme involves a temperature that varies in space \cite{Landauer1988}. As noted earlier, in order for the particles in Figure \ref{fig:Schematic} to get out of potential wells, they will need to acquire thermal energy from the environment. Landauer's idea was to assist these particles by heating the environment at the hills that the particles need to climb. From this Landauer notes that \cite{Landauer1988} ``The relative occupation of competing states of local stability is not determined solely by the characteristics of the locally favored states, but depends on the noise along the whole path connecting the competing states." This means that when we are modeling our system, we need to take non-constant temperatures into account.
 
-\subsubsection{Thermal ratchet}
-\cite{Pedro2014}
+% \subsubsection{Thermal ratchet}
+% \cite{Pedro2014}
 
 \subsubsection{Time dependent potentials}
 
@@ -133,10 +133,10 @@ The Landauer blowtorch scheme involves a temperature that varies in space \cite{
 \label{fig:TimeDependent}
 \end{figure}
 
-Both \cite{JoelBader1999} and \cite{BlickleBechinger2011} are examples of experiments where a time dependent potential was used to do work on molecules. In \cite{JoelBader1999} DNA molecules are placed in a time dependent ratchet potential. When the electric field is on it creates a saw tooth shaped potential as shown in Figure \ref{fig:TimeDependent}, when the electric field is on, the molecules will go to the bottom of the wells and get stuck there. When the electric field is turned off however, the molecules will diffuse freely so that when the potential is turned back on a large number of the molecules will then get trapped in the well to the left of where they were originally. Thus there is a net drift to the left.
+Both \cite{JoelBader1999} and \cite{BlickleBechinger2011} are examples of experiments where a time dependent potential was used to do work on molecules. In \cite{JoelBader1999} DNA molecules are placed in a time dependent ratchet potential. When the electric field is on it creates a saw tooth shaped potential as shown in Figure \ref{fig:TimeDependent}, when the electric field is on, the molecules will go to the bottom of the wells and get stuck there. When the electric field is turned off however, the molecules will diffuse freely so that when the potential is turned back on at a later time, a large number of the molecules will then get trapped in the well to the left of where they were originally. Thus there is a net drift to the left.
 
-\subsubsection{Tilted periodic potential}
-The tilted periodic potential is of particular interest for this project because it can be used to model biological motors \cite{Leibler1993,Magnasco1994}. One way to model Brownian motors of this class is to think of a reaction coordinate $x$ that describes the conformation of a molecule as
+\subsubsection{Tilted periodic potentials}
+The tilted periodic potential (Figure \ref{fig:Schematic}) is of particular interest for this project because it can be used to model biological motors \cite{Leibler1993,Magnasco1994}. One way to model Brownian motors of this class is to think of a reaction coordinate $x$ that describes the conformation of a molecule in a chemical reaction. An example of this is the reaction ATP $\rightleftharpoons$ ADP + P, where ATP is adenosine tri-phosphate, ADP is adenosine di-phosphate and P is a lone phosphate molecule. This reaction coordinate is then coupled to a mechanical coordinate $y$ so that each time that a reaction takes place, the motor will move in some way. Since this is a chemical reaction, the free energy will be decreased as time moves forwards. So a system that has a potential that is periodic in $x$ is not sufficient to describe this situation, we will need to ``tilt" the potential by adding a forcing $f$. The value of $f$ will depend on the rate of the reaction and the properties of the motor. It is shown in \cite{Magnasco1994} that this can be modeled by the two dimensional Smoluchowski equation. In this project we will only be modeling the one dimensional Somluchowski equation, so we will have to consider the case where $x$ and $y$ are tightly coupled. An example of tight coupling is the kinesin motor \cite{Leibler1993} that is used in cells to transport molecules. The kinesin motor is strongly bound to a track that it ``walks" along, on each step the motor will hydrolyze an ATP molecule using the reaction shown above. This reaction liberates about $12 k_B T$ Joules of energy that the motor uses to move forward. Kinesin motors are able to take many steps forward while taking few steps backwards all while falling off their track very infrequently \cite{BlockSM1990}. Therefore, we believe that they are a good candidate for study in this project.
 
 \subsection{The Smoluchowski equation coupled to the environment} \label{Smoluchowski}
 
@@ -160,7 +160,7 @@ Where
 \item{$D$ is the thermal diffusivity}
 \end{itemize}
 
-Equation \ref{eqn:Smoluchowski} is called the Smoluschowski equation \cite{KellerBustamante2000} and equation \ref{eqn:TemperatureEvolution} is the heat equation. These equations make our intuitive notions more precise, we see that the first term on the right hand side of the Smoluchowski equation (equation \ref{eqn:Smoluchowski}) is a drift term that is forced by our potential and that the second term contains a diffusion term that is scaled by our temperature. In fact, Figure \ref{fig:Schematic} was made by solving equation \ref{eqn:Smoluchowski} numerically. Likewise, equation \ref{eqn:TemperatureEvolution} also appeals to how our intuition of how the motor should effect its environment. The first term represents the heat flux being produced by the motor \cite{M.W.Jack2016}, while the second term represents the diffusion of temperature into the environment.
+Equation \ref{eqn:Smoluchowski} is called the Smoluschowski equation \cite{KellerBustamante2000} and equation \ref{eqn:TemperatureEvolution} is the heat equation. These equations make our intuitive notions more precise, we see that the first term on the right hand side of the Smoluchowski equation (equation \ref{eqn:Smoluchowski}) is a drift term that is forced by our potential and that the second term contains a diffusion term that is scaled by our temperature. In fact, Figures (\ref{fig:Schematic} and \ref{fig:TimeDependent}) were made by solving equation \ref{eqn:Smoluchowski} numerically. Likewise, equation \ref{eqn:TemperatureEvolution} also appeals to how our intuition of how the motor should effect its environment. The first term represents the heat flux being produced by the motor \cite{M.W.Jack2016}, while the second term represents the diffusion of temperature into the environment.
 
 %----------------------------------------------------------------------------------------
 %	PRELIMINARY RESULTS
