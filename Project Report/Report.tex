@@ -15,7 +15,7 @@
 %%% PAGE DIMENSIONS
 \usepackage{geometry} % to change the page dimensions
 \geometry{a4paper} % or letterpaper (US) or a5paper or....
-% \geometry{margin=2in} % for example, change the margins to 2 inches all round
+\geometry{margin=1.5in} % for example, change the margins to 2 inches all round
 % \geometry{landscape} % set up the page for landscape
 %   read geometry.pdf for detailed page layout information
 
@@ -84,9 +84,9 @@
 
 \section{Introduction}
 
-Brownian motors are devices that can use stored energy to create directed motion on a microscopic scale. As well as being able to crank a rotor in the in the fashion of a traditional motor, they are also able to pump ions against a gradient and translocate molecules. Brownian motors have been implemented in the laboratory, for example \cite{BlickleBechinger2011} created a stochastic heat engine by placing a single colloidal particle in a time dependent optical trap. Likewise, \cite{Pedro2014} placed a colloidal particle in an optical tweezer and drove the particle with explosive vaporization of the surrounding liquid, thus demonstrating a thermal mechanism for Brownian motors. Brownian motors also include devices that can transport molecules over a long distance, for example \cite{JoelBader1999} placed DNA molecules in a time dependent potential to transport the molecules. A very important class of Brownian motors is those motors where the energy in the power phase is given by a single chemical reaction. None of the above experiments fit this criteria, however these types of motors are ubiquitous in biology \cite{PhillipsQuakeMay2006, Magnasco1994}. Recently, thanks to improvements in imaging techniques, researchers have been able to make highly detailed images of these motors and their working components \cite{YiWeiChang2016}. In this project, we will be interested in creating a model for these biological motors, we want to create a model that can describe the biological motors broadly. Constructing a model of the full mechanics of a motor such as the one imaged in \cite{YiWeiChang2016} is beyond the scope of this project.
+Brownian motors are devices that can use stored energy to create directed motion on a microscopic scale. As well as being able to crank a rotor in the in the fashion of a traditional motor, they are also able to pump ions against a gradient and translocate molecules. Brownian motors have been implemented in the laboratory, for example \cite{BlickleBechinger2011} created a stochastic heat engine by placing a single colloidal particle in a time dependent optical trap. Likewise, Ref \cite{Pedro2014} placed a colloidal particle in an optical tweezer and drove the particle with explosive vaporization of the surrounding liquid, thus demonstrating a thermal mechanism for Brownian motors. Brownian motors also include devices that can transport molecules over a long distance, for example Ref \cite{JoelBader1999} placed DNA molecules in a time dependent potential to transport the molecules. A very important class of Brownian motors are those where the energy is supplied by a chemical reaction. None of the above experiments fit this criteria, however these types of motors are ubiquitous in biology \cite{PhillipsQuakeMay2006, Magnasco1994}. Recently, thanks to improvements in imaging techniques, researchers have been able to make highly detailed images of these motors and their working components \cite{YiWeiChang2016}.
 
-In this project, we will model Brownian motors using concepts from statistical mechanics. In particular, a Brownian motor will be modeled by a Brownian particle diffusing over its free energy landscape \cite{Reimann2001}, which in one dimension will be denoted by $x$. In the case of Brownian motion, it is natural to think of $x$ as a spatial coordinate, however in the case of Brownian motors this is not always the case. Often we will think of $x$ as a reaction coordinate for a chemical reaction, or in the case of a rotary motor, it could be the angle of the motor. We will think of a Brownian particle moving in titled periodic potential of the form $V(x) = f x + v_0(x)$ for some external forcing $f$ and some periodic function $v_0(x)$ with period $L$. This is shown schematically in figure \ref{fig:Schematic}, in this figure we have an ensemble of  particles with a certain known density. These particles are being pushed around by thermal vibrations in a random diffusive manner, however there is also a forcing on the particles that we describe using the potential.
+In this project, we will model Brownian motors using concepts from statistical mechanics. In particular, a Brownian motor will be modeled by a Brownian particle diffusing over its free energy landscape \cite{Reimann2001}, which in one dimension will be denoted by $x$. In the case of Brownian motion, it is natural to think of $x$ as a spatial coordinate, however in the case of Brownian motors this is not always the case. Often we will think of $x$ as a reaction coordinate for a chemical reaction, or in the case of a rotary motor, it could be the angle of the motor. We will think of a Brownian particle moving in titled periodic potential of the form $V(x) = f x + v_0(x)$ for some external forcing $f$ and some periodic function $v_0(x)$ with period $L$. This is shown schematically in figure \ref{fig:Schematic}, in this figure we have a particle with a certain known probability density. The particle is agitated by thermal vibrations in a random diffusive manner, however there is also a forcing on the particles that we describe using the potential. Different types of Brownian motors have been explored in the literature, including the Feynman ratchet \cite{Feynman1963}, the Landauer blowtorch \cite{Landauer1988}, thermal ratchets \cite{Pedro2014}, time dependent potentials \cite{JoelBader1999,BlickleBechinger2011} and tilted periodic potentials \cite{Leibler1993,Magnasco1994}. 
 
 \begin{figure}[tb]
 	\centering
@@ -97,48 +97,48 @@ In this project, we will model Brownian motors using concepts from statistical m
 	\subfigure{
 		\includegraphics[width=0.45\columnwidth]{SchematicConstantTempFinal}
 	}
-\caption{Schematic showing particles diffusing in a one dimensional periodic potential at a fixed temperature. We see that the particles tend to drift down the potential as they diffuse, this drift will be called the current $J$ which we will quantify in section \ref{Smoluchowski}.}
+\caption{Schematic showing the probability density of particles diffusing in a one dimensional periodic potential at a fixed temperature. We see that the particles tend to drift down the potential as they diffuse, this drift will be called the current $J$ which we will quantify in section \ref{Smoluchowski}.}
 \label{fig:Schematic}
 \end{figure}
 
-As we will see, the diffusion is increased by increasing the temperature and the drift is increased by increasing $f$. In some cases such as the Landauer blowtorch, the environment has a non uniform temperature held fixed by an external heat source \cite{Landauer1988}. With this in mind, we interpret Figure \ref{fig:Schematic} as follows: Brownian particles are subject to a given potential and are agitated by thermal noise, these agitations can give the particles the energy to move over barriers created by the potential. As one could imagine, these thermal interactions draw energy from the environment causing the temperature of the environment to change. Normally two simplifying assumptions are made at this point \cite{Reimann2001}, (i) that the thermal fluctuations created by the motor are very small compared to the thermal energy of the surrounding environment which is assumed to be effectively infinite, (ii) that when these temperature fluctuations occur, they diffuse away so rapidly that they do not need to be accounted for. In this project, we will question the second assumption in the case of Brownian motors. It is important to note that assumption (ii) has been questioned by Streater in the context of Brownian motion \cite{Streater1997, Streater1997a}. In these articles, Streater investigates Brownian motion from a microscopic view and then comes up with a mathematical model to describe Brownian particles that are thermally coupled to the environment, he then goes on to prove that the model is thermostatistically consistent in the sense that energy is conserved and that entropy increases. We will explore a similar set of equations and we will try to determine the length scales at which the thermal coupling is important.
-
-\subsection{Classes of Brownian motors} \label{BrownianMotorClasses}
-Here we will discuss different classes of Brownian motors and their relationship to this project.
-
-\subsubsection{Feynman ratchet and pawl}
-The Feynman ratchet was initially discussed in the Feynman lectures \cite{Feynman1963} and was at first thought to be able to achieve greater than Carnot efficiency, however closer analysis showed that this was not possible \cite{ParrondoEspanol1996}. The system works as follows, we have two boxes that are thermally insulated from one another that are connected by an axle that can rotate. In one box there is a ratchet and pawl connected to the axle that makes it easy for the axle to turn one way (say clockwise), but hard to turn the other way (anti-clockwise). In the other box the axle is connected to paddles that are being buffeted by a gas (which we call the bath). The motion of the paddles are random since they are dictated by Brownian motion, so the purpose of the ratchet and pawl is to rectify the Brownian motion of these paddles. One may think that this could be used to do work (for example by using the axle to lift a weight), however this is not true. The problem is that the ratchet and pawl themselves will also be subject to random motion so they will sometimes allow the axle to turn anti-clockwise. To model the Feynman ratchet, we will need two degrees of freedom \cite{M.W.Jack2016}, this is beyond the scope of this project because we will only simulate systems with one degree of freedom.
-
-\subsubsection{Landauer blowtorch}
-The Landauer blowtorch scheme involves a temperature that varies in space \cite{Landauer1988}. As noted earlier, in order for the particles in Figure \ref{fig:Schematic} to get out of potential wells, they will need to acquire thermal energy from the environment. Landauer's idea was to assist these particles by heating the environment at the hills that the particles need to climb. From this Landauer notes that \cite{Landauer1988} ``The relative occupation of competing states of local stability is not determined solely by the characteristics of the locally favored states, but depends on the noise along the whole path connecting the competing states." This means that when we are modeling our system, we need to take non-constant temperatures into account.
+%\subsection{Classes of Brownian motors} \label{BrownianMotorClasses}
+%Here we will discuss different classes of Brownian motors and their relationship to this project.
+%
+%\subsubsection{Feynman ratchet and pawl}
+%The Feynman ratchet was initially discussed in the Feynman lectures \cite{Feynman1963} and was at first thought to be able to achieve greater than Carnot efficiency, however closer analysis showed that this was not possible \cite{ParrondoEspanol1996}. The system works as follows, we have two boxes that are thermally insulated from one another that are connected by an axle that can rotate. In one box there is a ratchet and pawl connected to the axle that makes it easy for the axle to turn one way (say clockwise), but hard to turn the other way (anti-clockwise). In the other box the axle is connected to paddles that are being buffeted by a gas (which we call the bath). The motion of the paddles are random since they are dictated by Brownian motion, so the purpose of the ratchet and pawl is to rectify the Brownian motion of these paddles. One may think that this could be used to do work (for example by using the axle to lift a weight), however this is not true. The problem is that the ratchet and pawl themselves will also be subject to random motion so they will sometimes allow the axle to turn anti-clockwise. To model the Feynman ratchet, we will need two degrees of freedom \cite{M.W.Jack2016}, this is beyond the scope of this project because we will only simulate systems with one degree of freedom.
+%
+%\subsubsection{Landauer blowtorch}
+%The Landauer blowtorch scheme involves a temperature that varies in space \cite{Landauer1988}. As noted earlier, in order for the particles in Figure \ref{fig:Schematic} to get out of potential wells, they will need to acquire thermal energy from the environment. Landauer's idea was to assist these particles by heating the environment at the hills that the particles need to climb. From this Landauer notes that \cite{Landauer1988} ``The relative occupation of competing states of local stability is not determined solely by the characteristics of the locally favored states, but depends on the noise along the whole path connecting the competing states." This means that when we are modeling our system, we need to take non-constant temperatures into account.
 
 % \subsubsection{Thermal ratchet}
 % \cite{Pedro2014}
-
-\subsubsection{Time dependent potentials}
-
-\begin{figure}[tb]
-	\centering
-	\subfigure{%
-		\includegraphics[width=0.45\columnwidth]{TimeDependentInit}
-	}
-\quad
-	\subfigure{
-		\includegraphics[width=0.45\columnwidth]{TimeDependentLater}
-	}
-	\subfigure{
-		\includegraphics[width=0.45\columnwidth]{TimeDependentFinal}
-	}
-\caption{Schematic of particles diffusing in a time dependent potential, the blue line represents the potential and the black line represents the particle density. In (a) the particles are stuck in the first potential well, a certain time later the electric field is turned off and the particles diffuse freely as shown in part (b). When the potential is turned back on again, a large number of the particles will get stuck in the well to the left of the first one thus creating a net current to the left.}
-\label{fig:TimeDependent}
-\end{figure}
-
-Both \cite{JoelBader1999} and \cite{BlickleBechinger2011} are examples of experiments where a time dependent potential was used to do work on molecules. In \cite{JoelBader1999} DNA molecules are placed in a time dependent ratchet potential. When the electric field is on it creates a saw tooth shaped potential as shown in Figure \ref{fig:TimeDependent}, when the electric field is on, the molecules will go to the bottom of the wells and get stuck there. When the electric field is turned off however, the molecules will diffuse freely so that when the potential is turned back on at a later time, a large number of the molecules will then get trapped in the well to the left of where they were originally. Thus there is a net drift to the left.
-
-\subsubsection{Tilted periodic potentials}
-The tilted periodic potential (Figure \ref{fig:Schematic}) is of particular interest for this project because it can be used to model biological motors \cite{Leibler1993,Magnasco1994}. One way to model Brownian motors of this class is to think of a reaction coordinate $x$ that describes the conformation of a molecule in a chemical reaction. An example of this is the reaction ATP $\rightleftharpoons$ ADP + P, where ATP is adenosine tri-phosphate, ADP is adenosine di-phosphate and P is a lone phosphate molecule. This reaction coordinate is then coupled to a mechanical coordinate $y$ so that each time that a reaction takes place, the motor will move in some way. Since this is a chemical reaction, the free energy will be decreased as time moves forwards. So a system that has a potential that is periodic in $x$ is not sufficient to describe this situation, we will need to ``tilt" the potential by adding a forcing $f$. The value of $f$ will depend on the rate of the reaction and the properties of the motor. It is shown in \cite{Magnasco1994} that this can be modeled by the two dimensional Smoluchowski equation. In this project we will only be modeling the one dimensional Somluchowski equation, so we will have to consider the case where $x$ and $y$ are tightly coupled. An example of tight coupling is the kinesin motor \cite{Leibler1993} that is used in cells to transport molecules. The kinesin motor is strongly bound to a track that it ``walks" along, on each step the motor will hydrolyze an ATP molecule using the reaction shown above. This reaction liberates about $12 k_B T$ Joules of energy that the motor uses to move forward. Kinesin motors are able to take many steps forward while taking few steps backwards all while falling off their track very infrequently \cite{BlockSM1990}. Therefore, we believe that they are a good candidate for study in this project.
+%
+%\subsubsection{Time dependent potentials}
+%
+%\begin{figure}[tb]
+%	\centering
+%	\subfigure{%
+%		\includegraphics[width=0.45\columnwidth]{TimeDependentInit}
+%	}
+%\quad
+%	\subfigure{
+%		\includegraphics[width=0.45\columnwidth]{TimeDependentLater}
+%	}
+%	\subfigure{
+%		\includegraphics[width=0.45\columnwidth]{TimeDependentFinal}
+%	}
+%\caption{Schematic of particles diffusing in a time dependent potential, the blue line represents the potential and the black line represents the particle density. In (a) the particles are stuck in the first potential well, a certain time later the electric field is turned off and the particles diffuse freely as shown in part (b). When the potential is turned back on again, a large number of the particles will get stuck in the well to the left of the first one thus creating a net current to the left.}
+%\label{fig:TimeDependent}
+%\end{figure}
+%
+%Both \cite{JoelBader1999} and \cite{BlickleBechinger2011} are examples of experiments where a time dependent potential was used to do work on molecules. In \cite{JoelBader1999} DNA molecules are placed in a time dependent ratchet potential. When the electric field is on it creates a saw tooth shaped potential as shown in Figure \ref{fig:TimeDependent}, when the electric field is on, the molecules will go to the bottom of the wells and get stuck there. When the electric field is turned off however, the molecules will diffuse freely so that when the potential is turned back on at a later time, a large number of the molecules will then get trapped in the well to the left of where they were originally. Thus there is a net drift to the left.
+%
+%\subsubsection{Tilted periodic potentials}
+The tilted periodic potential (Figure \ref{fig:Schematic}) is of particular interest for this project because it can be used to model biological motors \cite{Leibler1993,Magnasco1994}. One way to model Brownian motors of this class is to think of a reaction coordinate $x$ that describes the conformation of a molecule in a chemical reaction. An example of this is the reaction ATP $\rightleftharpoons$ ADP + P, where ATP is adenosine tri-phosphate, ADP is adenosine di-phosphate and P is a lone phosphate molecule. This reaction coordinate is then coupled to a mechanical coordinate $y$ so that each time that a reaction takes place, the motor will move in some way. Since this is a chemical reaction, the free energy will be decreased as time moves forwards. So a system that has a potential that is periodic in $x$ is not sufficient to describe this situation, we will need to ``tilt" the potential by adding a forcing $f$. The value of $f$ will depend on the $\Delta G$ of the reaction (i.e. how far out of equilibrium the reaction is). It is shown in \cite{Magnasco1994} that this can be modeled by the two dimensional Smoluchowski equation. In this project we will only be modeling the one dimensional Somluchowski equation, so we will have to consider the case where $x$ and $y$ are tightly coupled. An example of tight coupling is the kinesin motor \cite{Leibler1993} that is used in cells to transport molecules. The kinesin motor is strongly bound to a track that it ``walks" along, on each step the motor will hydrolyze an ATP molecule using the reaction shown above. This reaction liberates about $12 k_B T$ Joules of energy that the motor uses to move forward. Kinesin motors are able to take many steps forward while taking few steps backwards all while falling off their track very infrequently \cite{BlockSM1990}.
 
 \subsection{The Smoluchowski equation coupled to the environment} \label{Smoluchowski}
+
+As we will see, the diffusion is increased by increasing the temperature and the drift is increased by increasing $f$. In some cases such as the Landauer blowtorch, the environment has a non uniform temperature held fixed by an external heat source \cite{Landauer1988}. With this in mind, we interpret Figure \ref{fig:Schematic} as follows: Brownian particles are subject to a given potential and are agitated by thermal noise, these agitations can give the particles the energy to move over barriers created by the potential. As one could imagine, these thermal interactions draw energy from the environment causing the temperature of the environment to change. Normally two simplifying assumptions are made at this point \cite{Reimann2001}, (i) that the thermal fluctuations created by the motor are very small compared to the thermal energy of the surrounding environment which is assumed to be effectively infinite, (ii) that when these temperature fluctuations occur, they diffuse away so rapidly that they do not need to be accounted for. In this project, we will question the second assumption in the case of Brownian motors. Assumption (ii) has also been questioned previously by Streater in the context of Brownian motion \cite{Streater1997, Streater1997a}. In these articles, Streater investigates Brownian motion from a microscopic view and then comes up with a mathematical model to describe Brownian particles that are thermally coupled to the environment, he then goes on to prove that the model is thermostatistically consistent in the sense that energy is conserved and that entropy increases. We will explore a similar set of equations in the context of Brownian motors and we will try to determine the length scales at which the thermal coupling is important.
 
 The main part of this project will be trying to understand the behavior of the coupled partial differential equations given by:
 
@@ -160,7 +160,7 @@ Where
 \item{$D$ is the thermal diffusivity}
 \end{itemize}
 
-Equation \ref{eqn:Smoluchowski} is called the Smoluschowski equation \cite{KellerBustamante2000} and equation \ref{eqn:TemperatureEvolution} is the heat equation. These equations make our intuitive notions more precise, we see that the first term on the right hand side of the Smoluchowski equation (equation \ref{eqn:Smoluchowski}) is a drift term that is forced by our potential and that the second term contains a diffusion term that is scaled by our temperature. In fact, Figures (\ref{fig:Schematic} and \ref{fig:TimeDependent}) were made by solving equation \ref{eqn:Smoluchowski} numerically. Likewise, equation \ref{eqn:TemperatureEvolution} also appeals to how our intuition of how the motor should effect its environment. The first term represents the heat flux being produced by the motor \cite{M.W.Jack2016}, while the second term represents the diffusion of temperature into the environment.
+Equation (\ref{eqn:Smoluchowski}) is called the Smoluschowski equation \cite{KellerBustamante2000} and equation \ref{eqn:TemperatureEvolution} is the heat equation. These equations make our intuitive notions more precise, we see that the first term on the right hand side of the Smoluchowski equation (equation \ref{eqn:Smoluchowski}) is a drift term that is forced by our potential and that the second term contains a diffusion term that is scaled by our temperature. In fact, Figure \ref{fig:Schematic} was made by solving equation (\ref{eqn:Smoluchowski} )numerically. Likewise, equation (\ref{eqn:TemperatureEvolution}) also appeals to how our intuition of how the motor should effect its environment. The first term represents the heat flux being produced by the motor \cite{M.W.Jack2016}, while the second term represents the diffusion of temperature into the environment.
 
 %----------------------------------------------------------------------------------------
 %	PRELIMINARY RESULTS
@@ -169,7 +169,7 @@ Equation \ref{eqn:Smoluchowski} is called the Smoluschowski equation \cite{Kelle
 \section{Preliminary results}
  In order to see how these equations behave with time, we have to resort to numerical methods (see section \ref{numerics}). However we note that for a given potential there will be a stationary solution that we will refer to as the ``steady state'', given periodic boundary conditions, we will give an analytical form for this steady state.
 
-\subsection{Steady state solution}
+\subsection{Steady state solution} \label{SteadyState}
 In the steady state, we have:
 
 \begin{eqnarray}
@@ -177,7 +177,7 @@ In the steady state, we have:
 \frac{\partial T(x, t)}{\partial t} &=& 0 \ = \ \frac{\partial}{\partial x} \left ( -\kappa q(x, t) + D \frac{\partial T(x, t)}{\partial x} \right ) \label{eqn:TemperatureSteady}
 \end{eqnarray}
 
-Suppose that we now impose periodic boundary conditions such that $P(0, t) = P(L, t)$,  $J(0, t) = J(L, t)$ and $T(0, t) = T_0 = T(L, t)$ where $L$ is the size of one period and $T_0$ is the temperature of the bath (room temperature). Section 5.2 of \cite{Gardiner2009} gives the steady state current as:
+Suppose that we have periodic boundary conditions such that $P(x = 0) = P(x = L)$,  $J(x = 0) = J(x = L)$ and $T(x = 0) = T_0 = T(x = L)$ where $L$ is the size of one period and $T_0$ is the temperature of the bath (room temperature). Section 5.2 of \cite{Gardiner2009} gives the steady state current as:
 
 \begin{equation}
 J_s = \left [\frac{2 k_B T(L)}{\psi(L)} - \frac{2 k_B T(0)}{\psi(0)}  \right] P_s(0) \left [\int_0^L dx'/\psi(x') \right]^{-1}
@@ -216,7 +216,7 @@ and
 T(x) = T(0) + \frac{\kappa J_s}{D} \int_0^x \partial_x V dx - \frac{S_s}{D}x = T(0) + \frac{\kappa J_s}{D} (v_0(x) - v_0(0)) \label{eqn:SteadyTemperature}
 \end{equation}
 
-It would seem that one should be able to calculate the steady state current and density directly from the equations shown above. However, we notice that the constants $J_s$ and $P_s(0)$ have to satisfy equations \ref{eqn:SteadyCurrent}, \ref{eqn:SteadyDensity} and \ref{eqn:SteadyTemperature} while also satisfying the normalization condition $\int_0^L P(x) dx = 1$. To do this we define an objective function given by
+It would seem that one should be able to calculate the steady state current and density directly from the equations shown above. However, we notice that the constants $J_s$ and $P_s(0)$ have to satisfy equations (\ref{eqn:SteadyCurrent}), (\ref{eqn:SteadyDensity}) and (\ref{eqn:SteadyTemperature}) while also satisfying the normalization condition $\int_0^L P(x) dx = 1$. To do this we define an objective function given by
 
 \begin{equation}
 obj(J_s, P_s(0)) = \left (J_s - \left [\frac{2 k_B T(L)}{\psi(L)} - \frac{2 k_B T(0)}{\psi(0)}  \right] P_s(0) \left [\int_0^L dx'/\psi(x') \right]^{-1} \right)^2  \label{eqn:Objective}
@@ -265,7 +265,7 @@ Using this equation we make a matrix that has the terms multiplying $P_{k-1}^n$ 
 \left (I - \frac{1}{2} A \right) P_{dis}(x, t + \Delta t) \approx \left(I + \frac{1}{2}A \right)P_{dis}(x, t)
 \end{equation}
 
-where $P_{dis}$ acknowledges that $P$ has been discretized. Likewise, equation \ref{eqn:TemperatureEvolution} can be discretized to give
+where $P_{dis}$ acknowledges that $P$ has been discretized. Likewise, equation (\ref{eqn:TemperatureEvolution}) can be discretized to give
 
 \begin{multline}
 T^{n+1}_j \approx T^n_{j-1} \frac{\Delta t D}{2 \Delta^2} - T^n_j \left[1 + \frac{\Delta t \kappa k_B}{4 \Delta^2}(V_{j+1} - V_{j-1})(P^n_{j+1} - P^n_{j-1}) + \frac{\Delta t D}{\Delta^2} \right] + \\
@@ -285,7 +285,7 @@ Fortunately the matrices that we are dealing with are very sparse, so the progra
 %
 %Where $b$ is a vector full of zeros, but with constant entries in its first and last elements. These constants ensure the boundary condition that $P(0) = P(L)$, a similar procedure is performed to find the temperature in the steady state.
 \subsubsection{Stochastic methods}
-We can simulate the path of a single particle by using stochastic methods to solve the Langevin equation. By simulating many times we should be able to recover the distributions that were found through finite differencing. When simulating the system  at the microscopic level, equation \ref{eqn:Smoluchowski} becomes \cite{Reimann2001}
+We can simulate the path of a single particle by using stochastic methods to solve the Langevin equation. By simulating many times we should be able to recover the distributions that were found through finite differencing. When simulating the system  at the microscopic level, equation (\ref{eqn:Smoluchowski}) becomes \cite{Reimann2001}
 
 \begin{equation}
 \gamma \dot{x}(t) = -V'(x(t)) + \xi(t)
@@ -297,12 +297,12 @@ Where $\xi(t)$ is called Gaussian white noise of zero mean and has the essential
 x(t_{n+1}) = x(t_n) - \Delta t [V'(x(t_n)) + \xi_n]/\gamma
 \end{equation}
 
-This equation can be simulated numerically, or can be used to derive Equation \ref{eqn:Smoluchowski} by taking the limit $\Delta t \to 0$ as is done in Appendix B of \cite{Reimann2001}. In the results section, we will show some results of these numerical simulations.
+This equation can be simulated numerically, or can be used to derive Equation (\ref{eqn:Smoluchowski}) by taking the limit $\Delta t \to 0$ as is done in Appendix B of \cite{Reimann2001}. In the results section, we will show some results of these numerical simulations.
 
 %----------------------------------------------------------------------------------------
 %	RESULTS
 %----------------------------------------------------------------------------------------
-\section{Results}
+\subsubsection{Numerical results}
 Here we will show some results of finite differencing and of the stochastic methods. Figure~\ref{fig:FiniteDifferences} shows a simulation of a particle density for a certain amount of time. In this figure we see that the density tends to accumulate into the wells and that wherever the density has a sharp peak, it will interact with the environment thermally. The strength of these thermal interactions depends on $\kappa$ and for a non vanishing $D$ they tend to diffuse away into a smoother shape. If we allow these simulations to run for long enough, then eventually we will reach the predicted steady state.
 
 \begin{figure}[tb]
@@ -336,8 +336,11 @@ Meanwhile, figure \ref{fig:Stochastic} shows a similar situation that has been s
 %------------------------------------------------
 
 %----------------------------------------------------------------------------------------
-%	DISCUSSION
+%	OUTLOOK
 %----------------------------------------------------------------------------------------
+
+\section{Outlook}
+The main goal of this project is to see how thermal interactions with the environment affect the properties of Brownian motors. To do this we will create a program that can find the probability current $J_s$ in the steady state as discussed in section \ref{SteadyState}. As mentioned, this involves solving a constrained optimization problem, this program has already been implemented in Julia while using JuMP to call out to an external solver. We also want to be able to solve this problem by simulating the system forward in time until it reaches its steady state, this is only partially implemented. As well as this we would like to be explore the dynamical properties of the system numerically and stochastically, the code for this exploration is only partially implemented. Finally, we would like to be able to determine at what length scales the thermal coupling becomes important for the operation of the motor.
 
 %------------------------------------------------
 
