@@ -4,7 +4,7 @@
 % This is a simple template for a LaTeX document using the "article" class.
 % See "book", "report", "letter" for other types of document.
 
-\documentclass[11pt]{article} % use larger type; default would be 10pt
+\documentclass[11pt]{report} % use larger type; default would be 10pt
 
 \usepackage[utf8]{inputenc} % set input encoding (not needed with XeLaTeX)
 
@@ -31,7 +31,7 @@
 \usepackage{verbatim} % adds environment for commenting out blocks of text & for better verbatim
 \usepackage{subfigure} % make it possible to include more than one captioned figure/table in a single float
 \usepackage{cleveref}  % For referencing more than one equation at at time
-\usepackage[colorlinks=true,urlcolor=blue,citecolor=blue,linkcolor=blue]{hyperref} % for hyper referencing
+\usepackage[colorlinks=true,urlcolor=blue,citecolor=blue,linkcolor=black]{hyperref} % for hyper referencing
 \usepackage{amsmath}
 \usepackage[numbers,sort&compress]{natbib}  % Make a group of citations appear in order in the document
 % These packages are all incorporated in the memoir class to one degree or another...
@@ -89,25 +89,27 @@
 
 \newpage
 
-\tableofcontents
-
 %----------------------------------------------------------------------------------------
 %	ABSTRACT
 %----------------------------------------------------------------------------------------
 %
-%\section*{Abstract} % This section will not appear in the table of contents due to the star (\section*)
-%
-%Brownian motors are capable of converting chemical energy directly into work and are crucial for many biological processes. The purpose of this project is to consider the motors thermal interaction with  the environment, we want to know whether these thermal interactions will change the efficiency of the Brownian motors as compared to calculations made without considering coupling to the environment.
+\begin{center}
+\section*{Abstract} % This section will not appear in the table of contents due to the star (\section*)
+\end{center}
+
+Brownian motors are capable of converting chemical energy directly into work and are crucial for many biological processes. The purpose of this project is to consider the motors thermal interaction with  the environment, we want to know whether these thermal interactions will change the properties of the Brownian motors as compared to calculations made without considering coupling to the environment.
 
 %----------------------------------------------------------------------------------------
 
 \newpage % Start the article content on the second page, remove this if you have a longer abstract that goes onto the second page
 
+\tableofcontents
+
 %----------------------------------------------------------------------------------------
 %	INTRODUCTION
 %----------------------------------------------------------------------------------------
 
-\section{Introduction}
+\chapter{Introduction}
 
 Brownian motors are devices that can use stored energy to create directed motion on a microscopic scale. As well as being able to crank a rotor in the in the fashion of a traditional motor, they are also able to pump ions against a gradient and translocate molecules. Brownian motors have been implemented in the laboratory, for example Ref \cite{BlickleBechinger2011} created a stochastic heat engine by placing a single colloidal particle in a time dependent optical trap. Likewise, Ref \cite{Pedro2014} placed a colloidal particle in an optical tweezer and drove the particle with explosive vaporization of the surrounding liquid, thus demonstrating a thermal mechanism for Brownian motors. Brownian motors also include devices that can transport molecules over a long distance, for example Ref \cite{JoelBader1999} placed DNA molecules in a time dependent potential to transport the molecules. A very important class of Brownian motors are those where the energy is supplied by a chemical reaction. None of the above experiments fit this criteria, however these types of motors are ubiquitous in biology \cite{PhillipsQuakeMay2006, Magnasco1994}. Recently, thanks to improvements in imaging techniques, researchers have been able to make highly detailed images of these motors and their working components \cite{YiWeiChang2016}.
 
@@ -126,19 +128,19 @@ In this project, we will model Brownian motors using concepts from statistical m
 \label{fig:Schematic}
 \end{figure}
 
-\subsection{Classes of Brownian motors} \label{BrownianMotorClasses}
+\section{Classes of Brownian motors} \label{BrownianMotorClasses}
 Here we will discuss different classes of Brownian motors and their relationship to this project.
 
-\subsubsection{Feynman ratchet and pawl}
+\subsection{Feynman ratchet and pawl}
 The Feynman ratchet was initially discussed in the Feynman lectures \cite{Feynman1963} and was at first thought to be able to achieve greater than Carnot efficiency, however closer analysis showed that this was not possible \cite{ParrondoEspanol1996}. The system works as follows, we have two boxes that are thermally insulated from one another that are connected by an axle that can rotate. In one box there is a ratchet and pawl connected to the axle that makes it easy for the axle to turn one way (say clockwise), but hard to turn the other way (anti-clockwise). In the other box the axle is connected to paddles that are being buffeted by a gas (which we call the bath). The motion of the paddles are random since they are dictated by Brownian motion, so the purpose of the ratchet and pawl is to rectify the Brownian motion of these paddles. One may think that this could be used to do work (for example by using the axle to lift a weight), however this is not true. The problem is that the ratchet and pawl themselves will also be subject to random motion so they will sometimes allow the axle to turn anti-clockwise. To model the Feynman ratchet, we will need two degrees of freedom \cite{M.W.Jack2016}, this is beyond the scope of this project because we will only simulate systems with one degree of freedom.
 
-\subsubsection{Landauer blowtorch}
+\subsection{Landauer blowtorch}
 The Landauer blowtorch scheme involves a temperature that varies in space \cite{Landauer1988}. As noted earlier, in order for the particles in Figure \ref{fig:Schematic} to get out of potential wells, they will need to acquire thermal energy from the environment. Landauer's idea was to assist these particles by heating the environment at the hills that the particles need to climb. From this Landauer notes that \cite{Landauer1988} ``The relative occupation of competing states of local stability is not determined solely by the characteristics of the locally favored states, but depends on the noise along the whole path connecting the competing states." This means that when we are modeling our system, we need to take non-constant temperatures into account.
 
-\subsubsection{Thermal ratchet}
+\subsection{Thermal ratchet}
 \cite{Pedro2014}
 
-\subsubsection{Time dependent potentials}
+\subsection{Time dependent potentials}
 
 \begin{figure}[tb]
 	\centering
@@ -156,12 +158,12 @@ The Landauer blowtorch scheme involves a temperature that varies in space \cite{
 \label{fig:TimeDependent}
 \end{figure}
 
-Both \cite{JoelBader1999} and \cite{BlickleBechinger2011} are examples of experiments where a time dependent potential was used to do work on molecules. In \cite{JoelBader1999} DNA molecules are placed in a time dependent ratchet potential. When the electric field is on it creates a saw tooth shaped potential as shown in Figure \ref{fig:TimeDependent}, when the electric field is on, the molecules will go to the bottom of the wells and get stuck there. When the electric field is turned off however, the molecules will diffuse freely so that when the potential is turned back on at a later time, a large number of the molecules will then get trapped in the well to the left of where they were originally. Thus there is a net drift to the left.
+Both \cite{BlickleBechinger2011} \cite{JoelBader1999} are examples of experiments where a time dependent potential was used to do work on molecules. In \cite{JoelBader1999} DNA molecules are placed in a time dependent ratchet potential. When the electric field is on it creates a saw tooth shaped potential as shown in Figure \ref{fig:TimeDependent}, when the electric field is on, the molecules will go to the bottom of the wells and get stuck there. When the electric field is turned off however, the molecules will diffuse freely so that when the potential is turned back on at a later time, a large number of the molecules will then get trapped in the well to the left of where they were originally. Thus there is a net drift to the left.
 
-\subsubsection{Tilted periodic potentials}
+\subsection{Tilted periodic potentials}
 The tilted periodic potential (Figure \ref{fig:Schematic}) is of particular interest for this project because it can be used to model biological motors \cite{Leibler1993,Magnasco1994}. One way to model Brownian motors of this class is to think of a reaction coordinate $x$ that describes the conformation of a molecule in a chemical reaction. An example of this is the reaction ATP $\rightleftharpoons$ ADP + P, where ATP is adenosine tri-phosphate, ADP is adenosine di-phosphate and P is a lone phosphate molecule. This reaction coordinate is then coupled to a mechanical coordinate $y$ so that each time that a reaction takes place, the motor will move in some way. Since this is a chemical reaction, the free energy will be decreased as time moves forwards. So a system that has a potential that is periodic in $x$ is not sufficient to describe this situation, we will need to ``tilt" the potential by adding a forcing $f$. The value of $f$ will depend on the $\Delta G$ of the reaction (i.e. how far out of equilibrium the reaction is). It is shown in \cite{Magnasco1994} that this can be modeled by the two dimensional Smoluchowski equation. In this project we will only be modeling the one dimensional Somluchowski equation, so we will have to consider the case where $x$ and $y$ are tightly coupled. An example of tight coupling is the kinesin motor \cite{Leibler1993} that is used in cells to transport molecules. The kinesin motor is strongly bound to a track that it ``walks" along, on each step the motor will hydrolyze an ATP molecule using the reaction shown above. This reaction liberates about $12 k_B T$ Joules of energy that the motor uses to move forward. Kinesin motors are able to take many steps forward while taking few steps backwards all while falling off their track very infrequently \cite{BlockSM1990}.
 
-\subsection{The Smoluchowski equation coupled to the environment} \label{Smoluchowski}
+\section{The Smoluchowski equation coupled to the environment} \label{Smoluchowski}
 
 As we will see, the diffusion is increased by increasing the temperature and the drift is increased by increasing $f$. In some cases such as the Landauer blowtorch, the environment has a non uniform temperature held fixed by an external heat source \cite{Landauer1988}. With this in mind, we interpret Figure \ref{fig:Schematic} as follows: Brownian particles are subject to a given potential and are agitated by thermal noise, these agitations can give the particles the energy to move over barriers created by the potential. As one could imagine, these thermal interactions draw energy from the environment causing the temperature of the environment to change. Normally two simplifying assumptions are made at this point \cite{Reimann2001}, (i) that the thermal fluctuations created by the motor are very small compared to the thermal energy of the surrounding environment which is assumed to be effectively infinite, (ii) that when these temperature fluctuations occur, they diffuse away so rapidly that they do not need to be accounted for. In this project, we will question the second assumption in the case of Brownian motors. Assumption (ii) has also been questioned previously by Streater in the context of Brownian motion \cite{Streater1997, Streater1997a}. In these articles, Streater investigates Brownian motion from a microscopic view and then comes up with a mathematical model to describe Brownian particles that are thermally coupled to the environment, he then goes on to prove that the model is thermostatistically consistent in the sense that energy is conserved and that entropy increases. We will explore a similar set of equations in the context of Brownian motors and we will try to determine the length scales at which the thermal coupling is important.
 
@@ -191,10 +193,10 @@ Equation (\ref{eqn:Smoluchowski}) is called the Smoluschowski equation \cite{Kel
 %	RESULTS
 %----------------------------------------------------------------------------------------
 
-\section{Methods}
+\chapter{Methods}
  In order to see how these equations behave with time, we have to resort to numerical methods (see section \ref{numerics}). However we note that for a given potential there will be a stationary solution that we will refer to as the ``steady state'', given periodic boundary conditions, we will give an analytical form for this steady state.
 
-\subsection{Steady state solution} \label{SteadyState}
+\section{Steady state solution} \label{SteadyState}
 In the steady state, we have:
 
 \begin{eqnarray}
@@ -253,9 +255,9 @@ And we minimize this objective function with respect to $J_s$ and $P_s(0)$ under
 %	NUMERICS
 %----------------------------------------------------------------------------------------
 
-\subsection{Numerical simulation} \label{numerics}
+\section{Numerical simulation} \label{numerics}
 
-\subsubsection{Finite differences}
+\subsection{Finite differences}
 The one dimensional equation can be solved on a discrete grid by using the finite differences method, the main idea behind this strategy is to approximate derivatives with equations of the form:
 
 \begin{equation}
@@ -309,7 +311,7 @@ Fortunately the matrices that we are dealing with are very sparse, so the progra
 %\end{equation}
 %
 %Where $b$ is a vector full of zeros, but with constant entries in its first and last elements. These constants ensure the boundary condition that $P(0) = P(L)$, a similar procedure is performed to find the temperature in the steady state.
-\subsubsection{Stochastic methods}
+\subsection{Stochastic methods}
 We can simulate the path of a single particle by using stochastic methods to solve the Langevin equation. By simulating many times we should be able to recover the distributions that were found through finite differencing. When simulating the system  at the microscopic level, equation (\ref{eqn:Smoluchowski}) becomes \cite{Reimann2001}
 
 \begin{equation}
@@ -327,7 +329,7 @@ This equation can be simulated numerically, or can be used to derive Equation (\
 %----------------------------------------------------------------------------------------
 %	RESULTS
 %----------------------------------------------------------------------------------------
-\section{Results}
+\chapter{Results}
 Here we will show some results of finite differencing and of the stochastic methods. Figure~\ref{fig:FiniteDifferences} shows a simulation of a particle density for a certain amount of time. In this figure we see that the density tends to accumulate into the wells and that wherever the density has a sharp peak, it will interact with the environment thermally. The strength of these thermal interactions depends on $\kappa$ and for a non vanishing $D$ they tend to diffuse away into a smoother shape. If we allow these simulations to run for long enough, then eventually we will reach the predicted steady state.
 
 \begin{figure}[tb]
