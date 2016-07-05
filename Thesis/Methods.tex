@@ -1,0 +1,131 @@
+In order to see how these equations behave with time, we have to resort to numerical methods (see section \ref{numerics}). However we note that for a given potential there will be a stationary solution that we will refer to as the ``steady state'', given periodic boundary conditions, we will give an analytical form for this steady state.
+
+\section{Steady state solution} \label{SteadyState}
+In the steady state, we have:
+
+\begin{eqnarray}
+\frac{\partial P(x, t)}{\partial t} &=&  0 \ = \ \frac{\partial J}{\partial x} \label{eqn:SmoluchowskiSteady} \\
+\frac{\partial T(x, t)}{\partial t} &=& 0 \ = \ \frac{\partial}{\partial x} \left ( -\kappa q(x, t) + D \frac{\partial T(x, t)}{\partial x} \right ) \label{eqn:TemperatureSteady}
+\end{eqnarray}
+
+Suppose that we have periodic boundary conditions such that $P(x = 0) = P(x = L)$,  $J(x = 0) = J(x = L)$ and $T(x = 0) = T_0 = T(x = L)$ where $L$ is the size of one period and $T_0$ is the temperature of the bath (room temperature). Section 5.2 of \cite{Gardiner2009} gives the steady state current as:
+
+\begin{equation}
+J_s = \left [\frac{2 k_B T(L)}{\psi(L)} - \frac{2 k_B T(0)}{\psi(0)}  \right] P_s(0) \left [\int_0^L dx'/\psi(x') \right]^{-1}
+\label{eqn:SteadyCurrent}
+\end{equation}
+
+with $\psi(x) \equiv \exp[-\int_0^x dx' \frac{\partial_x V(x')}{2 k_B T(x')}]$. Meanwhile, the density is:
+
+\begin{equation}
+P_s(x) = P_s(0) \left [\frac{\int_0^x \frac{dx'}{\psi(x')} \frac{T(L)}{\psi(L)} + \int_x^L \frac{dx'}{\psi(x')} \frac{T(0)}{\psi(0)} }{\frac{T(x)}{\psi(x)} \int_0^L \frac{dx'}{\psi(x')} } \right]
+\label{eqn:SteadyDensity}
+\end{equation}
+In this case, $J_s$ is a constant and $P_s(0)$ is also a constant. Assuming that we know these constants it is now possible to find the steady state temperature. We have:
+
+\begin{equation}
+\frac{\partial T}{\partial t} = 0 =  \partial_x S_s = \kappa \partial_x V J_s - D \frac{\partial T}{\partial x}
+\end{equation}
+Rearranging, we find
+\begin{equation}
+\frac{\partial T}{\partial x} = \frac{\kappa \partial_x V J_s - \partial_x S_s}{D}
+\end{equation}
+Integrating both sides:
+\begin{equation}
+\int_0^L \frac{\partial T}{\partial x} dx = T(L) - T(0) = 0 = \frac{\kappa J_s}{D} \int_0^L \partial_x V dx - \frac{S_s}{D}L
+\end{equation}
+
+Noticing that $V(x) = v_0(x) + f x$, where $v_0(0) = v_0(L)$, we get $\int_0^L \partial_x V dx = f L$, so
+
+\begin{equation}
+S_s = \kappa J_s f
+\end{equation}
+
+and
+
+\begin{equation}
+T(x) = T(0) + \frac{\kappa J_s}{D} \int_0^x \partial_x V dx - \frac{S_s}{D}x = T(0) + \frac{\kappa J_s}{D} (v_0(x) - v_0(0)) \label{eqn:SteadyTemperature}
+\end{equation}
+
+It would seem that one should be able to calculate the steady state current and density directly from the equations shown above. However, we notice that the constants $J_s$ and $P_s(0)$ have to satisfy equations (\ref{eqn:SteadyCurrent}), (\ref{eqn:SteadyDensity}) and (\ref{eqn:SteadyTemperature}) while also satisfying the normalization condition $\int_0^L P(x) dx = 1$. To do this we define an objective function given by
+
+\begin{equation}
+obj(J_s, P_s(0)) = \left (J_s - \left [\frac{2 k_B T(L)}{\psi(L)} - \frac{2 k_B T(0)}{\psi(0)}  \right] P_s(0) \left [\int_0^L dx'/\psi(x') \right]^{-1} \right)^2  \label{eqn:Objective}
+\end{equation}
+
+And we minimize this objective function with respect to $J_s$ and $P_s(0)$ under the constraint $\int_0^L P(x) dx = 1$. Another way to do this is to guess a steady state density and temperature and use finite differencing to simulate forward in time until the transients die out.
+
+%----------------------------------------------------------------------------------------
+%	NUMERICS
+%----------------------------------------------------------------------------------------
+
+\section{Numerical simulation} \label{numerics}
+
+\subsection{Finite differences}
+The one dimensional equation can be solved on a discrete grid by using the finite differences method, the main idea behind this strategy is to approximate derivatives with equations of the form:
+
+\begin{equation}
+\frac{d f}{d x} \approx \frac{f(x - h) - f(x + h)}{2h}
+\end{equation}
+
+for some small $h$. The first thing to notice here is that our equation is ``flux conservative'', i.e. it can be written in the form
+$$ \frac{\partial P}{\partial t} = \frac{\partial J(x)}{\partial x} $$
+In our case, $J(x) = \gamma^{-1} \left ( \frac{\partial V}{\partial x} P + k_B \frac{\partial}{\partial x} [T P] \right ) $. Now we will discretize space and time, we will split time into $N$ discrete times  $T_1, T_2, ..., T_n, ..., T_N$ and space into $K$ discrete points $x_1, x_2, ..., x_k, ..., x_K$. With this, we can approximate the partial derivatives that occur in our equation, first we can approximate $\frac{\partial J}{\partial x}$ with.
+
+\begin{equation}
+\left. \frac{\partial J}{\partial x} \right|_{k, n} = \frac{J_{k+1}^n - J_{k-1}^n}{2 \Delta x} + O(\Delta x^2)
+\end{equation}
+
+And we can approximate $\frac{\partial P}{\partial t}$ with
+
+\begin{equation}
+\left. \frac{\partial P}{\partial t} \right|_{k, n} = \frac{P_k^{n+1} - P_k^n}{\Delta t} + O(\Delta t)
+\end{equation}
+
+We would like to have the equation involving $J$ written in terms of $P$, by propagating these derivatives through the definition for $J$ we get.
+
+\begin{equation}
+P_{k}^{n+1} \approx P_{k-1}^n \left [ \frac{k_B \Delta t}{2 \Delta^2} T_{k-1} - \frac{\Delta t}{2 \Delta} \partial_x V_{k-1} \right ] +
+P_k^n \left [1 - \frac{k_B \Delta t}{\Delta^2} T_k \right] +
+P_{k+1}^n \left [ \frac{k_B \Delta t}{2 \Delta^2}T_{k+1} + \frac{\Delta t}{2 \Delta} \partial_x V_{k+1} \right]
+\end{equation}
+
+Using this equation we make a matrix that has the terms multiplying $P_{k-1}^n$ as its lower off diagonal, the terms multiplying $P_k^n$ as its main diagonal and the terms multiplying $P_{k+1}^n$ as the upper diagonal. From now on we will call this matrix $A$, in order to step the distribution $P(x, t)$ forward one step (i.e. to $P(x, t + \Delta t)$), we need to use the implicit equation
+
+\begin{equation}
+\left (I - \frac{1}{2} A \right) P_{dis}(x, t + \Delta t) \approx \left(I + \frac{1}{2}A \right)P_{dis}(x, t)
+\end{equation}
+
+where $P_{dis}$ acknowledges that $P$ has been discretized. Likewise, equation (\ref{eqn:TemperatureEvolution}) can be discretized to give
+
+\begin{multline}
+T^{n+1}_j \approx T^n_{j-1} \frac{\Delta t D}{2 \Delta^2} - T^n_j \left[1 + \frac{\Delta t \kappa k_B}{4 \Delta^2}(V_{j+1} - V_{j-1})(P^n_{j+1} - P^n_{j-1}) + \frac{\Delta t D}{\Delta^2} \right] + \\
+T^n_{j+1} \left [\frac{\Delta t D}{2 \Delta^2} \right] - \Delta t \kappa \left(\frac{V_{j+1} - V_{j-1}}{2 \Delta} \right )^2 P^n_j
+\end{multline}
+
+and we can form a similar implicit equation to simulate this forward in time. If we know $P(x, t)$ and $T(x, t)$ at time $t$, then we can use these methods to simulate forward in time and obtain $T(x, t + \Delta t)$ and $P(x, t + \Delta t)$.
+
+Fortunately the matrices that we are dealing with are very sparse, so the program used to solve this equation can save on memory by calling sparse matrix libraries.
+
+%\subsubsection{Boundary value problem in the steady state}
+%Often, we will not be interested in this transient behavior and instead we will want to obtain information about the system at the steady state. To do this, we create the same matrix $A$ described above and then solve the equation
+%
+%\begin{equation}
+%A P_s = b
+%\end{equation}
+%
+%Where $b$ is a vector full of zeros, but with constant entries in its first and last elements. These constants ensure the boundary condition that $P(0) = P(L)$, a similar procedure is performed to find the temperature in the steady state.
+\subsection{Stochastic methods}
+We can simulate the path of a single particle by using stochastic methods to solve the Langevin equation. By simulating many times we should be able to recover the distributions that were found through finite differencing. When simulating the system  at the microscopic level, equation (\ref{eqn:Smoluchowski}) becomes \cite{Reimann2001}
+
+\begin{equation}
+\gamma \dot{x}(t) = -V'(x(t)) + \xi(t)
+\end{equation}
+
+Where $\xi(t)$ is called Gaussian white noise of zero mean and has the essential properties that: $\langle \xi(t) \rangle = 0$ and $\langle \xi(t) \xi(s) \rangle = 2 \gamma k_B T \delta(t - s) $. We can also consider the stochastic equation with time discretized, in which case we get:
+
+\begin{equation}
+x(t_{n+1}) = x(t_n) - \Delta t [V'(x(t_n)) + \xi_n]/\gamma
+\end{equation}
+
+This equation can be simulated numerically, or can be used to derive Equation (\ref{eqn:Smoluchowski}) by taking the limit $\Delta t \to 0$ as is done in Appendix B of \cite{Reimann2001}. In the results section, we will show some results of these numerical simulations.
