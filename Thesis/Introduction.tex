@@ -57,9 +57,9 @@ As we will see, the diffusion is increased by increasing the temperature and the
 The main part of this project will be trying to understand the behavior of the coupled partial differential equations given by:
 
 \begin{eqnarray}
-J(x, t) &=& \gamma^{-1} \frac{\partial}{\partial x} \left ( \frac{\partial V(x, t)}{\partial x} P(x, t) + k_B \frac{\partial}{\partial x} \left [T(x, t) P(x, t) \right] \right )  \\
+J(x, t) &=& -\gamma^{-1} \frac{\partial}{\partial x} \left ( \frac{\partial V(x, t)}{\partial x} P(x, t) + k_B \frac{\partial}{\partial x} \left [T(x, t) P(x, t) \right] \right )  \\
 \frac{\partial P(x, t)}{\partial t} &=& \frac{\partial J}{\partial x} \label{eqn:Smoluchowski} \\
-\frac{\partial T(x, t)}{\partial t} &=& \frac{\partial}{\partial x} \left ( -\kappa q(x, t) + D \frac{\partial T(x, t)}{\partial x} \right ) \label{eqn:TemperatureEvolution}
+\frac{\partial T(x, t)}{\partial t} &=& -\kappa q(x, t) + D \frac{\partial^2 T(x, t)}{\partial x^2} \label{eqn:TemperatureEvolution}
 \end{eqnarray}
 
 Where
