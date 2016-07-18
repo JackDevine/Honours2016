@@ -14,6 +14,16 @@ function discrete_derivative(vec::AbstractArray, x_axis::AbstractArray)
     diff(vec)./diff(x_axis)
 end
 
+function energy(potential::AbstractArray, density::AbstractArray,
+            temperature::AbstractArray, x_axis::AbstractArray)
+    # Given the potential, the probability density, the temperature of the
+    # system and the x_axis that we are working on, calcualte the energy.
+    left_bnd = x_axis[1]
+    right_bnd = x_axis[end]
+    discrete_quad(potential.*density, left_bnd, right_bnd)
+        + discrete_quad(temperature, left_bnd, right_bnd)
+end
+
 function stepP(P::AbstractArray, dt::Number,
             dis_V_tup::Tuple{Number, AbstractArray, Number},
             dis_temp::AbstractArray, x_axis::AbstractArray)
