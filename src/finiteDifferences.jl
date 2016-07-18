@@ -148,9 +148,9 @@ function stepT(dis_temp::AbstractArray, dt::Number, dis_density::AbstractArray,
     dis_temp*scaling, energy
 end
 
-function evolveP(density::Array, evolve_time::Number, dt::Number,
-            dis_V_tup::Tuple{Number, Array, Number}, dis_temp::Array,
-            x_axis::Number)
+function evolveP(density::AbstractArray, evolve_time::Number, dt::Number,
+            dis_V_tup::Tuple{Number, AbstractArray, Number},
+            dis_temp::AbstractArray, x_axis::AbstractArray)
     # evolveP will evolve the probability density forward by an amount of time
     # evolve_time using a time step dt.
     # Parameters:
@@ -177,9 +177,10 @@ function evolveP(density::Array, evolve_time::Number, dt::Number,
     density
 end
 
-function evolveT(dis_temp::Array, evolve_time::Number, dt::Number,
-            dis_V_tup::Tuple{Number, Array, Number}, density::Array,
-            alpha::Number, beta::Number, energy::Number, x_axis::Array)
+function evolveT(dis_temp::AbstractArray, evolve_time::Number, dt::Number,
+            dis_V_tup::Tuple{Number, AbstractArray, Number},
+            density::AbstractArray, alpha::Number, beta::Number, energy::Number,
+            x_axis::AbstractArray)
     # evolveT will evolve the dicrete temperature forward by an amount
     # evolve_time using a time step dt. This function keeps the probability
     # density constant.
@@ -208,15 +209,16 @@ function evolveT(dis_temp::Array, evolve_time::Number, dt::Number,
     n_steps = round(Int, evolve_time/dt)
     for i = 1:n_steps
         # Update dis_temp and energy.
-        dis_temp, energy = stepT(dis_temp, dt, dis_density, dis_V_tup, alpha,
+        dis_temp, energy = stepT(dis_temp, dt, density, dis_V_tup, alpha,
                     beta, energy, x_axis)
     end
     dis_temp
 end
 
-function evolve_system(density::Array, dis_temp::Array, evolve_time::Number,
-            dt::Number, dis_V_tup::Tuple{Number, Array, Number}, alpha::Number,
-            beta::Number, energy::Number, x_axis::Number)
+function evolve_system(density::AbstractArray, dis_temp::AbstractArray,
+            evolve_time::Number, dt::Number,
+            dis_V_tup::Tuple{Number, AbstractArray, Number}, alpha::Number,
+            beta::Number, energy::Number, x_axis::AbstractArray)
     # evolve_system will evolve the entire coupled system forward by an amount
     # evolve_time using a time step dt.
     # Parameters:
