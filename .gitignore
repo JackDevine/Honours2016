@@ -14,7 +14,7 @@
 # these rules might exclude image files for figures etc.
 # *.ps
 # *.eps
-# *.pdf
+*.pdf  # Latex updates the thesis.pdf and it is annoying to keep track of.
 
 ## Bibliography auxiliary files (bibtex/biblatex/biber):
 *.bbl
