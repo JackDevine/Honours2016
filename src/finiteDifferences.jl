@@ -14,7 +14,7 @@ function discrete_derivative(vec::AbstractArray, x_axis::AbstractArray)
     diff(vec)./diff(x_axis)
 end
 
-function energy(potential::AbstractArray, density::AbstractArray,
+function energy_fun(potential::AbstractArray, density::AbstractArray,
             temperature::AbstractArray, x_axis::AbstractArray)
     # Given the potential, the probability density, the temperature of the
     # system and the x_axis that we are working on, calcualte the energy.
@@ -260,4 +260,54 @@ function evolve_system(density::AbstractArray, dis_temp::AbstractArray,
         density = stepP(density, dt, dis_V_tup, dis_temp, x_axis)
     end
     density, dis_temp
+end
+
+function steady_state(density::AbstractArray, dis_temp::AbstractArray,
+            evolve_time::Number, dt::Number,
+            dis_V_tup::Tuple{Number, AbstractArray, Number}, alpha::Number,
+            beta::Number, energy::Number, x_axis::AbstractArray, tol::Number)
+    # Evolve the system forward until it is changing by less than the tolerance.
+    # Returns the steady state probability density function and the temperature.
+    # Parameters:
+    # density:     The initial value for the probability density, must be a
+    #              vector of the same size of the x_axis.
+    # dis_temp:    A vector containing the discretized temperature, must be the
+    #              same length as the x_axis.
+    # evolve_time: The amount of time to evolve the probability density for in
+    #              the dimensionless time unit.
+    # dt:          The time step that we are using for the evolution.
+    # dis_V_tup:   A tuple containing information on the potential, the first
+    #              element is the potential to the left of
+    #              the left boundary, the second element is a vector
+    #              containing the values of the potential on the x_axis,
+    #              the third element is the potential to the right of the
+    #              right boundary, the third element is the potential to the
+    #              right of the right boundary.
+    # alpha:       Dimensionless parameter that describes the coupling between
+    #              the probability density and the temperature.
+    # beta:        Dimensionless parameter that describes how quickly the
+    #              temperature diffuses to a constant value.
+    # energy:      The dimensionless energy of the system.
+    # x_axis:      A vector describing the axis that we are discretizing over in
+    #              the dimensionless coordinates.
+    # tol:         The distance between vectors that we will tolerate before
+    #              saying that the system has reached the steady state.
+    density_new = density
+    density_old = density + 2tol
+    dis_temp_new = dis_temp
+    dis_temp_old = dis_temp + 2tol
+
+    system_energy = energy_fun(dis_V, density, dis_temp, x_axis)
+    # Step the system forward until both the probability density and the
+    # temperature are changing by less than the tolerance.
+    while (norm(density_new - density_new) < tol ||
+            norm(dis_temp_new - dis_temp_new) < tol)
+        density_old = density_new
+        dis_temp_old = dis_temp_old
+
+        dis_temp_new, system_energy = stepT(dis_temp, dt, density, dis_V_tup,
+                            alpha, beta, system_energy, x_axis)
+        density_new = stepP(density, dt, dis_V_tup, dis_temp, x_axis)
+    end
+
 end
