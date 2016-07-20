@@ -263,9 +263,9 @@ function evolve_system(density::AbstractArray, dis_temp::AbstractArray,
 end
 
 function steady_state(density::AbstractArray, dis_temp::AbstractArray,
-            evolve_time::Number, dt::Number,
-            dis_V_tup::Tuple{Number, AbstractArray, Number}, alpha::Number,
-            beta::Number, energy::Number, x_axis::AbstractArray, tol::Number)
+            dt::Number, dis_V_tup::Tuple{Number, AbstractArray, Number},
+            alpha::Number, beta::Number, energy::Number, x_axis::AbstractArray,
+            tol::Number)
     # Evolve the system forward until it is changing by less than the tolerance.
     # Returns the steady state probability density function and the temperature.
     # Parameters:
@@ -273,8 +273,6 @@ function steady_state(density::AbstractArray, dis_temp::AbstractArray,
     #              vector of the same size of the x_axis.
     # dis_temp:    A vector containing the discretized temperature, must be the
     #              same length as the x_axis.
-    # evolve_time: The amount of time to evolve the probability density for in
-    #              the dimensionless time unit.
     # dt:          The time step that we are using for the evolution.
     # dis_V_tup:   A tuple containing information on the potential, the first
     #              element is the potential to the left of
@@ -300,14 +298,20 @@ function steady_state(density::AbstractArray, dis_temp::AbstractArray,
     system_energy = energy_fun(dis_V, density, dis_temp, x_axis)
     # Step the system forward until both the probability density and the
     # temperature are changing by less than the tolerance.
-    while (norm(density_new - density_new) < tol ||
-            norm(dis_temp_new - dis_temp_new) < tol)
+    iters = 1
+    while (norm(density_new - density_old) > tol ||
+            norm(dis_temp_new - dis_temp_old) > tol)
         density_old = density_new
-        dis_temp_old = dis_temp_old
+        dis_temp_old = dis_temp_new
 
         dis_temp_new, system_energy = stepT(dis_temp, dt, density, dis_V_tup,
                             alpha, beta, system_energy, x_axis)
         density_new = stepP(density, dt, dis_V_tup, dis_temp, x_axis)
+        if iters > 2000
+            return (norm(density_new - density_old),
+                    norm(dis_temp_new - dis_temp_old))
+        end
+        iters += 1
     end
-
+    density_new, dis_temp_new
 end
