@@ -85,7 +85,7 @@ end
 
 function stepT(dis_temp::AbstractArray, dt::Number, dis_density::AbstractArray,
             dis_V_tup::Tuple{Number, AbstractArray, Number}, alpha::Number,
-            beta::Number, init_energy::Number, x_axis::AbstractArray)
+            beta::Number, energy::Number, x_axis::AbstractArray)
     # Evolve the temperature forward by an amount dt.
     # Parameters:
     # dis_temp:      Initial temperature, this is a vector of the same length as
@@ -124,38 +124,30 @@ function stepT(dis_temp::AbstractArray, dt::Number, dis_density::AbstractArray,
     n_points = length(x_axis)
     dx = (x_axis[end] - x_axis[1])/n_points
     rr = dt/(2dx^2)
-    # The inhomogeniety at the end of the equation
+    # The inhomogeniety at the end of the equation.
     in_homo = rr*(alpha/4)*dis_density[2:end-1].*(dis_V[3:end] - dis_V[1:end-2])
-    # The diagonals of the matrix
+    # The diagonals of the matrix.
     diag_minus1 = rr*((alpha/4)*dis_density[1:end-3]
                 .*(dis_V[3:end-1] - dis_V[1:end-3]) - beta)
     diag0 = 2*beta*rr + 1
     diag1 = rr*(-(alpha/4)*dis_density[4:end]
             .*(dis_V[4:end] - dis_V[3:end-1]) - beta)
-    # Add the inhomogeneity to the diagonals
+    # Add the inhomogeneity to the diagonals.
     diag_minus1 += in_homo[2:end]
     diag0 += in_homo
     diag1 += in_homo[1:end-1]
     A = spdiagm((diag_minus1, diag0, diag1), (-1, 0, 1))
-    # Periodic boundary conditions
+    # Periodic boundary conditions.
     A[1, end] = diag_minus1[1]
     A[end, 1] = diag1[end]
     B = 2speye(size(A)...) - A
     # Update the temperature using the Crank Nicolson scheme.
     dis_temp = A\(B*dis_temp)
-    # Calculate the current that is produced by the given temperature and
-    # probability density, then use this to calculate the change in energy of
-    # the system.
-    current = dis_density[3:end-1].*discrete_derivative(dis_V[2:end-1], x_axis)
-             + discrete_derivative(dis_density[2:end-1].*dis_temp, x_axis)
-    energy_change = -current[1]*(dis_V[end] - dis_V[1])*dt
-    energy = init_energy + energy_change
-    potential_energy = discrete_quad(dis_V.*dis_density, x_axis[1], x_axis[end])
     # The scaling of the temperature.
     scaling = (energy - potential_energy)/discrete_quad(dis_temp, x_axis[1],
                     x_axis[end])
-    # Return the scaled temperature and the updated energy.
-    dis_temp*scaling, energy
+    # Return the scaled temperature.
+    dis_temp*scaling
 end
 
 function evolveP(density::AbstractArray, evolve_time::Number, dt::Number,
@@ -219,7 +211,7 @@ function evolveT(dis_temp::AbstractArray, evolve_time::Number, dt::Number,
     n_steps = round(Int, evolve_time/dt)
     for i = 1:n_steps
         # Update dis_temp and energy.
-        dis_temp, energy = stepT(dis_temp, dt, density, dis_V_tup, alpha,
+        dis_temp = stepT(dis_temp, dt, density, dis_V_tup, alpha,
                     beta, energy, x_axis)
     end
     dis_temp
@@ -255,7 +247,7 @@ function evolve_system(density::AbstractArray, dis_temp::AbstractArray,
     #              the dimensionless coordinates.
         n_steps = round(Int, evolve_time/dt)
     for i = 1:n_steps
-        dis_temp, energy = stepT(dis_temp, dt, density, dis_V_tup, alpha, beta,
+        dis_temp = stepT(dis_temp, dt, density, dis_V_tup, alpha, beta,
                             energy, x_axis)
         density = stepP(density, dt, dis_V_tup, dis_temp, x_axis)
     end
@@ -304,7 +296,7 @@ function steady_state(density::AbstractArray, dis_temp::AbstractArray,
         density_old = density_new
         dis_temp_old = dis_temp_new
 
-        dis_temp_new, system_energy = stepT(dis_temp, dt, density, dis_V_tup,
+        dis_temp_new = stepT(dis_temp, dt, density, dis_V_tup,
                             alpha, beta, system_energy, x_axis)
         density_new = stepP(density, dt, dis_V_tup, dis_temp, x_axis)
         if iters > 2000

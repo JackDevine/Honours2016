@@ -58,7 +58,7 @@ energy_vec[1] = energy
 
         P[:, i] = stepP(P[:, i-1], dt, dis_V_tup, dis_temp, x_axis)
 
-        dis_temp, energy = stepT(dis_temp, dt, P[:, i-1], dis_V_tup, alpha,
+        dis_temp = stepT(dis_temp, dt, P[:, i-1], dis_V_tup, alpha,
                             beta, energy, x_axis)
         T[:, i] = dis_temp
         energy_vec[i] = energy
