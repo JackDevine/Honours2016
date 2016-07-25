@@ -140,10 +140,17 @@ function stepT(dis_temp::AbstractArray, dt::Number, dis_density::AbstractArray,
     # Periodic boundary conditions.
     A[1, end] = diag_minus1[1]
     A[end, 1] = diag1[end]
+    # Neumann boundary conditions.
+    # A[1, end-1] = 1
+    # A[1, end] = -1
+    # A[end, 1] = 1
+    # A[end, 2] = -1
+
     B = 2speye(size(A)...) - A
     # Update the temperature using the Crank Nicolson scheme.
     dis_temp = A\(B*dis_temp)
     # The scaling of the temperature.
+    potential_energy = discrete_quad(dis_V.*dis_density, x_axis[1], x_axis[2])
     scaling = (energy - potential_energy)/discrete_quad(dis_temp, x_axis[1],
                     x_axis[end])
     # Return the scaled temperature.
