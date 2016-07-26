@@ -10,9 +10,8 @@ T0 = 1.0 # Temperature at the ends (i.e. bath temperature)
 alpha = 0.00002
 beta = 0.15
 
-n_periods = 4 # The number of periods to stretch out for
-n_points = 2000 # The number of points on the x_axis
-n_steps = 2000 # The number of time steps to simulate for
+n_periods = 4 # The number of periods to stretch out for.
+n_points = 2000 # The number of points on the x_axis.
 
 x_axis = linspace(0, LL*n_periods, n_points)
 dx = (x_axis[end] - x_axis[1])/n_points # Grid spacing
