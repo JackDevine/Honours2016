@@ -68,64 +68,124 @@ The one dimensional equation can be solved on a discrete grid by using the finit
 \frac{d f}{d x} \approx \frac{f(x - h) - f(x + h)}{2h}
 \end{equation}
 
-for some small $h$. The first thing to notice here is that our equation is ``flux conservative'', i.e. it can be written in the form
-$$ \frac{\partial P}{\partial t} = \frac{\partial J(x)}{\partial x} $$
-In our case, $J(x) = \gamma^{-1} \left ( \frac{\partial V}{\partial x} P + k_B \frac{\partial}{\partial x} [T P] \right ) $. Now we will discretize space and time, we will split time into $N$ discrete times  $t_1, t_2, ..., t_n, ..., t_N$ and space into $K$ discrete points $x_1, x_2, ..., x_k, ..., x_K$. With this, we can approximate the partial derivatives that occur in our equation, first we can approximate $\frac{\partial J}{\partial x}$ with.
-
+for some small $h$. The Crank Nicolson scheme uses a forward finite differences step and a backwards one, it is very accurate, however we will find that it is a little weird for non linear equations. From now on, we will use the notation that $F(j \Delta x, n \Delta t) = F_j^n$, the key equation for the Crank Nicolson scheme is:
 \begin{equation}
-\left. \frac{\partial J}{\partial x} \right|_{k, n} = \frac{J_{k+1}^n - J_{k-1}^n}{2 \Delta x} + O(\Delta x^2)
+\frac{P_j^{n+1} - P_j^n}{\Delta t} = \frac{1}{2}(F_j^{n+1} - F_j^n)
+\end{equation}
+where $F$ represents the right hand side of the equation that we are doing finite differences on. By applying finite differences, we find that:
+\begin{multline}
+F_j^{n+1} = P_j \frac{V_{j+1}^{n+1} - 2V_j^{n+1} + V_{j-1}^{n+1}}{\Delta x^2} + \frac{P_{j+1}^{n+1} - P_{j-1}^{n+1}}{2 \Delta x^2} \frac{V_{j+1}^{n+1} - V_{j-1}^{n+1}}{2 \Delta x^2} \\
++ \frac{T_{j+1}^{n+1} P_{j+1}^{n+1} - 2T_{j}^{n+1} P_{j}^{n+1} + T_{j-1}^{n+1} P_{j-1}^{n+1}}{\Delta x^2}
+\end{multline}
+We make the following definitions:
+\begin{align*}
+r  &\equiv \frac{\Delta t}{2 \Delta x^2} \\
+a^{n+1} &= r \left(\frac{1}{4}(V_{j+1}^{n+1} - V_{j-1}^{n+1}) - T_{j-1}^{n+1} \right) \\
+b^{n+1} &= 1 + r \left(2 T_j^{n+1} - (V_{j+1}^{n+1} - 2V_j^{n+1} + V_{j-1}^{n+1}) \right) \\
+c^{n+1} &= -r\left(\frac{1}{4}(V_{j+1}^{n+1} - V_{j-1}^{n+1}) - T_{j+1}^{n+1}\right) \\
+a^n &= -r \left(\frac{1}{4}(V_{j+1}^{n} - V_{j-1}^{n}) - T_{j-1}^{n} \right) \\
+b^n &= 1 - r \left(2 T_j^{n} - (V_{j+1}^{n} - 2V_j^{n} + V_{j-1}^{n}) \right) \\
+c^n &= r \left(\frac{1}{4}(V_{j+1}^{n} - V_{j-1}^{n}) - T_{j+1}^{n}\right) \numberthis
+\end{align*}
+With these definitions, the Crank Nicolson scheme can be written down as follows:
+\begin{multline}
+P_{j-1}^{n+1} a^{n+1} + P_j^{n+1} b^{n+1} + P_{j+1}^{n+1} c^{n+1} = P_{j-1}^{n} a^n
++ P_j^{n} b^n + P_{j+1}^{n} c^n
+\end{multline}
+This equation can be written in matrix form by defining the following matrices:
+\begin{equation}
+A = 
+\begin{bmatrix}
+	a_0^{n+1} & b_1^{n+1} & 0                & 0                & 0        & \dots                                 & 0        \\
+	c_0^{n+1} & a_1^{n+1} & b_2^{n+1} & 0                & 0        & \dots                                 & 0        \\
+	0                & c_1^{n+1} & a_2^{n+1} & b_3{n+1}   & 0        & \dots                                 & 0        \\
+			     &                   &                   &                  &           &                                         &           \\       
+	\vdots         & \vdots         & \ddots         & \ddots         & \ddots & \vdots                              & \vdots \\
+			     &                   &                   &                  &           &                                         &           \\
+			     &                   &                   &                  &           &                                         &           \\
+	0                &                   & \dots           &                   &  c_{J-2}^{n+1} & a_{J-1}^{n+1}  & b_J^{n+1} \\
+	0                &                   & \dots           &                   &                         &  c_{J-1}^{n+1} & a_J^{n+1}
+\end{bmatrix}
+,\quad P^{n+1} =
+\begin{bmatrix}
+P_0^{n+1}       \\
+P_1^{n+1}	     \\
+                        \\
+                        \\
+\vdots               \\
+                        \\
+                        \\
+P_{J-1}^{n+1} \\
+P_J^{n+1}
+\end{bmatrix}
 \end{equation}
 
-And we can approximate $\frac{\partial P}{\partial t}$ with
-
 \begin{equation}
-\left. \frac{\partial P}{\partial t} \right|_{k, n} = \frac{P_k^{n+1} - P_k^n}{\Delta t} + O(\Delta t)
+B = 
+\begin{bmatrix}
+	a_0^{n} & b_1^{n}     & 0                 & 0          & 0                    & \dots            & 0        \\
+	c_0^{n} & a_1^{n}     & b_2^{n}      & 0          & 0                    & \dots            & 0        \\
+	0                & c_1^{n} & a_2^{n}      & b_3{n} & 0                    & \dots            & 0        \\
+			     &               &                   &             &                      &                     &           \\
+	\vdots         & \vdots     & \ddots         & \ddots   & \ddots            & \vdots           & \vdots \\
+			     &               &                   &             &                      &                     &           \\
+			     &               &                   &             &                      &                     &           \\
+	0                &               & \dots           &             &  c_{J-2}^{n} & a_{J-1}^{n}  & b_J^{n} \\
+	0                &               & \dots           &             &                     &  c_{J-1}^{n} & a_J^{n}
+\end{bmatrix}
+,\quad P^{n} =
+\begin{bmatrix}
+P_0^{n}       \\
+P_1^n          \\
+                    \\
+                    \\
+\vdots           \\
+                    \\
+                    \\
+P_{J-1}^{n} \\
+P_J^{n}
+\end{bmatrix}
 \end{equation}
+With these matrices the equation now becomes $A \cdot P^{n+1} = B \cdot P^n$, this equation can be used to step forward $P$.
+Each time that we step forward using this equation we will be out by a factor, this means that at each step we will need to renormalize using the equation $\int P(x) dx = 1$.
 
-We would like to have the equation involving $J$ written in terms of $P$, by propagating these derivatives through the definition for $J$ we get.
-
-\begin{equation}
-P_{k}^{n+1} \approx P_{k-1}^n \left [ \frac{k_B \Delta t}{2 \Delta^2} T_{k-1} - \frac{\Delta t}{2 \Delta} \partial_x V_{k-1} \right ] +
-P_k^n \left [1 - \frac{k_B \Delta t}{\Delta^2} T_k \right] +
-P_{k+1}^n \left [ \frac{k_B \Delta t}{2 \Delta^2}T_{k+1} + \frac{\Delta t}{2 \Delta} \partial_x V_{k+1} \right]
-\end{equation}
-
-Using this equation we make a matrix that has the terms multiplying $P_{k-1}^n$ as its lower off diagonal, the terms multiplying $P_k^n$ as its main diagonal and the terms multiplying $P_{k+1}^n$ as the upper diagonal. From now on we will call this matrix $A$, in order to step the distribution $P(x, t)$ forward one step (i.e. to $P(x, t + \Delta t)$), we need to use the implicit equation
-
-\begin{equation}
-\left (I - \frac{1}{2} A \right) P_{dis}(x, t + \Delta t) \approx \left(I + \frac{1}{2}A \right)P_{dis}(x, t)
-\end{equation}
-
-where $P_{dis}$ acknowledges that $P$ has been discretized. Likewise, equation (\ref{eqn:TemperatureEvolution}) can be discretized to give
+Likewise, we can apply the Crank Nicolson scheme to the heat equation, the discretized version of equation \ref{eqn:TemperatureEvolution} is given by:
 
 \begin{multline}
-T^{n+1}_j \approx T^n_{j-1} \frac{\Delta t D}{2 \Delta^2} - T^n_j \left[1 + \frac{\Delta t \kappa k_B}{4 \Delta^2}(V_{j+1} - V_{j-1})(P^n_{j+1} - P^n_{j-1}) + \frac{\Delta t D}{\Delta^2} \right] + \\
-T^n_{j+1} \left [\frac{\Delta t D}{2 \Delta^2} \right] - \Delta t \kappa \left(\frac{V_{j+1} - V_{j-1}}{2 \Delta} \right )^2 P^n_j
+T_{j-1}^{n+1} \left [\frac{-r \alpha}{4}P_{j-1}^{n+1}(V_{j+1}^{n+1} - V_{j-1}^{n+1}) - r \beta \right]
++ T_j^{n+1} \left[1 + 2 r \beta P_j^{n+1} \right] \\
++T_{j+1}^{n+1} \left [\frac{r \alpha}{4} P_{j+1}^{n+1}(V_{j+1}^{n+1} - V_{j-1}^{n+1}) - r \beta \right]
++\frac{r \alpha}{4} P_{j}^{n+1} \left(V_{j+1}^{n+1} - V_{j-1}^{n+1} \right) \\
+ = T_{j-1}^{n} \left [\frac{r \alpha}{4}P_{j-1}^{n}(V_{j+1}^{n} - V_{j-1}^{n}) + r \beta \right ] + T_j^{n} \left[1 - 2 r \beta P_j^{n} \right] \\
++T_{j+1}^{n} \left [\frac{-r \alpha}{4} P_{j+1}^{n}(V_{j+1}^{n} - V_{j-1}^{n}) + r \beta \right]
+-\frac{r \alpha}{4} P_{j}^{n} \left(V_{j+1}^{n} - V_{j-1}^{n} \right)
 \end{multline}
 
-and we can form a similar implicit equation to simulate this forward in time. If we know $P(x, t)$ and $T(x, t)$ at time $t$, then we can use these methods to simulate forward in time and obtain $T(x, t + \Delta t)$ and $P(x, t + \Delta t)$.
+These equations are correct for points inside the boundaries, but for $j = 0$ and $j = J$, they involve points that are outside of the domain. For the temperature, we will impose Neumann boundary conditions unlike the periodic boundary conditions that we have for the probability distribution. By taking a backward difference at the left boundary and a forward difference at the right boundary, we have $T_{-1} = T_0$, $T_J = T_{J+1}$. So, for these values of $j$, the equations become:
 
-Fortunately the matrices that we are dealing with are very sparse, so the program used to solve this equation can save on memory by calling sparse matrix libraries.
+\begin{multline}
+T_0^{n+1} \left [\frac{-r \alpha}{4}P_J^{n+1}(V_1^{n+1} - V_{-1}^{n+1}) - r \beta \right] + T_0^{n+1} \left[1 + 2 r \beta P_0^{n+1} \right] \\
++T_{1}^{n+1} \left [\frac{r \alpha}{4} P_{1}^{n+1}(V_{1}^{n+1} - V_{-1}^{n+1}) - r \beta \right]
++\frac{r \alpha}{4} P_{0}^{n+1} \left(V_{1}^{n+1} - V_{-1}^{n+1} \right) \\
+ = T_{0}^{n} \left [\frac{r \alpha}{4}P_{J}^{n}(V_{1}^{n} - V_{-1}^{n}) + r \beta \right ] + T_0^{n} \left[1 - 2 r \beta P_0^{n} \right]
++T_{1}^{n} \left [\frac{-r \alpha}{4} P_{1}^{n}(V_{1}^{n} - V_{-1}^{n}) + r \beta \right] \\
+-\frac{r \alpha}{4} P_{0}^{n} \left(V_{1}^{n} - V_{-1}^{n} \right)
+\end{multline}
+and likewise for $j = J$. Just like the discretized Smoluchowski equation, these equations can be written in matrix form. The temperature is normalized by assuming that the energy remains fixed, this will be true as long as no heat or current flows through the boundaries, i.e. $J(x = a) = 0 = J(x = b)$ and $\frac{\partial T}{\partial x} \rvert_a = 0 = \frac{\partial T}{\partial x} \rvert_b$. In this case, the energy is constant and is given by $E = \int P(x) V(x) dx + c_p \int T(x) dx$, so each time that we step the temperature forward, we have to calculate the potential and thermal energy and then scale the temperature so that the total energy remains fixed.
 
-%\subsubsection{Boundary value problem in the steady state}
-%Often, we will not be interested in this transient behavior and instead we will want to obtain information about the system at the steady state. To do this, we create the same matrix $A$ described above and then solve the equation
-%
+Fortunately the matrices that we are dealing with are very sparse, so the program used to solve these equations can save on memory by calling sparse matrix libraries.
+
+%\subsection{Stochastic methods}
+%We can simulate the path of a single particle by using stochastic methods to solve the Langevin equation. By simulating many times we should be able to recover the distributions that were found through finite differencing. When simulating the system  at the microscopic level, equation (\ref{eqn:Smoluchowski}) becomes \cite{Reimann2001}
+
 %\begin{equation}
-%A P_s = b
+%\gamma \dot{x}(t) = -V'(x(t)) + \xi(t)
 %\end{equation}
 %
-%Where $b$ is a vector full of zeros, but with constant entries in its first and last elements. These constants ensure the boundary condition that $P(0) = P(L)$, a similar procedure is performed to find the temperature in the steady state.
-\subsection{Stochastic methods}
-We can simulate the path of a single particle by using stochastic methods to solve the Langevin equation. By simulating many times we should be able to recover the distributions that were found through finite differencing. When simulating the system  at the microscopic level, equation (\ref{eqn:Smoluchowski}) becomes \cite{Reimann2001}
-
-\begin{equation}
-\gamma \dot{x}(t) = -V'(x(t)) + \xi(t)
-\end{equation}
-
-Where $\xi(t)$ is called Gaussian white noise of zero mean and has the essential properties that: $\langle \xi(t) \rangle = 0$ and $\langle \xi(t) \xi(s) \rangle = 2 \gamma k_B T \delta(t - s) $. We can also consider the stochastic equation with time discretized, in which case we get:
-
-\begin{equation}
-x(t_{n+1}) = x(t_n) - \Delta t [V'(x(t_n)) + \xi_n]/\gamma
-\end{equation}
-
-This equation can be simulated numerically, or can be used to derive Equation (\ref{eqn:Smoluchowski}) by taking the limit $\Delta t \to 0$ as is done in Appendix B of \cite{Reimann2001}. In the results section, we will show some results of these numerical simulations.
+%Where $\xi(t)$ is called Gaussian white noise of zero mean and has the essential properties that: $\langle \xi(t) \rangle = 0$ and $\langle \xi(t) \xi(s) \rangle = 2 \gamma k_B T \delta(t - s) $. We can also consider the stochastic equation with time discretized, in which case we get:
+%
+%\begin{equation}
+%x(t_{n+1}) = x(t_n) - \Delta t [V'(x(t_n)) + \xi_n]/\gamma
+%\end{equation}
+%
+%This equation can be simulated numerically, or can be used to derive Equation (\ref{eqn:Smoluchowski}) by taking the limit $\Delta t \to 0$ as is done in Appendix B of \cite{Reimann2001}. In the results section, we will show some results of these numerical simulations.
