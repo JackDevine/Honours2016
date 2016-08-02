@@ -1,4 +1,4 @@
-In order to see how these equations behave with time, we have to resort to numerical methods (see section \ref{numerics}). However we note that for a given potential there will be a stationary solution that we will refer to as the ``steady state'', given periodic boundary conditions, we will give an analytical form for this steady state.
+In order to see how these equations behave with time, we have to resort to numerical methods (see section \ref{numerics}). However we note that for a given potential there will be a stationary solution that we will refer to as the ``steady state'', given periodic boundary conditions, we will derive an analytical form for this steady state.
 
 \section{Steady state solution} \label{SteadyState}
 In the steady state, we have:
@@ -61,6 +61,33 @@ And we minimize this objective function with respect to $J_s$ and $P_s(0)$ under
 
 \section{Numerical simulation} \label{numerics}
 
+\subsection{Dimensionalizing the equations}
+
+In order to make the numerical simulation easier we will dimensionalize the equations, to do this, introduce $\bar{x} = \frac{x}{L}$, then the Smoluchowski equation becomes
+
+\begin{equation}
+\frac{\partial P}{\partial t} = \gamma^{-1}\frac{1}{L^2} \frac{\partial}{\partial \bar{x}} \left (P \frac{\partial V}{\partial \bar{x}} + k_B \frac{\partial}{\partial \bar{x}}(TP) \right )
+\end{equation}
+Now let $E_0$ be the potential energy gained by moving along one period, i.e. $E_0 = V(x + L) - V(x) = f L$. Now we will introduce the dimensionless potential and the dimensionless temperature as $\hat{V}(x) = \frac{V(x)}{E_0}$ and $\hat{T}(x) = \frac{k_B T(x)}{E_0}$ respectively. Now the Smoluchowski equation becomes
+\begin{equation}
+\frac{\partial P}{\partial t} = \frac{E_0}{\gamma L^2} \frac{\partial}{\partial \bar{x}} \left (P \frac{\partial \hat{V}}{\partial \bar{x}} + \frac{\partial}{\partial \bar{x}}(\hat{T}P) \right )
+\end{equation}
+Let $\tau = \frac{E_0}{\gamma L^2}$, with this we have:
+\begin{equation}
+\frac{\partial P}{\partial \tau} = \frac{\partial}{\partial \bar{x}} \left (P \frac{\partial \hat{V}}{\partial \bar{x}} + \frac{\partial}{\partial \bar{x}}(\hat{T}P) \right )
+\end{equation}
+Applying these definitions to the equation for the temperature evolution, we find that:
+
+\begin{equation}
+\frac{E_0^2}{\gamma k_B L^2} \frac{\partial \hat{T}}{\partial \tau} = -\kappa \frac{E_0}{L^2}\hat{J}(\bar{x}) \frac{E_0}{L} \frac{\partial \hat{V}}{\partial \bar{x}} + \frac{D E_0}{k_B L^2} \frac{\partial^2 \hat{T}}{\partial \bar{x}^2}
+\end{equation}
+Now let $\alpha = \kappa \gamma k_B$ and $\beta = \frac{D \gamma}{E_0}$, then we have
+\begin{equation}
+\frac{\partial \hat{T}}{\partial \tau} = -\alpha \hat{J}(\bar{x}) \frac{\partial \hat{V}}{\partial \bar{x}} + \beta \frac{\partial^2 \hat{T}}{\partial \bar{x}^2}
+\end{equation}
+
+So our system depends on the parameters $\alpha$ and $\beta$ as well as the shape of the potential. Physically, $\alpha$ represents how much the motor will interact with the environment thermally and $\beta$ represents how quickly the temperature diffuses.
+
 \subsection{Finite differences}
 The one dimensional equation can be solved on a discrete grid by using the finite differences method, the main idea behind this strategy is to approximate derivatives with equations of the form:
 
@@ -98,7 +125,7 @@ A =
 \begin{bmatrix}
 	a_0^{n+1} & b_1^{n+1} & 0                & 0                & 0        & \dots                                 & 0        \\
 	c_0^{n+1} & a_1^{n+1} & b_2^{n+1} & 0                & 0        & \dots                                 & 0        \\
-	0                & c_1^{n+1} & a_2^{n+1} & b_3{n+1}   & 0        & \dots                                 & 0        \\
+	0                & c_1^{n+1} & a_2^{n+1} & b_3^{n+1}   & 0        & \dots                                 & 0        \\
 			     &                   &                   &                  &           &                                         &           \\       
 	\vdots         & \vdots         & \ddots         & \ddots         & \ddots & \vdots                              & \vdots \\
 			     &                   &                   &                  &           &                                         &           \\

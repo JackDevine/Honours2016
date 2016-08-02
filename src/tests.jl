@@ -18,8 +18,7 @@ dx = (x_axis[end] - x_axis[1])/n_points # Grid spacing
 
 V(x, time) = ff*x - v_0*sin(2*(2pi/LL)*x) + 6ff # Potential
 dis_V = Float64[V(x, 0) for x in x_axis]
-dis_V_minus1, dis_V0, dis_V_end = V(x_axis[1] - 2dx, 0), V(x_axis[1] - dx, 0),
-                                    V(x_axis[end] + dx, 0)
+dis_V0, dis_V_end = V(x_axis[1] - dx, 0), V(x_axis[end] + dx, 0)
 dis_V_tup = (dis_V0, dis_V, dis_V_end)
 
 temp_fun(x) = (T0 + 0.1*sin(2*(2pi/LL)*x))
