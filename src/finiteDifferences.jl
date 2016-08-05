@@ -15,13 +15,14 @@ function discrete_derivative(vec::AbstractArray, x_axis::AbstractArray)
 end
 
 function energy_fun(potential::AbstractArray, density::AbstractArray,
-            temperature::AbstractArray, x_axis::AbstractArray)
+            temperature::AbstractArray, heat_capacity::Number,
+            x_axis::AbstractArray)
     # Given the potential, the probability density, the temperature of the
     # system and the x_axis that we are working on, calcualte the energy.
     left_bnd = x_axis[1]
     right_bnd = x_axis[end]
-    discrete_quad(potential.*density, left_bnd, right_bnd)
-        + discrete_quad(temperature, left_bnd, right_bnd)
+    (discrete_quad(potential.*density, left_bnd, right_bnd)
+        + heat_capacity*discrete_quad(temperature, left_bnd, right_bnd))
 end
 
 function stepP(P::AbstractArray, dt::Number,
@@ -73,19 +74,20 @@ function stepP(P::AbstractArray, dt::Number,
     diag1 = rr*(-0.25*(dis_V[4:end] - dis_V[2:end-2]) - dis_temp[4:end])
 
     A = spdiagm((diag_minus1, diag0, diag1), (-1, 0, 1))
-    # Periodic boundary conditions
-    A[1, end] = diag_minus1[1]
-    A[end, 1] = diag1[end]
+    # Periodic boundary conditions.
+    # A[1, end] = diag_minus1[1]
+    # A[end, 1] = diag1[end]
 
     B = 2speye(size(A)...) - A  # B represents the backward Euler step.
     P = A\(B*P)  # Since A*P^{n+1} = B*P^n
     # Return the normalized probability density
-    P/discrete_quad(P, x_axis[1], x_axis[end])
+    P = P/discrete_quad(P, x_axis[1], x_axis[end])
 end
 
 function stepT(dis_temp::AbstractArray, dt::Number, dis_density::AbstractArray,
             dis_V_tup::Tuple{Number, AbstractArray, Number}, alpha::Number,
-            beta::Number, energy::Number, x_axis::AbstractArray)
+            beta::Number, heat_capacity::Number, energy::Number,
+            x_axis::AbstractArray)
     # Evolve the temperature forward by an amount dt.
     # Parameters:
     # dis_temp:      Initial temperature, this is a vector of the same length as
@@ -146,8 +148,8 @@ function stepT(dis_temp::AbstractArray, dt::Number, dis_density::AbstractArray,
     dis_temp = A\(B*dis_temp)
     # The scaling of the temperature.
     potential_energy = discrete_quad(dis_V.*dis_density, x_axis[1], x_axis[end])
-    scaling = (energy - potential_energy)/discrete_quad(dis_temp, x_axis[1],
-                    x_axis[end])
+    scaling = (energy - potential_energy)/
+                (heat_capacity*discrete_quad(dis_temp, x_axis[1], x_axis[end]))
     # Return the scaled temperature.
     dis_temp*scaling
 end
@@ -183,8 +185,8 @@ end
 
 function evolveT(dis_temp::AbstractArray, evolve_time::Number, dt::Number,
             dis_V_tup::Tuple{Number, AbstractArray, Number},
-            density::AbstractArray, alpha::Number, beta::Number, energy::Number,
-            x_axis::AbstractArray)
+            density::AbstractArray, alpha::Number, beta::Number,
+            heat_capacity::Number, energy::Number, x_axis::AbstractArray)
     # evolveT will evolve the dicrete temperature forward by an amount
     # evolve_time using a time step dt. This function keeps the probability
     # density constant.
@@ -212,9 +214,9 @@ function evolveT(dis_temp::AbstractArray, evolve_time::Number, dt::Number,
     #              the dimensionless coordinates.
     n_steps = round(Int, evolve_time/dt)
     for i = 1:n_steps
-        # Update dis_temp and energy.
+        # Update dis_temp.
         dis_temp = stepT(dis_temp, dt, density, dis_V_tup, alpha,
-                    beta, energy, x_axis)
+                    beta, heat_capacity, energy, x_axis)
     end
     dis_temp
 end
@@ -222,7 +224,8 @@ end
 function evolve_system(density::AbstractArray, dis_temp::AbstractArray,
             evolve_time::Number, dt::Number,
             dis_V_tup::Tuple{Number, AbstractArray, Number}, alpha::Number,
-            beta::Number, energy::Number, x_axis::AbstractArray)
+            beta::Number, heat_capacity::Number, energy::Number,
+            x_axis::AbstractArray)
     # evolve_system will evolve the entire coupled system forward by an amount
     # evolve_time using a time step dt.
     # Parameters:
@@ -250,7 +253,7 @@ function evolve_system(density::AbstractArray, dis_temp::AbstractArray,
         n_steps = round(Int, evolve_time/dt)
     for i = 1:n_steps
         dis_temp = stepT(dis_temp, dt, density, dis_V_tup, alpha, beta,
-                            energy, x_axis)
+                            heat_capacity, energy, x_axis)
         density = stepP(density, dt, dis_V_tup, dis_temp, x_axis)
     end
     density, dis_temp
@@ -258,8 +261,8 @@ end
 
 function steady_state(density::AbstractArray, dis_temp::AbstractArray,
             dt::Number, dis_V_tup::Tuple{Number, AbstractArray, Number},
-            alpha::Number, beta::Number, energy::Number, x_axis::AbstractArray,
-            tol::Number)
+            alpha::Number, beta::Number,  heat_capacity::Number, energy::Number,
+            x_axis::AbstractArray, tol::Number)
     # Evolve the system forward until it is changing by less than the tolerance.
     # Returns the steady state probability density function and the temperature.
     # Parameters:
@@ -299,7 +302,7 @@ function steady_state(density::AbstractArray, dis_temp::AbstractArray,
         dis_temp_old = dis_temp_new
 
         dis_temp_new = stepT(dis_temp, dt, density, dis_V_tup,
-                            alpha, beta, system_energy, x_axis)
+                            alpha, beta, heat_capacity, system_energy, x_axis)
         density_new = stepP(density, dt, dis_V_tup, dis_temp, x_axis)
         if iters > 2000
             return (norm(density_new - density_old),
