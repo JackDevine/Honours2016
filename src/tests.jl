@@ -9,7 +9,6 @@ T0 = 1.0 # Temperature at the ends (i.e. bath temperature)
 
 alpha = 0.00002
 beta = 0.15
-heat_capacity = 10.0
 
 n_periods = 4 # The number of periods to stretch out for.
 n_points = 200 # The number of points on the x_axis.
@@ -32,7 +31,7 @@ P_0 = Float64[(1/(sigma*sqrt(2pi)))*exp(-((x-3.0)^2)/(2sigma^2))
               for x in x_axis]
 P_0 /= discrete_quad(P_0, x_axis[1], x_axis[end])
 
-energy = energy_fun(dis_V, P_0, dis_temp, heat_capacity, x_axis)
+energy = energy_fun(dis_V, P_0, dis_temp, alpha, x_axis)
 # Evolve the system using different time steps, for small time steps, halfing
 # the time step should not cause the result of the simulation to change by much.
 tol = 1e-3  # The amount that the two results are allowed to differ by.
@@ -41,9 +40,9 @@ time_steps = evolve_time*[1/2048, 1/4096]  # Time steps used in the simulations.
 time_steps_system = time_steps  # Time steps for system evolution.
 facts("Convergence tests.") do
     temperature_step1 = evolveT(dis_temp, evolve_time, time_steps[1], dis_V_tup,
-            P_0, alpha, beta, heat_capacity, energy, x_axis)
+            P_0, alpha, beta, energy, x_axis)
     temperature_step2 = evolveT(dis_temp, evolve_time, time_steps[2], dis_V_tup,
-            P_0, alpha, beta, heat_capacity, energy, x_axis)
+            P_0, alpha, beta, energy, x_axis)
     @fact (norm(temperature_step1 - temperature_step2)
         /mean([norm(temperature_step1), norm(temperature_step2)])
             --> less_than(tol) ) "Temperature evolution is not converging."
@@ -61,11 +60,11 @@ facts("Convergence tests.") do
     # functions, so we need to decrease the step size.
     system_time_step1 = evolve_system(P_0, dis_temp, evolve_time,
                             time_steps_system[1], dis_V_tup, alpha, beta,
-                            heat_capacity, energy, x_axis)
+                            energy, x_axis)
 
     system_time_step2 = evolve_system(P_0, dis_temp, evolve_time,
                             time_steps_system[2], dis_V_tup, alpha, beta,
-                            heat_capacity, energy, x_axis)
+                            energy, x_axis)
 
     @fact (norm(system_time_step1[2] - system_time_step2[2])
         /mean([norm(system_time_step1[2]), norm(system_time_step2[2])])

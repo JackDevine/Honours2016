@@ -38,7 +38,7 @@ P_0 = Float64[(1/(sigma*sqrt(2pi)))*exp(-((x-2.0)^2)/(2sigma^2))
 P_0 /= discrete_quad(P_0, x_axis[1], x_axis[end])
 density = P_0
 # Calculate the initial energy of the system.
-energy = energy_fun(dis_V, P_0, dis_temp, x_axis)
+energy = energy_fun(dis_V, P_0, dis_temp, alpha, x_axis)
 energy_vec = Array(Float64, n_steps)
 energy_vec[1] = energy
 potential_energy = Array(Float64, n_steps)
@@ -63,7 +63,7 @@ density_new = Array(Float64, length(x_axis))
         density = stepP(density, dt, dis_V_tup, dis_temp, x_axis)
         dis_temp = stepT(dis_temp, dt, density, dis_V_tup, alpha,
                             beta, energy, x_axis)
-        energy_vec[i] = energy_fun(dis_V, density, dis_temp, x_axis)
+        energy_vec[i] = energy_fun(dis_V, density, dis_temp, alpha, x_axis)
         # energy_vec[i] = discrete_quad(density.*dis_V, x_axis[1], x_axis[end]) + discrete_quad(dis_temp, x_axis[1], x_axis[end])
         potential_energy[i] = discrete_quad(density.*dis_V, x_axis[1], x_axis[end])
         thermal_energy[i] = discrete_quad(dis_temp, x_axis[1], x_axis[end])
