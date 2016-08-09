@@ -44,21 +44,21 @@ energy = energy_fun(dis_V, P_0, dis_temp, alpha, x_axis)
 boltzmann_density = exp(-dis_V/T0)
 boltzmann_density = boltzmann_density/discrete_quad(boltzmann_density,
                 x_axis[1], x_axis[end])
-evolve_time = 1000dt
-@time begin
-density, temp = evolve_system(density, dis_temp, evolve_time, dt, dis_V_tup,
-                alpha, beta, energy, x_axis)
-density2 = evolveP(P_0, evolve_time, dt, dis_V_tup, ones(x_axis)*T0, x_axis)
-end
-
-plot(x_axis, 0.02dis_V, x_axis, density, x_axis, density2, x_axis,
-            temp, x_axis, ones(x_axis)*T0)
-legend(["Potential", "Coupled probability density",
-        "Uncoupled probability density", "Temperature", "Initial temperature"])
+# evolve_time = 1000dt
+# @time begin
+# density, temp = evolve_system(density, dis_temp, evolve_time, dt, dis_V_tup,
+#                 alpha, beta, energy, x_axis)
+# density2 = evolveP(P_0, evolve_time, dt, dis_V_tup, ones(x_axis)*T0, x_axis)
+# end
+#
+# plot(x_axis, 0.02dis_V, x_axis, density, x_axis, density2, x_axis,
+#             temp, x_axis, ones(x_axis)*T0)
+# legend(["Potential", "Coupled probability density",
+#         "Uncoupled probability density", "Temperature", "Initial temperature"])
 
 function hopping_time(dis_V_tup::Tuple{Number, AbstractArray, Number}, bump::Number,
                 density::AbstractArray, temperature::AbstractArray,
-                alpha::Number, beta::Number, heat_capacity::Number,
+                alpha::Number, beta::Number,
                 x_axis::AbstractArray; dt=1e-4, tol=0.1)
     # Given an initial state of the system and a potential with a bump in it,
     # calculate how long it takes for the probability distribution to get over
@@ -86,7 +86,7 @@ function hopping_time(dis_V_tup::Tuple{Number, AbstractArray, Number}, bump::Num
     while discrete_quad(density.*x_axis, x_axis[1], x_axis[end]) > bump
         density = stepP(density, dt, dis_V_tup, temperature, x_axis)
         temperature = stepT(temperature, dt, density, dis_V_tup, alpha,
-                            beta, heat_capacity, energy, x_axis)
+                            beta, energy, x_axis)
         iters += 1
         # println(discrete_quad(density.*x_axis, x_axis[1], x_axis[end]))
         if iters > 2000
@@ -101,24 +101,24 @@ end
 #                     x_axis; dt=1e-4, tol=0.7)
 nPoints = 50
 alphaMin = 0.0002
-alphaMax = 0.04
+alphaMax = 0.0003
 betaMin = 0.1
-betaMax = 3.0
+betaMax = 40.0
 betaVec = linspace(betaMin, betaMax, nPoints)
 alphaVec = linspace(alphaMin, alphaMax, nPoints)
-# @time a = Float64[hopping_time(dis_V_tup, bump, P_0, dis_temp, alpha, beta,
-#                     heat_capacity, x_axis)
-#                     for alpha in linspace(alphaMin, alphaMax, nPoints),
-#                     beta in linspace(betaMin, betaMax, nPoints)]
+@time a = Float64[hopping_time(dis_V_tup, bump, P_0, dis_temp, alpha, beta,
+                               x_axis)
+                    for alpha in linspace(alphaMin, alphaMax, nPoints),
+                    beta in linspace(betaMin, betaMax, nPoints)]
 # @time a = map((alpha, beta) -> hopping_time(dis_V_tup, bump, P_0, dis_temp, alpha, beta,
 #                     heat_capacity, x_axis),
 #                     linspace(0.0, 0.8, nPoints),
 #                     linspace(1, 4, nPoints))
 
-# matshow(a)
-# xlabel(L"\beta")
-# ylabel(L"\alpha")
-# figure()
-# surf(betaVec, alphaVec, a)
-# xlabel(L"\beta")
-# ylabel(L"\alpha")
+matshow(a)
+xlabel(L"\beta")
+ylabel(L"\alpha")
+figure()
+surf(betaVec, alphaVec, a)
+xlabel(L"\beta")
+ylabel(L"\alpha")

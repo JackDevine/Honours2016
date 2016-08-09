@@ -21,8 +21,7 @@ function energy_fun(potential::AbstractArray, density::AbstractArray,
     # system and the x_axis that we are working on, calcualte the energy.
     left_bnd = x_axis[1]
     right_bnd = x_axis[end]
-    LL = (right_bnd - left_bnd)^2  # Length of the x_axis.
-    ((LL^2)*discrete_quad(potential.*density, left_bnd, right_bnd)
+    (discrete_quad(potential.*density, left_bnd, right_bnd)
         + (1/alpha)*discrete_quad(temperature, left_bnd, right_bnd))
 end
 
@@ -152,8 +151,7 @@ function stepT(dis_temp::AbstractArray, dt::Number, dis_density::AbstractArray,
     # dis_temp = A\(B*dis_temp)
     dis_temp = A\dis_temp
     # The scaling of the temperature.
-    LL = (x_axis[end] - x_axis[1])^2  # Length of the x_axis.
-    potential_energy = (LL^2)*discrete_quad(dis_V.*dis_density,
+    potential_energy = discrete_quad(dis_V.*dis_density,
                             x_axis[1], x_axis[end])
     scaling = (energy - potential_energy)/
                 ((1/alpha)*discrete_quad(dis_temp, x_axis[1], x_axis[end]))
