@@ -14,7 +14,7 @@ function discrete_derivative(vec::AbstractArray, x_axis::AbstractArray)
     diff(vec)./diff(x_axis)
 end
 
-function energy_fun(potential::AbstractArray, density::AbstractArray,
+function energyFun(potential::AbstractArray, density::AbstractArray,
             temperature::AbstractArray, alpha::Number,
             x_axis::AbstractArray)
     # Given the potential, the probability density, the temperature of the
@@ -26,25 +26,20 @@ function energy_fun(potential::AbstractArray, density::AbstractArray,
 end
 
 function stepP(P::AbstractArray, dt::Number,
-            dis_V_tup::Tuple{Number, AbstractArray, Number},
-            dis_temp::AbstractArray, x_axis::AbstractArray)
+            potentialTup::Tuple{Number, AbstractArray, Number},
+            temperature::AbstractArray, x_axis::AbstractArray)
     # Evolve the probability density P forward by an amount dt.
     # Parameters:
     # P:             Initial probability density, this is a vector of the same
     #                length as the x_axis (see below).
     # dt:            Amount of time to simulate forward by.
-    # dis_V_tup:     A tuple containing information on the potential, the first
+    # potentialTup:     A tuple containing information on the potential, the first
     #                element is the potential to the left of
     #                the left boundary, the second element is a vector
     #                containing the values of the potential on the x_axis,
     #                the third element is the potential to the right of the
     #                right boundary.
-    # dis_temp_tup:  A tuple containg information on the tempeature, the first
-    #                element is the temperature to the left of
-    #                the left boundary, the second element is a vector
-    #                containing the values of the temperature on the
-    #                x_axis, the third element is the potential to the right of
-    #                the right boundary.
+    # temperature:   A vector of the tempeature.
     # x_axis:        A vector containing the x coordinates of the points that we
     #                are doing finite differencing on, the
     #                points must be equally spaced.
@@ -53,11 +48,11 @@ function stepP(P::AbstractArray, dt::Number,
 
     # Augment the discrete temperature and the discrete potential since we will
     # be evaluating them at points beyond the boundary.
-    T0 = dis_temp[1]
+    T0 = temperature[1]
     # The derivative of the temperature is zero at the boundaries.
-    dis_temp = [dis_temp[1] ; dis_temp ; dis_temp[end]]
+    temperature = [temperature[1] ; temperature ; temperature[end]]
 
-    dis_V0, dis_V, dis_V_end = dis_V_tup
+    dis_V0, dis_V, dis_V_end = potentialTup
     dis_V = [dis_V0 ; dis_V ; dis_V_end]
 
     n_points = length(x_axis)
@@ -68,10 +63,10 @@ function stepP(P::AbstractArray, dt::Number,
     # had to assume that T(x, t + dt) = T(x, t). We could improve on this by
     # using an explicit method to estimate T(x, t + dt).
     diag_minus1 = rr*(0.25*(dis_V[3:end-1] - dis_V[1:end-3])
-                 - dis_temp[1:end-3])
+                 - temperature[1:end-3])
     diag0 = rr*(-(dis_V[3:end] - 2dis_V[2:end-1] + dis_V[1:end-2])
-           + 2*dis_temp[2:end-1]) + 1
-    diag1 = rr*(-0.25*(dis_V[4:end] - dis_V[2:end-2]) - dis_temp[4:end])
+           + 2*temperature[2:end-1]) + 1
+    diag1 = rr*(-0.25*(dis_V[4:end] - dis_V[2:end-2]) - temperature[4:end])
 
     A = spdiagm((diag_minus1, diag0, diag1), (-1, 0, 1))
     # Periodic boundary conditions.
@@ -84,18 +79,18 @@ function stepP(P::AbstractArray, dt::Number,
     P = P/discrete_quad(P, x_axis[1], x_axis[end])
 end
 
-function stepT(dis_temp::AbstractArray, dt::Number, dis_density::AbstractArray,
-            dis_V_tup::Tuple{Number, AbstractArray, Number}, alpha::Number,
+function stepT(temperature::AbstractArray, dt::Number, dis_density::AbstractArray,
+            potentialTup::Tuple{Number, AbstractArray, Number}, alpha::Number,
             beta::Number, energy::Number,
             x_axis::AbstractArray)
     # Evolve the temperature forward by an amount dt.
     # Parameters:
-    # dis_temp:      Initial temperature, this is a vector of the same length as
+    # temperature:   Initial temperature, this is a vector of the same length as
     #                the x_axis (see below).
     # dt:            Amount of time to simulate forward by.
     # dis_density:   A vector of the probability density, must be the same
     #                length as the x_axis (see below).
-    # dis_V_tup:     A tuple containing information on the potential, the first
+    # potentialTup:  A tuple containing information on the potential, the first
     #                element is the potential to the left of
     #                the left boundary, the second element is a vector
     #                containing the values of the potential on the x_axis,
@@ -118,7 +113,7 @@ function stepT(dis_temp::AbstractArray, dt::Number, dis_density::AbstractArray,
 
     # Augment the discrete density and the discrete potential since we will be
     # evaluating them at points beyond the boundary.
-    dis_V0, dis_V, dis_V_end = dis_V_tup
+    dis_V0, dis_V, dis_V_end = potentialTup
     dis_V = [dis_V0 ; dis_V ; dis_V_end]
     # The density is periodic.
     dis_density = [dis_density[end] ; dis_density ; dis_density[1]]
@@ -143,65 +138,65 @@ function stepT(dis_temp::AbstractArray, dt::Number, dis_density::AbstractArray,
     # A[1, end] = diag_minus1[1]
     # A[end, 1] = diag1[end]
     # Neumann boundary conditions (derivative is zero at the boundaries).
-    dis_temp[1], dis_temp[end] = 0.0, 0.0
+    temperature[1], temperature[end] = 0.0, 0.0
     A[1, 2] = -A[1, 1]
     A[end, end - 1] = -A[end, end]
     B = 2speye(size(A)...) - A
     # Update the temperature using the Crank Nicolson scheme.
-    # dis_temp = A\(B*dis_temp)
-    dis_temp = A\dis_temp
+    # temperature = A\(B*temperature)
+    temperature = A\temperature
     # The scaling of the temperature.
     potential_energy = discrete_quad(dis_V.*dis_density,
                             x_axis[1], x_axis[end])
     scaling = (energy - potential_energy)/
-                ((1/alpha)*discrete_quad(dis_temp, x_axis[1], x_axis[end]))
+                ((1/alpha)*discrete_quad(temperature, x_axis[1], x_axis[end]))
     # Return the scaled temperature.
-    dis_temp*scaling
+    temperature*scaling
 end
 
-function evolveP(density::AbstractArray, evolve_time::Number, dt::Number,
-            dis_V_tup::Tuple{Number, AbstractArray, Number},
-            dis_temp::AbstractArray, x_axis::AbstractArray)
+function evolveP(density::AbstractArray, evolveTime::Number, dt::Number,
+            potentialTup::Tuple{Number, AbstractArray, Number},
+            temperature::AbstractArray, x_axis::AbstractArray)
     # evolveP will evolve the probability density forward by an amount of time
-    # evolve_time using a time step dt.
+    # evolveTime using a time step dt.
     # Parameters:
     # density:     The initial value for the probability density, must be a
     #              vector of the same size of the x_axis.
-    # evolve_time: The amount of time to evolve the probability density for in
+    # evolveTime:  The amount of time to evolve the probability density for in
     #              the dimensionless time unit.
     # dt:          The time step that we are using for the evolution.
-    # dis_V_tup:   A tuple containing information on the potential, the first
+    # potentialTup:A tuple containing information on the potential, the first
     #              element is the potential to the left of
     #              the left boundary, the second element is a vector
     #              containing the values of the potential on the x_axis,
     #              the third element is the potential to the right of the
     #              right boundary, the third element is the potential to the
     #              right of the right boundary.
-    # dis_temp:    A vector containing the discretized temperature, must be the
+    # temperature: A vector containing the discretized temperature, must be the
     #              same length as the x_axis.
     # x_axis:      A vector describing the axis that we are discretizing over in
     #              the dimensionless coordinates.
-    n_steps = round(Int, evolve_time/dt)
+    n_steps = round(Int, evolveTime/dt)
     for i = 1:n_steps
-        density = stepP(density, dt, dis_V_tup, dis_temp, x_axis)
+        density = stepP(density, dt, potentialTup, temperature, x_axis)
     end
     density
 end
 
-function evolveT(dis_temp::AbstractArray, evolve_time::Number, dt::Number,
-            dis_V_tup::Tuple{Number, AbstractArray, Number},
+function evolveT(temperature::AbstractArray, evolveTime::Number, dt::Number,
+            potentialTup::Tuple{Number, AbstractArray, Number},
             density::AbstractArray, alpha::Number, beta::Number,
             energy::Number, x_axis::AbstractArray)
     # evolveT will evolve the dicrete temperature forward by an amount
-    # evolve_time using a time step dt. This function keeps the probability
+    # evolveTime using a time step dt. This function keeps the probability
     # density constant.
     # Parameters:
-    # dis_temp:    A vector containing the discretized temperature, must be the
+    # temperature:    A vector containing the discretized temperature, must be the
     #              same length as the x_axis.
-    # evolve_time: The amount of time to evolve the probability density for in
+    # evolveTime: The amount of time to evolve the probability density for in
     #              the dimensionless time unit.
     # dt:          The time step that we are using for the evolution.
-    # dis_V_tup:   A tuple containing information on the potential, the first
+    # potentialTup:A tuple containing information on the potential, the first
     #              element is the potential to the left of
     #              the left boundary, the second element is a vector
     #              containing the values of the potential on the x_axis,
@@ -217,31 +212,31 @@ function evolveT(dis_temp::AbstractArray, evolve_time::Number, dt::Number,
     # energy:      The dimensionless energy of the system.
     # x_axis:      A vector describing the axis that we are discretizing over in
     #              the dimensionless coordinates.
-    n_steps = round(Int, evolve_time/dt)
+    n_steps = round(Int, evolveTime/dt)
     for i = 1:n_steps
-        # Update dis_temp.
-        dis_temp = stepT(dis_temp, dt, density, dis_V_tup, alpha,
+        # Update temperature.
+        temperature = stepT(temperature, dt, density, potentialTup, alpha,
                     beta, energy, x_axis)
     end
-    dis_temp
+    temperature
 end
 
-function evolve_system(density::AbstractArray, dis_temp::AbstractArray,
-            evolve_time::Number, dt::Number,
-            dis_V_tup::Tuple{Number, AbstractArray, Number}, alpha::Number,
+function evolve_system(density::AbstractArray, temperature::AbstractArray,
+            evolveTime::Number, dt::Number,
+            potentialTup::Tuple{Number, AbstractArray, Number}, alpha::Number,
             beta::Number, energy::Number,
             x_axis::AbstractArray)
     # evolve_system will evolve the entire coupled system forward by an amount
-    # evolve_time using a time step dt.
+    # evolveTime using a time step dt.
     # Parameters:
     # density:     The initial value for the probability density, must be a
     #              vector of the same size of the x_axis.
-    # dis_temp:    A vector containing the discretized temperature, must be the
+    # temperature: A vector containing the discretized temperature, must be the
     #              same length as the x_axis.
-    # evolve_time: The amount of time to evolve the probability density for in
+    # evolveTime:  The amount of time to evolve the probability density for in
     #              the dimensionless time unit.
     # dt:          The time step that we are using for the evolution.
-    # dis_V_tup:   A tuple containing information on the potential, the first
+    # potentialTup:A tuple containing information on the potential, the first
     #              element is the potential to the left of
     #              the left boundary, the second element is a vector
     #              containing the values of the potential on the x_axis,
@@ -255,17 +250,17 @@ function evolve_system(density::AbstractArray, dis_temp::AbstractArray,
     # energy:      The dimensionless energy of the system.
     # x_axis:      A vector describing the axis that we are discretizing over in
     #              the dimensionless coordinates.
-        n_steps = round(Int, evolve_time/dt)
+        n_steps = round(Int, evolveTime/dt)
     for i = 1:n_steps
-        dis_temp = stepT(dis_temp, dt, density, dis_V_tup, alpha, beta,
+        temperature = stepT(temperature, dt, density, potentialTup, alpha, beta,
                                 energy, x_axis)
-        density = stepP(density, dt, dis_V_tup, dis_temp, x_axis)
+        density = stepP(density, dt, potentialTup, temperature, x_axis)
     end
-    density, dis_temp
+    density, temperature
 end
 
-function steady_state(density::AbstractArray, dis_temp::AbstractArray,
-            dt::Number, dis_V_tup::Tuple{Number, AbstractArray, Number},
+function steady_state(density::AbstractArray, temperature::AbstractArray,
+            dt::Number, potentialTup::Tuple{Number, AbstractArray, Number},
             alpha::Number, beta::Number, energy::Number,
             x_axis::AbstractArray, tol::Number)
     # Evolve the system forward until it is changing by less than the tolerance.
@@ -273,10 +268,10 @@ function steady_state(density::AbstractArray, dis_temp::AbstractArray,
     # Parameters:
     # density:     The initial value for the probability density, must be a
     #              vector of the same size of the x_axis.
-    # dis_temp:    A vector containing the discretized temperature, must be the
+    # temperature: A vector containing the discretized temperature, must be the
     #              same length as the x_axis.
     # dt:          The time step that we are using for the evolution.
-    # dis_V_tup:   A tuple containing information on the potential, the first
+    # potentialTup:A tuple containing information on the potential, the first
     #              element is the potential to the left of
     #              the left boundary, the second element is a vector
     #              containing the values of the potential on the x_axis,
@@ -294,26 +289,26 @@ function steady_state(density::AbstractArray, dis_temp::AbstractArray,
     #              saying that the system has reached the steady state.
     density_new = density
     density_old = density + 2tol
-    dis_temp_new = dis_temp
-    dis_temp_old = dis_temp + 2tol
+    temperatureNew = temperature
+    temperatureOld = temperature + 2tol
 
-    system_energy = energy_fun(dis_V, density, dis_temp, x_axis)
+    system_energy = energyFun(dis_V, density, temperature, x_axis)
     # Step the system forward until both the probability density and the
     # temperature are changing by less than the tolerance.
     iters = 1
     while (norm(density_new - density_old) > tol ||
-            norm(dis_temp_new - dis_temp_old) > tol)
+            norm(temperatureNew - temperatureOld) > tol)
         density_old = density_new
-        dis_temp_old = dis_temp_new
+        temperatureOld = temperatureNew
 
-        dis_temp_new = stepT(dis_temp, dt, density, dis_V_tup,
+        temperatureNew = stepT(temperature, dt, density, potentialTup,
                             alpha, beta, system_energy, x_axis)
-        density_new = stepP(density, dt, dis_V_tup, dis_temp, x_axis)
+        density_new = stepP(density, dt, potentialTup, temperature, x_axis)
         if iters > 2000
             return (norm(density_new - density_old),
-                    norm(dis_temp_new - dis_temp_old))
+                    norm(temperatureNew - temperatureOld))
         end
         iters += 1
     end
-    density_new, dis_temp_new
+    density_new, temperatureNew
 end
