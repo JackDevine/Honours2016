@@ -58,24 +58,25 @@ function hopping_time(potentialTup::Tuple{Number, AbstractArray, Number},
                 bump::Number, density::AbstractArray,
                 temperature::AbstractArray, alpha::Number, beta::Number,
                 xAxis::AbstractArray; dt=1e-4, tol=0.1)
-    # Given an initial state of the system and a potential with a bump in it,
-    # calculate how long it takes for the probability distribution to get over
-    # the bump.
-    # Parameters:
-    # potential:     An array containg the potential.
-    # bump:          The location of the bump in the potetnial.
-    # density:       The initial density of the system.
-    # temperature:   The initial temperature of the system.
-    # alpha:         Dimensionless parameter that controls the coupling of the
-    #                system.
-    # beta:          Dimensionless parameter that determines how fast the
-    #                temperature gradients diffuse.
-    # xAxis:         The axis that we are working on (dimensionless).
-    # dt:            Size of one time step for simulation.
-    # tol:           If the fraction of the probability density that is to the
-    #                left of the bump is less than tol, then we will consider
-    #                the particle to have crossed the barrier.
-
+    #=
+    Given an initial state of the system and a potential with a bump in it,
+    calculate how long it takes for the probability distribution to get over
+    the bump.
+    Parameters:
+    potential:     An array containg the potential.
+    bump:          The location of the bump in the potetnial.
+    density:       The initial density of the system.
+    temperature:   The initial temperature of the system.
+    alpha:         Dimensionless parameter that controls the coupling of the
+                   system.
+    beta:          Dimensionless parameter that determines how fast the
+                   temperature gradients diffuse.
+    xAxis:         The axis that we are working on (dimensionless).
+    dt:            Size of one time step for simulation.
+    tol:           If the fraction of the probability density that is to the
+                   left of the bump is less than tol, then we will consider
+                   the particle to have crossed the barrier.
+    =#
     # Calculate the location of the center of the initial distribution.
     bump_ind = indmin(abs(xAxis - bump))
     iters = 0

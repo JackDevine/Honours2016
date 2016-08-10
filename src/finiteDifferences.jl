@@ -28,24 +28,25 @@ end
 function stepP(P::AbstractArray, dt::Number,
             potentialTup::Tuple{Number, AbstractArray, Number},
             temperature::AbstractArray, x_axis::AbstractArray)
-    # Evolve the probability density P forward by an amount dt.
-    # Parameters:
-    # P:             Initial probability density, this is a vector of the same
-    #                length as the x_axis (see below).
-    # dt:            Amount of time to simulate forward by.
-    # potentialTup:     A tuple containing information on the potential, the first
-    #                element is the potential to the left of
-    #                the left boundary, the second element is a vector
-    #                containing the values of the potential on the x_axis,
-    #                the third element is the potential to the right of the
-    #                right boundary.
-    # temperature:   A vector of the tempeature.
-    # x_axis:        A vector containing the x coordinates of the points that we
-    #                are doing finite differencing on, the
-    #                points must be equally spaced.
-    # Returns the probability density evolved forward by an amount dt, assumes
-    # periodic boundary conditions.
-
+    #=
+    Evolve the probability density P forward by an amount dt.
+    Parameters:
+    P:             Initial probability density, this is a vector of the same
+                   length as the x_axis (see below).
+    dt:            Amount of time to simulate forward by.
+    potentialTup:  A tuple containing information on the potential, the first
+                   element is the potential to the left of
+                   the left boundary, the second element is a vector
+                   containing the values of the potential on the x_axis,
+                   the third element is the potential to the right of the
+                   right boundary.
+    temperature:   A vector of the tempeature.
+    x_axis:        A vector containing the x coordinates of the points that we
+                   are doing finite differencing on, the
+                   points must be equally spaced.
+    Returns the probability density evolved forward by an amount dt, assumes
+    periodic boundary conditions.
+    =#
     # Augment the discrete temperature and the discrete potential since we will
     # be evaluating them at points beyond the boundary.
     T0 = temperature[1]
@@ -83,34 +84,35 @@ function stepT(temperature::AbstractArray, dt::Number, dis_density::AbstractArra
             potentialTup::Tuple{Number, AbstractArray, Number}, alpha::Number,
             beta::Number, energy::Number,
             x_axis::AbstractArray)
-    # Evolve the temperature forward by an amount dt.
-    # Parameters:
-    # temperature:   Initial temperature, this is a vector of the same length as
-    #                the x_axis (see below).
-    # dt:            Amount of time to simulate forward by.
-    # dis_density:   A vector of the probability density, must be the same
-    #                length as the x_axis (see below).
-    # potentialTup:  A tuple containing information on the potential, the first
-    #                element is the potential to the left of
-    #                the left boundary, the second element is a vector
-    #                containing the values of the potential on the x_axis,
-    #                the third element is the potential to the right of the
-    #                right boundary, the third element is the potential to the
-    #                right of the right boundary.
-    # alpha:         Dimensionless parameter that describes how much the heat
-    #                from the motor affects the temperature.
-    # beta:          Dimensionless parameter that describes how quickly the
-    #                temperature diffuses to a constant value.
-    # init_energy:   The initial energy of the system, must be in dimensionless
-    #                units, i.e. the actual energy divided by E0, where E0 is
-    #                the potetnial energy gained by moving one period up the
-    #                potential (characteristic energy of the system).
-    # x_axis:        A vector containing the x coordinates of the points that we
-    #                are doing finite differencing on, the points must be
-    #                equally spaced.
-    # Returns the temperature evolved forward by an amount dt as well as the
-    # updated energy of the system, assumes periodic boundary conditions.
-
+    #=
+    Evolve the temperature forward by an amount dt.
+    Parameters:
+    temperature:   Initial temperature, this is a vector of the same length as
+                   the x_axis (see below).
+    dt:            Amount of time to simulate forward by.
+    dis_density:   A vector of the probability density, must be the same
+                   length as the x_axis (see below).
+    potentialTup:  A tuple containing information on the potential, the first
+                   element is the potential to the left of
+                   the left boundary, the second element is a vector
+                   containing the values of the potential on the x_axis,
+                   the third element is the potential to the right of the
+                   right boundary, the third element is the potential to the
+                   right of the right boundary.
+    alpha:         Dimensionless parameter that describes how much the heat
+                   from the motor affects the temperature.
+    beta:          Dimensionless parameter that describes how quickly the
+                   temperature diffuses to a constant value.
+    init_energy:   The initial energy of the system, must be in dimensionless
+                   units, i.e. the actual energy divided by E0, where E0 is
+                   the potetnial energy gained by moving one period up the
+                   potential (characteristic energy of the system).
+    x_axis:        A vector containing the x coordinates of the points that we
+                   are doing finite differencing on, the points must be
+                   equally spaced.
+    Returns the temperature evolved forward by an amount dt as well as the
+    updated energy of the system, assumes periodic boundary conditions.
+    =#
     # Augment the discrete density and the discrete potential since we will be
     # evaluating them at points beyond the boundary.
     dis_V0, dis_V, dis_V_end = potentialTup
@@ -157,25 +159,27 @@ end
 function evolveP(density::AbstractArray, evolveTime::Number, dt::Number,
             potentialTup::Tuple{Number, AbstractArray, Number},
             temperature::AbstractArray, x_axis::AbstractArray)
-    # evolveP will evolve the probability density forward by an amount of time
-    # evolveTime using a time step dt.
-    # Parameters:
-    # density:     The initial value for the probability density, must be a
-    #              vector of the same size of the x_axis.
-    # evolveTime:  The amount of time to evolve the probability density for in
-    #              the dimensionless time unit.
-    # dt:          The time step that we are using for the evolution.
-    # potentialTup:A tuple containing information on the potential, the first
-    #              element is the potential to the left of
-    #              the left boundary, the second element is a vector
-    #              containing the values of the potential on the x_axis,
-    #              the third element is the potential to the right of the
-    #              right boundary, the third element is the potential to the
-    #              right of the right boundary.
-    # temperature: A vector containing the discretized temperature, must be the
-    #              same length as the x_axis.
-    # x_axis:      A vector describing the axis that we are discretizing over in
-    #              the dimensionless coordinates.
+    #=
+    evolveP will evolve the probability density forward by an amount of time
+    evolveTime using a time step dt.
+    Parameters:
+    density:     The initial value for the probability density, must be a
+                 vector of the same size of the x_axis.
+    evolveTime:  The amount of time to evolve the probability density for in
+                 the dimensionless time unit.
+    dt:          The time step that we are using for the evolution.
+    potentialTup:A tuple containing information on the potential, the first
+                 element is the potential to the left of
+                 the left boundary, the second element is a vector
+                 containing the values of the potential on the x_axis,
+                 the third element is the potential to the right of the
+                 right boundary, the third element is the potential to the
+                 right of the right boundary.
+    temperature: A vector containing the discretized temperature, must be the
+                 same length as the x_axis.
+    x_axis:      A vector describing the axis that we are discretizing over in
+
+    =#             the dimensionless coordinates.
     n_steps = round(Int, evolveTime/dt)
     for i = 1:n_steps
         density = stepP(density, dt, potentialTup, temperature, x_axis)
@@ -187,31 +191,33 @@ function evolveT(temperature::AbstractArray, evolveTime::Number, dt::Number,
             potentialTup::Tuple{Number, AbstractArray, Number},
             density::AbstractArray, alpha::Number, beta::Number,
             energy::Number, x_axis::AbstractArray)
-    # evolveT will evolve the dicrete temperature forward by an amount
-    # evolveTime using a time step dt. This function keeps the probability
-    # density constant.
-    # Parameters:
-    # temperature:    A vector containing the discretized temperature, must be the
-    #              same length as the x_axis.
-    # evolveTime: The amount of time to evolve the probability density for in
-    #              the dimensionless time unit.
-    # dt:          The time step that we are using for the evolution.
-    # potentialTup:A tuple containing information on the potential, the first
-    #              element is the potential to the left of
-    #              the left boundary, the second element is a vector
-    #              containing the values of the potential on the x_axis,
-    #              the third element is the potential to the right of the
-    #              right boundary, the third element is the potential to the
-    #              right of the right boundary.
-    # density:     The initial value for the probability density, must be a
-    #              vector of the same size of the x_axis.
-    # alpha:       Dimensionless parameter that describes the coupling between
-    #              the probability density and the temperature.
-    # beta:        Dimensionless parameter that describes how quickly the
-    #              temperature diffuses to a constant value.
-    # energy:      The dimensionless energy of the system.
-    # x_axis:      A vector describing the axis that we are discretizing over in
-    #              the dimensionless coordinates.
+    #=
+    evolveT will evolve the dicrete temperature forward by an amount
+    evolveTime using a time step dt. This function keeps the probability
+    density constant.
+    Parameters:
+    temperature:    A vector containing the discretized temperature, must be the
+                 same length as the x_axis.
+    evolveTime: The amount of time to evolve the probability density for in
+                 the dimensionless time unit.
+    dt:          The time step that we are using for the evolution.
+    potentialTup:A tuple containing information on the potential, the first
+                 element is the potential to the left of
+                 the left boundary, the second element is a vector
+                 containing the values of the potential on the x_axis,
+                 the third element is the potential to the right of the
+                 right boundary, the third element is the potential to the
+                 right of the right boundary.
+    density:     The initial value for the probability density, must be a
+                 vector of the same size of the x_axis.
+    alpha:       Dimensionless parameter that describes the coupling between
+                 the probability density and the temperature.
+    beta:        Dimensionless parameter that describes how quickly the
+                 temperature diffuses to a constant value.
+    energy:      The dimensionless energy of the system.
+    x_axis:      A vector describing the axis that we are discretizing over in
+                 the dimensionless coordinates.
+    =#
     n_steps = round(Int, evolveTime/dt)
     for i = 1:n_steps
         # Update temperature.
@@ -226,30 +232,32 @@ function evolve_system(density::AbstractArray, temperature::AbstractArray,
             potentialTup::Tuple{Number, AbstractArray, Number}, alpha::Number,
             beta::Number, energy::Number,
             x_axis::AbstractArray)
-    # evolve_system will evolve the entire coupled system forward by an amount
-    # evolveTime using a time step dt.
-    # Parameters:
-    # density:     The initial value for the probability density, must be a
-    #              vector of the same size of the x_axis.
-    # temperature: A vector containing the discretized temperature, must be the
-    #              same length as the x_axis.
-    # evolveTime:  The amount of time to evolve the probability density for in
-    #              the dimensionless time unit.
-    # dt:          The time step that we are using for the evolution.
-    # potentialTup:A tuple containing information on the potential, the first
-    #              element is the potential to the left of
-    #              the left boundary, the second element is a vector
-    #              containing the values of the potential on the x_axis,
-    #              the third element is the potential to the right of the
-    #              right boundary, the third element is the potential to the
-    #              right of the right boundary.
-    # alpha:       Dimensionless parameter that describes the coupling between
-    #              the probability density and the temperature.
-    # beta:        Dimensionless parameter that describes how quickly the
-    #              temperature diffuses to a constant value.
-    # energy:      The dimensionless energy of the system.
-    # x_axis:      A vector describing the axis that we are discretizing over in
-    #              the dimensionless coordinates.
+    #=
+    evolve_system will evolve the entire coupled system forward by an amount
+    evolveTime using a time step dt.
+    Parameters:
+    density:     The initial value for the probability density, must be a
+                 vector of the same size of the x_axis.
+    temperature: A vector containing the discretized temperature, must be the
+                 same length as the x_axis.
+    evolveTime:  The amount of time to evolve the probability density for in
+                 the dimensionless time unit.
+    dt:          The time step that we are using for the evolution.
+    potentialTup:A tuple containing information on the potential, the first
+                 element is the potential to the left of
+                 the left boundary, the second element is a vector
+                 containing the values of the potential on the x_axis,
+                 the third element is the potential to the right of the
+                 right boundary, the third element is the potential to the
+                 right of the right boundary.
+    alpha:       Dimensionless parameter that describes the coupling between
+                 the probability density and the temperature.
+    beta:        Dimensionless parameter that describes how quickly the
+                 temperature diffuses to a constant value.
+    energy:      The dimensionless energy of the system.
+    x_axis:      A vector describing the axis that we are discretizing over in
+                 the dimensionless coordinates.
+    =#
         n_steps = round(Int, evolveTime/dt)
     for i = 1:n_steps
         temperature = stepT(temperature, dt, density, potentialTup, alpha, beta,
@@ -263,30 +271,32 @@ function steady_state(density::AbstractArray, temperature::AbstractArray,
             dt::Number, potentialTup::Tuple{Number, AbstractArray, Number},
             alpha::Number, beta::Number, energy::Number,
             x_axis::AbstractArray, tol::Number)
-    # Evolve the system forward until it is changing by less than the tolerance.
-    # Returns the steady state probability density function and the temperature.
-    # Parameters:
-    # density:     The initial value for the probability density, must be a
-    #              vector of the same size of the x_axis.
-    # temperature: A vector containing the discretized temperature, must be the
-    #              same length as the x_axis.
-    # dt:          The time step that we are using for the evolution.
-    # potentialTup:A tuple containing information on the potential, the first
-    #              element is the potential to the left of
-    #              the left boundary, the second element is a vector
-    #              containing the values of the potential on the x_axis,
-    #              the third element is the potential to the right of the
-    #              right boundary, the third element is the potential to the
-    #              right of the right boundary.
-    # alpha:       Dimensionless parameter that describes the coupling between
-    #              the probability density and the temperature.
-    # beta:        Dimensionless parameter that describes how quickly the
-    #              temperature diffuses to a constant value.
-    # energy:      The dimensionless energy of the system.
-    # x_axis:      A vector describing the axis that we are discretizing over in
-    #              the dimensionless coordinates.
-    # tol:         The distance between vectors that we will tolerate before
-    #              saying that the system has reached the steady state.
+    #=
+    Evolve the system forward until it is changing by less than the tolerance.
+    Returns the steady state probability density function and the temperature.
+    Parameters:
+    density:     The initial value for the probability density, must be a
+                 vector of the same size of the x_axis.
+    temperature: A vector containing the discretized temperature, must be the
+                 same length as the x_axis.
+    dt:          The time step that we are using for the evolution.
+    potentialTup:A tuple containing information on the potential, the first
+                 element is the potential to the left of
+                 the left boundary, the second element is a vector
+                 containing the values of the potential on the x_axis,
+                 the third element is the potential to the right of the
+                 right boundary, the third element is the potential to the
+                 right of the right boundary.
+    alpha:       Dimensionless parameter that describes the coupling between
+                 the probability density and the temperature.
+    beta:        Dimensionless parameter that describes how quickly the
+                 temperature diffuses to a constant value.
+    energy:      The dimensionless energy of the system.
+    x_axis:      A vector describing the axis that we are discretizing over in
+                 the dimensionless coordinates.
+    tol:         The distance between vectors that we will tolerate before
+                 saying that the system has reached the steady state.
+    =#
     density_new = density
     density_old = density + 2tol
     temperatureNew = temperature
