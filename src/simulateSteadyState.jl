@@ -22,7 +22,7 @@ dx = (xAxis[end] - xAxis[1])/nPoints # Grid spacing
 # V(x, time) = ff*x^2 + 6ff # Potential
 sigma = 0.1
 bump = 9
-V(x) = 0.3x^3 + 3.0ff*exp(-((x-bump)^2)/(2sigma^2))
+V(x) = 0.3x^3 + 5.0ff*exp(-((x-bump)^2)/(2sigma^2))
 potential = Float64[V(x) for x in xAxis]
 potential0, potentialEnd = V(xAxis[1] - dx), V(xAxis[end] + dx)
 potentialTup = (potential0, potential, potentialEnd)
@@ -53,30 +53,34 @@ boltzmann_density = boltzmann_density/discrete_quad(boltzmann_density,
 #             temp, xAxis, ones(xAxis)*T0)
 # legend(["Potential", "Coupled probability density",
 #         "Uncoupled probability density", "Temperature", "Initial temperature"])
-
+"""
+    hopping_time(potentialTup::Tuple{Number, AbstractArray, Number},
+                bump::Number, density::AbstractArray,
+                temperature::AbstractArray, alpha::Number, beta::Number,
+                xAxis::AbstractArray; dt=1e-4, tol=0.1)
+Given an initial state of the system and a potential with a bump in it,
+calculate how long it takes for the probability distribution to get over
+the bump.
+# Arguments:
+* `potentialTup::Tuple{Number, AbstractArray, Number}`: A tuple containg the
+potential.
+* `bump::Number`: The location of the bump in the potetnial.
+* `density::AbstractArray`: The initial density of the system.
+* `temperature::AbstractArray`: The initial temperature of the system.
+* `alpha::Number`: Dimensionless parameter that controls the coupling of the
+system.
+* `beta::Number`: Dimensionless parameter that determines how fast the
+temperature gradients diffuse.
+* `xAxis::AbstractArray`: The axis that we are working on (dimensionless).
+* `dt::Number`: Size of one time step for simulation.
+* `tol::Number`: If the fraction of the probability density that is to the left
+ of the bump is less than tol, then we will consider the particle to have
+ crossed the barrier.
+"""
 function hopping_time(potentialTup::Tuple{Number, AbstractArray, Number},
                 bump::Number, density::AbstractArray,
                 temperature::AbstractArray, alpha::Number, beta::Number,
                 xAxis::AbstractArray; dt=1e-4, tol=0.1)
-    #=
-    Given an initial state of the system and a potential with a bump in it,
-    calculate how long it takes for the probability distribution to get over
-    the bump.
-    Parameters:
-    potential:     An array containg the potential.
-    bump:          The location of the bump in the potetnial.
-    density:       The initial density of the system.
-    temperature:   The initial temperature of the system.
-    alpha:         Dimensionless parameter that controls the coupling of the
-                   system.
-    beta:          Dimensionless parameter that determines how fast the
-                   temperature gradients diffuse.
-    xAxis:         The axis that we are working on (dimensionless).
-    dt:            Size of one time step for simulation.
-    tol:           If the fraction of the probability density that is to the
-                   left of the bump is less than tol, then we will consider
-                   the particle to have crossed the barrier.
-    =#
     # Calculate the location of the center of the initial distribution.
     bump_ind = indmin(abs(xAxis - bump))
     iters = 0
@@ -97,11 +101,11 @@ end
 #
 # hopping_time(potentialTup, bump, P0, temperature, alpha, beta, heat_capacity,
 #                     xAxis; dt=1e-4, tol=0.7)
-nPoints = 2
-alphaMin = 0.0002
-alphaMax = 0.0003
-betaMin = 0.1
-betaMax = 40.0
+nPoints = 5
+alphaMin = -0.00003
+alphaMax = -0.0005
+betaMin = 0.00001
+betaMax = 0.0005
 betaVec = linspace(betaMin, betaMax, nPoints)
 alphaVec = linspace(alphaMin, alphaMax, nPoints)
 @time a = Float64[hopping_time(potentialTup, bump, P0, temperature, alpha, beta,
