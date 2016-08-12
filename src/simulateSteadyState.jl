@@ -62,7 +62,7 @@ Given an initial state of the system and a potential with a bump in it,
 calculate how long it takes for the probability distribution to get over
 the bump.
 # Arguments:
-* `potentialTup::Tuple{Number, AbstractArray, Number}`: A tuple containg the
+* `potentialTup::Tuple{Number, AbstractArray, Number}`: A tuple containing the
 potential.
 * `bump::Number`: The location of the bump in the potetnial.
 * `density::AbstractArray`: The initial density of the system.
@@ -71,27 +71,23 @@ potential.
 system.
 * `beta::Number`: Dimensionless parameter that determines how fast the
 temperature gradients diffuse.
-* `xAxis::AbstractArray`: The axis that we are working on (dimensionless).
-* `dt::Number`: Size of one time step for simulation.
-* `tol::Number`: If the fraction of the probability density that is to the left
- of the bump is less than tol, then we will consider the particle to have
- crossed the barrier.
+* `xAxis::AbstractArray`: The axis that we are working on.
+* `dt=1e-4`: Size of one time step for simulation.
 """
 function hopping_time(potentialTup::Tuple{Number, AbstractArray, Number},
                 bump::Number, density::AbstractArray,
                 temperature::AbstractArray, alpha::Number, beta::Number,
-                xAxis::AbstractArray; dt=1e-4, tol=0.1)
-    # Calculate the location of the center of the initial distribution.
+                xAxis::AbstractArray; dt=1e-4)
     bump_ind = indmin(abs(xAxis - bump))
     iters = 0
-    # while discrete_quad(density[bump_ind:end], bump, xAxis[end]) > tol
+    # If the mean of the probability distribution crosses the bump, then the
+    # system has crossed the bump.
     while discrete_quad(density.*xAxis, xAxis[1], xAxis[end]) > bump
         density = stepP(density, dt, potentialTup, temperature, xAxis)
         temperature = stepT(temperature, dt, density, potentialTup, alpha,
                             beta, energy, xAxis)
         iters += 1
-        # println(discrete_quad(density.*xAxis, xAxis[1], xAxis[end]))
-        if iters > 2000
+        if iters > 5000
             println("alpha = $alpha , beta = $beta DNF")
             return dt*iters
         end
@@ -101,11 +97,11 @@ end
 #
 # hopping_time(potentialTup, bump, P0, temperature, alpha, beta, heat_capacity,
 #                     xAxis; dt=1e-4, tol=0.7)
-nPoints = 5
-alphaMin = -0.00003
+nPoints = 250
+alphaMin = -0.0001
 alphaMax = -0.0005
 betaMin = 0.00001
-betaMax = 0.0005
+betaMax = 0.005
 betaVec = linspace(betaMin, betaMax, nPoints)
 alphaVec = linspace(alphaMin, alphaMax, nPoints)
 @time a = Float64[hopping_time(potentialTup, bump, P0, temperature, alpha, beta,
