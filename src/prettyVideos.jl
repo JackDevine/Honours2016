@@ -7,33 +7,31 @@ close("all")
 
 # Directory for storing the results.
 prettyVideoDirectory = (
-"C:\\Users\\devja964\\Documents\\Project\\Code" )
+"/Users/jackdevine/Desktop/MolecularMotors/Code" )
 
 ff = 3.0 # Forcing for the potential
 LL = 1.0 # Length of one period
-fName = "coupled.txt"  # The name of the output file.
+fName = "bistable.txt"  # The name of the output file.
 params = """
-T0 = 10.0  # Temperature.
-alpha = -0.0026
-beta = 2.0
-slope = 30.0
-v_0 = 8 # Amplitude of the oscillations in the potential
+T0 = 15.0  # Temperature.
+alpha = -0.00076
+beta = 0.1
 
 nPeriods = 6 # The number of periods to stretch out for
 nPoints = 1000 # The number of points on the xAxis
 nSteps = 20000
 dt = 5e-6 # Size of the time step (keep this much smaller than the grid
              # spacing)
-meanInit = 3.7
-xi, xe = 0, 5
-V(x) = slope*x + 1 + v_0*sin((2pi/LL)*x)
+meanInit = 0.6
+xi, xe = -2, 2
+V(x) = 5*(1.9abs(x) - 1.0)^2
 skip = 100  # Frames to skip.
 """
 
-outfile = open("$(prettyVideoDirectory)\\$fName", "w")
+outfile = open("$(prettyVideoDirectory)/$fName", "w")
 write(outfile, params)
 close(outfile)
-f = open("$(prettyVideoDirectory)\\$fName")
+f = open("$(prettyVideoDirectory)/$fName")
 params = readlines(f)
 close(f)
 for line in params
@@ -86,8 +84,8 @@ end
 
 plot(xAxis[2:end], 0.000001heat[:, end], xAxis, density, xAxis, 0.02potential,
 xAxis, temperature)
-writedlm("$(prettyVideoDirectory)\\xAxis.txt", xAxis)
-writedlm("$(prettyVideoDirectory)\\potential.txt", potential)
-writedlm("$(prettyVideoDirectory)\\density.txt", P[:, 1:skip:end])
-writedlm("$(prettyVideoDirectory)\\temperature.txt", T[:, 1:skip:end])
-writedlm("$(prettyVideoDirectory)\\heat.txt", heat[:, 1:skip:end])
+writedlm("$(prettyVideoDirectory)/xAxis.txt", xAxis)
+writedlm("$(prettyVideoDirectory)/potential.txt", potential)
+writedlm("$(prettyVideoDirectory)/density.txt", P[:, 1:skip:end])
+writedlm("$(prettyVideoDirectory)/temperature.txt", T[:, 1:skip:end])
+writedlm("$(prettyVideoDirectory)/heat.txt", heat[:, 1:skip:end])

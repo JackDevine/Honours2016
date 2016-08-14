@@ -2,8 +2,9 @@
 # functions use the dimensionalized equations.
 """
     discrete_quad(vec::AbstractArray, start::Number, fin::Number)
-Use the trapezoid rule to do discrete quadrature on a vector vec where the
-points in vec are evenly spaced from start to fin.
+Do discrete quadrature on a vector vec where the points in vec are evenly
+spaced from start to fin, if vec is even, use the Simpson rule, otherwise use
+the trapezoid rule.
 # Examples
 ```julia
 julia> discrete_quad(sin(linspace(0, pi, 1000)), 0, pi)
@@ -11,8 +12,21 @@ julia> 1.9979983534190815
 ```
 """
 function discrete_quad(vec::AbstractArray, start::Number, fin::Number)
-    h = (fin - start)/length(vec)
-    (h/2)*(vec[1] + vec[end] + 2*sum(vec[2:end-1]))
+    nn = length(vec)  # Number of points that we are discretizing over.
+    h = (fin - start)/nn
+    if length(vec) % 2 == 1
+        # Use the trapezoid rule.
+        return (h/2)*(vec[1] + vec[end] + 2*sum(vec[2:end-1]))
+    end
+    # Otherwise use the simpson rule.
+    s = vec[1] + vec[end]
+    for i in 1:2:nn
+        s += 4*vec[i]
+    end
+    for i in 2:2:nn-1
+        s += 2*vec[i]
+    end
+    s*h/3
 end
 
 """
@@ -56,10 +70,15 @@ right boundary.
 finite differencing on, the points must be equally spaced.
 Returns the probability density evolved forward by an amount dt, assumes
 periodic boundary conditions.
+* `bndType::Symbol`: Specify the solution or the derivative at the boudary,
+    * `:dirichlet`: The density remains consant at the boudaries.
+    * `:periodic`: The density is the same at the left and right sides.
+    * `:neumann`: The derivative is zero at the boundaries.
 """
 function stepP(P::AbstractArray, dt::Number,
             potentialTup::Tuple{Number, AbstractArray, Number},
-            temperature::AbstractArray, xAxis::AbstractArray)
+            temperature::AbstractArray, xAxis::AbstractArray,
+            bndType::Symbol=:dirichlet)
     # Augment the discrete temperature and the discrete potential since we will
     # be evaluating them at points beyond the boundary.
     T0 = temperature[1]
@@ -81,11 +100,18 @@ function stepP(P::AbstractArray, dt::Number,
     diag0 = rr*(-(dis_V[3:end] - 2dis_V[2:end-1] + dis_V[1:end-2])
            + 2*temperature[2:end-1]) + 1
     diag1 = rr*(-0.25*(dis_V[4:end] - dis_V[2:end-2]) - temperature[4:end])
-
-    A = spdiagm((diag_minus1, diag0, diag1), (-1, 0, 1))
-    # Periodic boundary conditions.
-    # A[1, end] = diag_minus1[1]
-    # A[end, 1] = diag1[end]
+    if bndType == :dirichlet
+        A = spdiagm((diag_minus1, diag0, diag1), (-1, 0, 1))
+    elseif bndType == :periodic
+        A = spdiagm((diag_minus1, diag0, diag1), (-1, 0, 1))
+        A[1, end] = diag_minus1[1]
+        A[end, 1] = diag1[end]
+    elseif bndType == :neumann
+        # Derivative is zero at the boundaries.
+        temperature[1], temperature[end] = 0.0, 0.0
+        A[1, 2] = -A[1, 1]
+        A[end, end - 1] = -A[end, end]
+    end
 
     B = 2speye(size(A)...) - A  # B represents the backward Euler step.
     P = A\(B*P)  # Since A*P^{n+1} = B*P^n
@@ -118,12 +144,14 @@ energy of the system).
 that we are doing finite differencing on, the points must be equally spaced.
 Returns the temperature evolved forward by an amount dt as well as the
 updated energy of the system, assumes periodic boundary conditions.
-
+* `bndType::Symbol=:neumann`: The type of boundary condition for the temperature
+can includes `:neumann`, `:dirichlet`, `:periodic`.
 """
-function stepT(temperature::AbstractArray, dt::Number, dis_density::AbstractArray,
+function stepT(temperature::AbstractArray, dt::Number,
+            dis_density::AbstractArray,
             potentialTup::Tuple{Number, AbstractArray, Number}, alpha::Number,
             beta::Number, energy::Number,
-            xAxis::AbstractArray)
+            xAxis::AbstractArray, bndType::Symbol=:neumann)
     # Augment the discrete density and the discrete potential since we will be
     # evaluating them at points beyond the boundary.
     dis_V0, dis_V, dis_V_end = potentialTup
@@ -146,18 +174,24 @@ function stepT(temperature::AbstractArray, dt::Number, dis_density::AbstractArra
     diag_minus1 += in_homo[2:end]
     diag0 += in_homo
     diag1 += in_homo[1:end-1]
-    A = spdiagm((diag_minus1, diag0, diag1), (-1, 0, 1))
-    # Periodic boundary conditions.
-    # A[1, end] = diag_minus1[1]
-    # A[end, 1] = diag1[end]
-    # Neumann boundary conditions (derivative is zero at the boundaries).
-    temperature[1], temperature[end] = 0.0, 0.0
-    A[1, 2] = -A[1, 1]
-    A[end, end - 1] = -A[end, end]
+
+    if bndType == :neumann
+        # Derivative is zero at the boundaries.
+        A = spdiagm((diag_minus1, diag0, diag1), (-1, 0, 1))
+        temperature[1], temperature[end] = 0.0, 0.0
+        A[1, 2] = -A[1, 1]
+        A[end, end - 1] = -A[end, end]
+    elseif bndType == :periodic
+        A = spdiagm((diag_minus1, diag0, diag1), (-1, 0, 1))
+        A[1, end] = diag_minus1[1]
+        A[end, 1] = diag1[end]
+    elseif bndType == :dirichlet
+        A = Tridiagonal(diag_minus1, diag0, diag1)
+    end
     B = 2speye(size(A)...) - A
     # Update the temperature using the Crank Nicolson scheme.
-    # temperature = A\(B*temperature)
-    temperature = A\temperature
+    temperature = A\(B*temperature)
+    # temperature = A\temperature
     # The scaling of the temperature.
     potential_energy = discrete_quad(dis_V.*dis_density,
                             xAxis[1], xAxis[end])

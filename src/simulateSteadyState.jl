@@ -13,18 +13,20 @@ alpha = 0.0004
 betad = 0.1
 
 nPeriods = 6 # The number of periods to stretch out for
-nPoints = 600 # The number of points on the xAxis
-dt = 2e-5 # Size of the time step (keep this much smaller than the grid
+nPoints = 1000 # The number of points on the xAxis
+dt = 1e-6 # Size of the time step (keep this much smaller than the grid
              # spacing)
 
 # xAxis = linspace(-LL*nPeriods, LL*nPeriods, nPoints)
-xAxis = linspace(5LL, 10LL, nPoints)
+xAxis = linspace(-2LL, 2LL, nPoints)
 dx = (xAxis[end] - xAxis[1])/nPoints # Grid spacing
 
 # V(x, time) = ff*x^2 + 6ff # Potential
 sigma = 0.1
-bump = 9
-V(x) = 0.25x^3 + 3.2ff*exp(-((x-bump)^2)/(2sigma^2))
+bump = 0.0
+# V(x) = 0.25x^3 + 3.2ff*exp(-((x-bump)^2)/(2sigma^2))
+# V(x) = 28. - 56.35x + 37.1333x^2 - 9.65x^3 + 0.866667x^4
+V(x) = 10*(1.9abs(x) - 1.1)^2 + 5x
 potential = Float64[V(x) for x in xAxis]
 potential0, potentialEnd = V(xAxis[1] - dx), V(xAxis[end] + dx)
 potentialTup = (potential0, potential, potentialEnd)
@@ -34,7 +36,7 @@ temperatureFun(x) = T0
 temperature = Float64[temperatureFun(x) for x in xAxis]
 
 sigma  = 0.05
-P0 = Float64[(1/(sigma*sqrt(2pi)))*exp(-((x-9.3)^2)/(2sigma^2))
+P0 = Float64[(1/(sigma*sqrt(2pi)))*exp(-((x-0.6)^2)/(2sigma^2))
               for x in xAxis]
 # P0 = ones(xAxis)
 P0 /= discrete_quad(P0, xAxis[1], xAxis[end])
@@ -89,7 +91,7 @@ function hopping_time(potentialTup::Tuple{Number, AbstractArray, Number},
         temperature = stepT(temperature, dt, density, potentialTup, alpha,
                             betad, energy, xAxis)
         iters += 1
-        if iters > 5000
+        if iters > 10000
             println("alpha = $alpha , betad = $betad DNF")
             return dt*iters
         end
