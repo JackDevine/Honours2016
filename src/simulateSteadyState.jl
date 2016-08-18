@@ -80,6 +80,7 @@ function hopping_time(potentialTup::Tuple{Number, AbstractArray, Number},
                 xAxis::AbstractArray; dt=1e-4)
     bump_ind = indmin(abs(xAxis - bump))
     iters = 0
+    energy = energyFun(potentialTup[2], density, temperature, alpha, xAxis)
     # If the mean of the probability distribution crosses the bump, then the
     # system has crossed the bump.
     while discrete_quad(density.*xAxis, xAxis[1], xAxis[end]) > bump
@@ -94,29 +95,31 @@ function hopping_time(potentialTup::Tuple{Number, AbstractArray, Number},
     end
     ret = dt*iters
 end
+hopping_time(alpha, beta) = hopping_time(potentialTup, bump, density,
+ temperature, alpha, beta, xAxis; dt=1e-4)
 #
 # hopping_time(potentialTup, bump, P0, temperature, alpha, beta, heat_capacity,
 #                     xAxis; dt=1e-4, tol=0.7)
-nPoints = 250
-alphaMin = -0.0001
-alphaMax = -0.0005
-betaMin = 0.00001
-betaMax = 0.005
-betaVec = linspace(betaMin, betaMax, nPoints)
-alphaVec = linspace(alphaMin, alphaMax, nPoints)
-@time a = Float64[hopping_time(potentialTup, bump, P0, temperature, alpha, beta,
-                               xAxis)
-                    for alpha in linspace(alphaMin, alphaMax, nPoints),
-                    beta in linspace(betaMin, betaMax, nPoints)]
-# @time a = map((alpha, beta) -> hopping_time(potentialTup, bump, P0, temperature, alpha, beta,
-#                     heat_capacity, xAxis),
-#                     linspace(0.0, 0.8, nPoints),
-#                     linspace(1, 4, nPoints))
-
-matshow(a)
-xlabel(L"\beta")
-ylabel(L"\alpha")
-figure()
-surf(betaVec, alphaVec, a)
-xlabel(L"\beta")
-ylabel(L"\alpha")
+# nPoints = 250
+# alphaMin = -0.0001
+# alphaMax = -0.0005
+# betaMin = 0.00001
+# betaMax = 0.005
+# betaVec = linspace(betaMin, betaMax, nPoints)
+# alphaVec = linspace(alphaMin, alphaMax, nPoints)
+# @time a = Float64[hopping_time(potentialTup, bump, P0, temperature, alpha, beta,
+#                                xAxis)
+#                     for alpha in linspace(alphaMin, alphaMax, nPoints),
+#                     beta in linspace(betaMin, betaMax, nPoints)]
+# # @time a = map((alpha, beta) -> hopping_time(potentialTup, bump, P0, temperature, alpha, beta,
+# #                     heat_capacity, xAxis),
+# #                     linspace(0.0, 0.8, nPoints),
+# #                     linspace(1, 4, nPoints))
+#
+# matshow(a)
+# xlabel(L"\beta")
+# ylabel(L"\alpha")
+# figure()
+# surf(betaVec, alphaVec, a)
+# xlabel(L"\beta")
+# ylabel(L"\alpha")
