@@ -52,4 +52,5 @@ end
 plot(xAxis, 0.5potential, xAxis, 5density, xAxis, 5density2, xAxis,
             temp, xAxis, ones(xAxis)*T0)
 legend(["Potential", "Coupled probability density",
-        "Uncoupled probability density", "Temperature", "Initial temperature"], loc=2)
+        "Uncoupled probability density", "Temperature", "Initial temperature"],
+        loc=2)

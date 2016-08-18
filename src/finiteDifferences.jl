@@ -101,19 +101,22 @@ function stepP(P::AbstractArray, dt::Number,
            + 2*temperature[2:end-1]) + 1
     diag1 = rr*(-0.25*(dis_V[4:end] - dis_V[2:end-2]) - temperature[4:end])
     if bndType == :dirichlet
-        A = spdiagm((diag_minus1, diag0, diag1), (-1, 0, 1))
+        A = Tridiagonal(diag_minus1, diag0, diag1)
+        B = Tridiagonal(-diag_minus1, 2 - diag0, -diag1)
     elseif bndType == :periodic
         A = spdiagm((diag_minus1, diag0, diag1), (-1, 0, 1))
         A[1, end] = diag_minus1[1]
         A[end, 1] = diag1[end]
+        B = 2speye(size(A)...) - A
     elseif bndType == :neumann
         # Derivative is zero at the boundaries.
-        temperature[1], temperature[end] = 0.0, 0.0
+        A = spdiagm((diag_minus1, diag0, diag1), (-1, 0, 1))
+        B = 2speye(size(A)...) - A
         A[1, 2] = -A[1, 1]
         A[end, end - 1] = -A[end, end]
+        B[1, 2] = -B[1, 1]
+        B[end, end - 1] = -B[end, end]
     end
-
-    B = 2speye(size(A)...) - A  # B represents the backward Euler step.
     P = A\(B*P)  # Since A*P^{n+1} = B*P^n
     # Return the normalized probability density
     P = P/discrete_quad(P, xAxis[1], xAxis[end])
@@ -178,17 +181,20 @@ function stepT(temperature::AbstractArray, dt::Number,
     if bndType == :neumann
         # Derivative is zero at the boundaries.
         A = spdiagm((diag_minus1, diag0, diag1), (-1, 0, 1))
-        temperature[1], temperature[end] = 0.0, 0.0
+        B = 2speye(size(A)...) - A
         A[1, 2] = -A[1, 1]
         A[end, end - 1] = -A[end, end]
+        B[1, 2] = -B[1, 1]
+        B[end, end - 1] = -B[end, end]
     elseif bndType == :periodic
         A = spdiagm((diag_minus1, diag0, diag1), (-1, 0, 1))
         A[1, end] = diag_minus1[1]
         A[end, 1] = diag1[end]
+        B = 2speye(size(A)...) - A
     elseif bndType == :dirichlet
         A = Tridiagonal(diag_minus1, diag0, diag1)
+        B = Tridiagonal(-diag_minus1, 2 - diag0, -diag1)
     end
-    B = 2speye(size(A)...) - A
     # Update the temperature using the Crank Nicolson scheme.
     temperature = A\(B*temperature)
     # temperature = A\temperature
@@ -375,5 +381,3 @@ function steady_state(density::AbstractArray, temperature::AbstractArray,
     end
     density_new, temperatureNew
 end
-Contact GitHub API Training Shop Blog About
-© 2016 GitHub, Inc. Terms Privacy Security Status Help
