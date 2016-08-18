@@ -422,5 +422,5 @@ function hopping_time(potentialTup::Tuple{Number, AbstractArray, Number},
             return dt*iters
         end
     end
-    ret = dt*iters
+    dt*iters
 end

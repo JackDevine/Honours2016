@@ -113,6 +113,6 @@ hopping_time(alpha, beta) = hopping_time(potentialTup, bump, density, temperatur
 facts("Hopping time") do
     @fact ( hopping_time(potentialTup, 1.0, density, temperature, alpha,
                     beta, xAxis; dt=1e-4)
-                    --> 1.0)
+                    --> 0.0)
                     "This system has already crossed the supposed bump."
 end
