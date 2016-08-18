@@ -288,27 +288,26 @@ end
 Evolve the entire coupled system forward by an amount evolveTime using a time
 step dt.
 # Arguments:
-density:     The initial value for the probability density, must be a
-             vector of the same size of the xAxis.
-temperature: A vector containing the discretized temperature, must be the
-             same length as the xAxis.
-evolveTime:  The amount of time to evolve the probability density for in
-             the dimensionless time unit.
-dt:          The time step that we are using for the evolution.
-potentialTup:A tuple containing information on the potential, the first
-             element is the potential to the left of
-             the left boundary, the second element is a vector
-             containing the values of the potential on the xAxis,
-             the third element is the potential to the right of the
-             right boundary, the third element is the potential to the
-             right of the right boundary.
-alpha:       Dimensionless parameter that describes the coupling between
-             the probability density and the temperature.
-beta:        Dimensionless parameter that describes how quickly the
-             temperature diffuses to a constant value.
-energy:      The dimensionless energy of the system.
-xAxis:      A vector describing the axis that we are discretizing over in
-             the dimensionless coordinates.
+* `density::AbstractArray`: The initial value for the probability density, must
+ be a vector of the same size of the xAxis.
+* `temperature::AbstractArray`: A vector containing the discretized
+temperature, must be the same length as the xAxis.
+* `evolveTime::Number`: The amount of time to evolve the probability density
+ for in the dimensionless time unit.
+* `dt::Number`: The time step that we are using for the evolution.
+* `potentialTup::Tuple{Number, AbstractArray, Number}`:A tuple containing
+ information on the potential, the first element is the potential to the left
+ of the left boundary, the second element is a vector containing the values of
+ the potential on the xAxis, the third element is the potential to the right of
+ the right boundary, the third element is the potential to the right of the
+ right boundary.
+* `alpha::Number`: Dimensionless parameter that describes the coupling between
+ the probability density and the temperature.
+* `beta::Number`: Dimensionless parameter that describes how quickly the
+ temperature diffuses to a constant value.
+* `energy::Number`: The dimensionless energy of the system.
+* `xAxis::AbstractArray`: A vector describing the axis that we are discretizing
+ over in the dimensionless coordinates.
 """
 function evolve_system(density::AbstractArray, temperature::AbstractArray,
             evolveTime::Number, dt::Number,

@@ -78,7 +78,7 @@ end
 LL = 1.0 # Length of one period
 T0 = 7.0 # Temperature at the ends (i.e. bath temperature)
 
-alpha = 0.0004
+alpha = 0.0001
 beta = 0.1
 
 nPeriods = 6 # The number of periods to stretch out for
@@ -108,11 +108,14 @@ P0 /= discrete_quad(P0, xAxis[1], xAxis[end])
 density = P0
 
 # Define a method of hopping_time for this particular potential.
-hopping_time(alpha, beta) = hopping_time(potentialTup, bump, density, temperature, alpha, beta,
-                xAxis; dt=1e-4)
+hopping_time(alpha, beta) = hopping_time(potentialTup, bump, density,
+                temperature, alpha, beta, xAxis; dt=1e-4)
 facts("Hopping time") do
     @fact ( hopping_time(potentialTup, 1.0, density, temperature, alpha,
                     beta, xAxis; dt=1e-4)
                     --> 0.0)
                     "This system has already crossed the supposed bump."
+    @fact (hopping_time(potentialTup, bump, density,
+                    temperature, alpha, beta, xAxis; dt=1e-4) --> 0.1568)
+                    "hopping_time has regressed"
 end
