@@ -38,7 +38,7 @@ boltzmann_density = exp(-potential/T0)
 boltzmann_density = boltzmann_density/discrete_quad(boltzmann_density,
                    xAxis[1], xAxis[end])
 
-nPoints = 5
+nPoints = 500
 alphaMin = -0.00001
 alphaMax = -0.00005
 betaMin = 0.001
