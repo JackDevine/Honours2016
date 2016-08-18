@@ -73,3 +73,46 @@ facts("Convergence tests.") do
             --> less_than(tol) ) """The probability density in the system
                                     evolution is not converging."""
 end
+
+# Define the physics for the hopping_time function.
+LL = 1.0 # Length of one period
+T0 = 7.0 # Temperature at the ends (i.e. bath temperature)
+
+alpha = 0.0004
+beta = 0.1
+
+nPeriods = 6 # The number of periods to stretch out for
+nPoints = 600 # The number of points on the xAxis
+dt = 1e-4 # Size of the time step (keep this much smaller than the grid
+             # spacing)
+xAxis = linspace(-2LL, 2LL, nPoints)
+dx = (xAxis[end] - xAxis[1])/nPoints # Grid spacing
+
+sigma = 0.1
+bump = 0.0
+sigma = 0.1
+V(x) = x^4 - 3*(exp((-(x - 0.5)^2)/sigma) + exp((-(x + 0.5)^2)/sigma)) + 3x
+
+potential = Float64[V(x) for x in xAxis]
+potential0, potentialEnd = V(xAxis[1] - dx), V(xAxis[end] + dx)
+potentialTup = (potential0, potential, potentialEnd)
+
+temperatureFun(x) = T0
+temperature = Float64[temperatureFun(x) for x in xAxis]
+
+sigma  = 0.05
+P0 = Float64[(1/(sigma*sqrt(2pi)))*exp(-((x-0.5)^2)/(2sigma^2))
+              for x in xAxis]
+# P0 = ones(xAxis)
+P0 /= discrete_quad(P0, xAxis[1], xAxis[end])
+density = P0
+
+# Define a method of hopping_time for this particular potential.
+hopping_time(alpha, beta) = hopping_time(potentialTup, bump, density, temperature, alpha, beta,
+                xAxis; dt=1e-4)
+facts("Hopping time") do
+    @fact ( hopping_time(potentialTup, 1.0, density, temperature, alpha,
+                    beta, xAxis; dt=1e-4)
+                    --> 1.0)
+                    "This system has already crossed the supposed bump."
+end

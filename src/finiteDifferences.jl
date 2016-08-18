@@ -381,3 +381,46 @@ function steady_state(density::AbstractArray, temperature::AbstractArray,
     end
     density_new, temperatureNew
 end
+
+"""
+    hopping_time(potentialTup::Tuple{Number, AbstractArray, Number},
+                bump::Number, density::AbstractArray,
+                temperature::AbstractArray, alpha::Number, beta::Number,
+                xAxis::AbstractArray; dt=1e-4, tol=0.1)
+Given an initial state of the system and a potential with a bump in it,
+calculate how long it takes for the probability distribution to get over
+the bump.
+# Arguments:
+* `potentialTup::Tuple{Number, AbstractArray, Number}`: A tuple containing the
+potential.
+* `bump::Number`: The location of the bump in the potetnial.
+* `density::AbstractArray`: The initial density of the system.
+* `temperature::AbstractArray`: The initial temperature of the system.
+* `alpha::Number`: Dimensionless parameter that controls the coupling of the
+system.
+* `beta::Number`: Dimensionless parameter that determines how fast the
+temperature gradients diffuse.
+* `xAxis::AbstractArray`: The axis that we are working on.
+* `dt=1e-4`: Size of one time step for simulation.
+"""
+function hopping_time(potentialTup::Tuple{Number, AbstractArray, Number},
+                bump::Number, density::AbstractArray,
+                temperature::AbstractArray, alpha::Number, beta::Number,
+                xAxis::AbstractArray; dt=1e-4)
+    bump_ind = indmin(abs(xAxis - bump))
+    iters = 0
+    energy = energyFun(potentialTup[2], density, temperature, alpha, xAxis)
+    # If the mean of the probability distribution crosses the bump, then the
+    # system has crossed the bump.
+    while discrete_quad(density.*xAxis, xAxis[1], xAxis[end]) > bump
+        density = stepP(density, dt, potentialTup, temperature, xAxis)
+        temperature = stepT(temperature, dt, density, potentialTup, alpha,
+                            beta, energy, xAxis)
+        iters += 1
+        if iters > 5000
+            println("alpha = $alpha , beta = $beta DNF")
+            return dt*iters
+        end
+    end
+    ret = dt*iters
+end
