@@ -154,7 +154,7 @@ function stepT(temperature::AbstractArray, dt::Number,
             dis_density::AbstractArray,
             potentialTup::Tuple{Number, AbstractArray, Number}, alpha::Number,
             beta::Number, energy::Number,
-            xAxis::AbstractArray, bndType::Symbol=:neumann)
+            xAxis::AbstractArray; bndType::Symbol=:neumann)
     # Augment the discrete density and the discrete potential since we will be
     # evaluating them at points beyond the boundary.
     dis_V0, dis_V, dis_V_end = potentialTup
@@ -166,7 +166,8 @@ function stepT(temperature::AbstractArray, dt::Number,
     dx = (xAxis[end] - xAxis[1])/n_points
     rr = dt/(2dx^2)
     # The inhomogeniety at the end of the equation.
-    in_homo = rr*(alpha/4)*dis_density[2:end-1].*(dis_V[3:end] - dis_V[1:end-2])
+    in_homo = rr*(alpha/4)*dis_density[2:end-1]
+                    .*(dis_V[3:end] - dis_V[1:end-2]).^2
     # The diagonals of the matrix.
     diag_minus1 = rr*((alpha/4)*dis_density[1:end-3]
                 .*(dis_V[3:end-1] - dis_V[1:end-3]) - beta)

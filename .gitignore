@@ -171,3 +171,9 @@ TSWLatexianTemp*
 # that are not particularly meaningful.
 
 src\simulateSystem.jl
+
+*.pdf
+
+*.swp
+
+Thesis/Thesis.pdf
