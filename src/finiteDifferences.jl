@@ -77,7 +77,7 @@ periodic boundary conditions.
 """
 function stepP(P::AbstractArray, dt::Number,
             potentialTup::Tuple{Number, AbstractArray, Number},
-            temperature::AbstractArray, xAxis::AbstractArray,
+            temperature::AbstractArray, xAxis::AbstractArray;
             bndType::Symbol=:dirichlet)
     # Augment the discrete temperature and the discrete potential since we will
     # be evaluating them at points beyond the boundary.
@@ -95,7 +95,7 @@ function stepP(P::AbstractArray, dt::Number,
     # Create the diagonals of the matrix, in order to linearize the problem, we
     # had to assume that T(x, t + dt) = T(x, t). We could improve on this by
     # using an explicit method to estimate T(x, t + dt).
-    diag_minus1 = rr*(0.25*(dis_V[3:end-1] - dis_V[1:end-3])
+    diag_minus1 = rr*(0.25*(dis_V[3:end-1] - dis_V[1:end-3]).^2
                  - temperature[1:end-3])
     diag0 = rr*(-(dis_V[3:end] - 2dis_V[2:end-1] + dis_V[1:end-2])
            + 2*temperature[2:end-1]) + 1
