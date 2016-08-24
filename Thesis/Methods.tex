@@ -198,7 +198,7 @@ T_0^{n+1} \left [\frac{-r \alpha}{4}P_J^{n+1}(V_1^{n+1} - V_{-1}^{n+1}) - r \bet
 +T_{1}^{n} \left [\frac{-r \alpha}{4} P_{1}^{n}(V_{1}^{n} - V_{-1}^{n}) + r \beta \right] \\
 -\frac{r \alpha}{4} P_{0}^{n} \left(V_{1}^{n} - V_{-1}^{n} \right)
 \end{multline}
-and likewise for $j = J$. Just like the discretized Smoluchowski equation, these equations can be written in matrix form. The temperature is normalized by assuming that the energy remains fixed, this will be true as long as no heat or current flows through the boundaries, i.e. $J(x = a) = 0 = J(x = b)$ and $\frac{\partial T}{\partial x} \rvert_a = 0 = \frac{\partial T}{\partial x} \rvert_b$. In this case, the energy is constant and is given by $E = \int P(x) V(x) dx + c_p \int T(x) dx$, so each time that we step the temperature forward, we have to calculate the potential and thermal energy and then scale the temperature so that the total energy remains fixed.
+and likewise for $j = J$. Just like the discretized Smoluchowski equation, these equations can be written in matrix form. The temperature is normalized by assuming that the energy remains fixed, this will be true as long as no heat or current flows through the boundaries, i.e. $J(x=a) = 0 = J(x = b)$ and $\frac{\partial T}{\partial x} \rvert_a = 0 = \frac{\partial T}{\partial x} \rvert_b$. In this case, the energy is constant and is given by $E = \int P(x) V(x) dx + c_p \int T(x) dx$, so each time that we step the temperature forward, we have to calculate the potential and thermal energy and then scale the temperature so that the total energy remains fixed.
 
 Fortunately the matrices that we are dealing with are very sparse, so the program used to solve these equations can save on memory by calling sparse matrix libraries.
 
