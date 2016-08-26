@@ -76,17 +76,14 @@ periodic boundary conditions.
     * `:neumann`: The derivative is zero at the boundaries.
 """
 function stepP(P::AbstractArray, dt::Number,
-            potentialTup::Tuple{Number, AbstractArray, Number},
+            dpotential::AbstractArray,
             temperature::AbstractArray, xAxis::AbstractArray;
-            bndType::Symbol=:dirichlet)
+            bndType::Symbol=:absorbing, normalization::Bool = true)
     # Augment the discrete temperature and the discrete potential since we will
     # be evaluating them at points beyond the boundary.
     T0 = temperature[1]
     # The derivative of the temperature is zero at the boundaries.
     temperature = [temperature[1] ; temperature ; temperature[end]]
-
-    dis_V0, dis_V, dis_V_end = potentialTup
-    dis_V = [dis_V0 ; dis_V ; dis_V_end]
 
     n_points = length(xAxis)
     dx = (xAxis[end] - xAxis[1])/n_points  # Grid spacing
@@ -95,33 +92,38 @@ function stepP(P::AbstractArray, dt::Number,
     # Create the diagonals of the matrix, in order to linearize the problem, we
     # had to assume that T(x, t + dt) = T(x, t). We could improve on this by
     # using an explicit method to estimate T(x, t + dt).
-    diag_minus1 = rr*(0.25*(dis_V[3:end-1] - dis_V[1:end-3]).^2
-                 - temperature[1:end-3])
-    diag0 = rr*(-(dis_V[3:end] - 2dis_V[2:end-1] + dis_V[1:end-2])
-           + 2*temperature[2:end-1]) + 1
-    diag1 = rr*(-0.25*(dis_V[4:end] - dis_V[2:end-2]) - temperature[4:end])
-    if bndType == :dirichlet
+    diag_minus1 = rr*(-temperature[1:end-3] + 0.5dx*dpotential[1:end-3])
+    diag0 = rr*2*temperature[2:end-1] + 1
+    diag1 = rr*(-temperature[4:end] - 0.5dx*dpotential[4:end])
+    if bndType == :absorbing
         A = Tridiagonal(diag_minus1, diag0, diag1)
-        B = Tridiagonal(-diag_minus1, 2 - diag0, -diag1)
+        II = Tridiagonal(zeros(diag1), ones(diag0), zeros(diag1))
+        P = (II + 0.5A)\((II - 0.5A)*P)  # Since (1 + A/2)*P^{n+1} = (1 - A/2)*P^n.
     elseif bndType == :periodic
         A = spdiagm((diag_minus1, diag0, diag1), (-1, 0, 1))
         A[1, end] = diag_minus1[1]
         A[end, 1] = diag1[end]
-        B = 2speye(size(A)...) - A
+        P = (speye(A) + 0.5A)\((speye(A) - 0.5A)*P)  # Since (1 + A/2)*P^{n+1} = (1 - A/2)*P^n.
     elseif bndType == :neumann
         # Derivative is zero at the boundaries.
         A = spdiagm((diag_minus1, diag0, diag1), (-1, 0, 1))
-        B = 2speye(size(A)...) - A
+        B = speye(A) - 0.5A
+        A = speye(A) + 0.5A
         A[1, 2] = -A[1, 1]
         A[end, end - 1] = -A[end, end]
         B[1, 2] = -B[1, 1]
         B[end, end - 1] = -B[end, end]
+        P = A\(B*P)  # Since (1 + A/2)*P^{n+1} = (1 - A/2)*P^n.
     end
-    P = A\(B*P)  # Since A*P^{n+1} = B*P^n
-    # Return the normalized probability density
-    P = P/discrete_quad(P, xAxis[1], xAxis[end])
+    if normalization
+        # Return the normalized probability density.
+        P = P/discrete_quad(P, xAxis[1], xAxis[end])
+    end
+    P
 end
-"""
+
+current(potential, density, temperature) = (density[2:end].*discrete_derivative(potential, xAxis)
+                                          + discrete_derivative(density.*temperature, xAxis) )"""
 Evolve the temperature forward by an amount dt.
 # Arguments:
 * `temperature::AbstractArray`:   Initial temperature, this is a vector of the
@@ -179,26 +181,26 @@ function stepT(temperature::AbstractArray, dt::Number,
     diag0 += in_homo
     diag1 += in_homo[1:end-1]
 
-    if bndType == :neumann
-        # Derivative is zero at the boundaries.
-        A = spdiagm((diag_minus1, diag0, diag1), (-1, 0, 1))
-        B = 2speye(size(A)...) - A
-        A[1, 2] = -A[1, 1]
-        A[end, end - 1] = -A[end, end]
-        B[1, 2] = -B[1, 1]
-        B[end, end - 1] = -B[end, end]
+    if bndType == :absorbing
+        A = Tridiagonal(diag_minus1, diag0, diag1)
+        II = Tridiagonal(zeros(diag1), ones(diag0), zeros(diag1))
+        temperature = (II + 0.5A)\((II - 0.5A)*temperature)
     elseif bndType == :periodic
         A = spdiagm((diag_minus1, diag0, diag1), (-1, 0, 1))
         A[1, end] = diag_minus1[1]
         A[end, 1] = diag1[end]
-        B = 2speye(size(A)...) - A
-    elseif bndType == :dirichlet
-        A = Tridiagonal(diag_minus1, diag0, diag1)
-        B = Tridiagonal(-diag_minus1, 2 - diag0, -diag1)
+        temperature = (speye(A) + 0.5A)\((speye(A) - 0.5A)*temperature)
+    elseif bndType == :neumann
+        # Derivative is zero at the boundaries.
+        A = spdiagm((diag_minus1, diag0, diag1), (-1, 0, 1))
+        B = speye(A) - 0.5A
+        A = speye(A) + 0.5A
+        A[1, 2] = -A[1, 1]
+        A[end, end - 1] = -A[end, end]
+        B[1, 2] = -B[1, 1]
+        B[end, end - 1] = -B[end, end]
+        temperature = A\(B*temperature)
     end
-    # Update the temperature using the Crank Nicolson scheme.
-    temperature = A\(B*temperature)
-    # temperature = A\temperature
     # The scaling of the temperature.
     potential_energy = discrete_quad(dis_V.*dis_density,
                             xAxis[1], xAxis[end])
@@ -231,11 +233,11 @@ be the same length as the xAxis.
 over in the dimensionless coordinates.
 """
 function evolveP(density::AbstractArray, evolveTime::Number, dt::Number,
-            potentialTup::Tuple{Number, AbstractArray, Number},
+            dpotential::AbstractArray,
             temperature::AbstractArray, xAxis::AbstractArray)
     n_steps = round(Int, evolveTime/dt)
     for i = 1:n_steps
-        density = stepP(density, dt, potentialTup, temperature, xAxis)
+        density = stepP(density, dt, dpotential, temperature, xAxis)
     end
     density
 end
@@ -312,14 +314,15 @@ temperature, must be the same length as the xAxis.
 """
 function evolve_system(density::AbstractArray, temperature::AbstractArray,
             evolveTime::Number, dt::Number,
-            potentialTup::Tuple{Number, AbstractArray, Number}, alpha::Number,
+            potentialTup::Tuple{Number, AbstractArray, Number},
+            dpotential::AbstractArray, alpha::Number,
             beta::Number, energy::Number,
             xAxis::AbstractArray)
         n_steps = round(Int, evolveTime/dt)
     for i = 1:n_steps
         temperature = stepT(temperature, dt, density, potentialTup, alpha, beta,
                                 energy, xAxis)
-        density = stepP(density, dt, potentialTup, temperature, xAxis)
+        density = stepP(density, dt, dpotential, temperature, xAxis)
     end
     density, temperature
 end
@@ -403,7 +406,7 @@ temperature gradients diffuse.
 * `xAxis::AbstractArray`: The axis that we are working on.
 * `dt=1e-4`: Size of one time step for simulation.
 """
-function hopping_time(potentialTup::Tuple{Number, AbstractArray, Number},
+function hopping_time(potentialTup::Tuple{Number, AbstractArray, Number}, dpotential::AbstractArray,
                 bump::Number, density::AbstractArray,
                 temperature::AbstractArray, alpha::Number, beta::Number,
                 xAxis::AbstractArray; dt=1e-4)
@@ -413,7 +416,7 @@ function hopping_time(potentialTup::Tuple{Number, AbstractArray, Number},
     # If the mean of the probability distribution crosses the bump, then the
     # system has crossed the bump.
     while discrete_quad(density.*xAxis, xAxis[1], xAxis[end]) > bump
-        density = stepP(density, dt, potentialTup, temperature, xAxis)
+        density = stepP(density, dt, dpotential, temperature, xAxis, normalization = true)
         temperature = stepT(temperature, dt, density, potentialTup, alpha,
                             beta, energy, xAxis)
         iters += 1

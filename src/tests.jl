@@ -17,6 +17,9 @@ xAxis = linspace(0, LL*nPeriods, nPoints)
 dx = (xAxis[end] - xAxis[1])/nPoints # Grid spacing
 
 V(x, time) = ff*x - v_0*sin(2*(2pi/LL)*x) + 6ff # Potential
+dV(x) = ff - v_0*2*(2pi/LL)*cos(2*(2pi/LL)*x)  # Derivative of the potential.
+dpotential = [dV(xAxis[1] - dx) ; Float64[dV(x) for x in xAxis] ;
+                dV(xAxis[end] + dx)]
 potential = Float64[V(x, 0) for x in xAxis]
 potential0, potentialEnd = V(xAxis[1] - dx, 0), V(xAxis[end] + dx, 0)
 potentialTup = (potential0, potential, potentialEnd)
@@ -34,7 +37,7 @@ energy = energyFun(potential, P0, temperature, alpha, xAxis)
 # the time step should not cause the result of the simulation to change by much.
 tol = 1e-3  # The amount that the two results are allowed to differ by.
 evolveTime = 1.5  # The amount of time that we will evolve the system for.
-timeSteps = evolveTime*[1/2048, 1/4096]  # Time steps used in the simulations.
+timeSteps = 0.1*evolveTime*[1/2048, 1/4096]  # Time steps used in the simulations.
 timeStepsSystem = timeSteps  # Time steps for system evolution.
 facts("Convergence tests.") do
     temperature_step1 = evolveT(temperature, evolveTime, timeSteps[1],
@@ -45,9 +48,9 @@ facts("Convergence tests.") do
         /mean([norm(temperature_step1), norm(temperature_step2)])
             --> less_than(tol) ) "Temperature evolution is not converging."
 
-    density_step1 = evolveP(P0, evolveTime, timeSteps[1], potentialTup,
+    density_step1 = evolveP(P0, evolveTime, timeSteps[1], dpotential,
                         temperature, xAxis)
-    density_step2 = evolveP(P0, evolveTime, timeSteps[2], potentialTup,
+    density_step2 = evolveP(P0, evolveTime, timeSteps[2], dpotential,
                         temperature, xAxis)
     @fact (norm(density_step1 - density_step2)
         /mean([norm(density_step1), mean(density_step2)])
