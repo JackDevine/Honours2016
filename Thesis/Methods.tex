@@ -5,10 +5,16 @@ In the steady state, we have:
 
 \begin{eqnarray}
 \frac{\partial P(x, t)}{\partial t} &=&  0 \ = \ \frac{\partial J}{\partial x} \label{eqn:SmoluchowskiSteady} \\
-\frac{\partial T(x, t)}{\partial t} &=& 0 \ = \ \frac{\partial}{\partial x} \left ( -\kappa q(x, t) + D \frac{\partial T(x, t)}{\partial x} \right ) \label{eqn:TemperatureSteady}
+\frac{\partial T(x, t)}{\partial t} &=& 0 \ = \ -\kappa q(x,t) + \frac{\partial}{\partial x} \left ( D \frac{\partial T(x, t)}{\partial x} \right ) \label{eqn:TemperatureSteady}
 \end{eqnarray}
 
-Suppose that we have periodic boundary conditions such that $P(x = 0) = P(x = L)$,  $J(x = 0) = J(x = L)$ and $T(x = 0) = T_0 = T(x = L)$ where $L$ is the size of one period and $T_0$ is the temperature of the bath (room temperature). Section 5.2 of \cite{Gardiner2009} gives the steady state current as:
+Suppose that we have the following boundary conditions:
+\begin{align}
+P(x = 0) & = P(x = L) \\
+J(x = 0) & = J(x = L) \\
+\left \frac{\partial T}{\partial x} \right \rvert_{x = 0} & = 0 = \left \frac{\partial T}{\partial x} \right \rvert_{x = L} \label{eqn:temperatureBoundary}
+\end{align}
+where $L$ is the length scale of the system. Physically, these conditions say that the nett current flowing out of the boundaries is zero and that no heat escapes from the system, thus the energy of the sytem is conserved. Section 5.2 of \cite{Gardiner2009} gives the steady state current as:
 
 \begin{equation}
 J_s = \left [\frac{2 k_B T(L)}{\psi(L)} - \frac{2 k_B T(0)}{\psi(0)}  \right] P_s(0) \left [\int_0^L dx'/\psi(x') \right]^{-1}
@@ -24,30 +30,34 @@ P_s(x) = P_s(0) \left [\frac{\int_0^x \frac{dx'}{\psi(x')} \frac{T(L)}{\psi(L)} 
 In this case, $J_s$ is a constant and $P_s(0)$ is also a constant. Assuming that we know these constants it is now possible to find the steady state temperature. We have:
 
 \begin{equation}
-\frac{\partial T}{\partial t} = 0 =  \partial_x S_s = \kappa \partial_x V J_s - D \frac{\partial T}{\partial x}
-\end{equation}
-Rearranging, we find
-\begin{equation}
-\frac{\partial T}{\partial x} = \frac{\kappa \partial_x V J_s - \partial_x S_s}{D}
-\end{equation}
-Integrating both sides:
-\begin{equation}
-\int_0^L \frac{\partial T}{\partial x} dx = T(L) - T(0) = 0 = \frac{\kappa J_s}{D} \int_0^L \partial_x V dx - \frac{S_s}{D}L
+\frac{\partial T}{\partial t} = 0 = -\kappa J_s \partial_x V + D \frac{\partial^2 T}{\partial x^2} \label{eqn:steadyTemperatureODE}
 \end{equation}
 
-Noticing that $V(x) = v_0(x) + f x$, where $v_0(0) = v_0(L)$, we get $\int_0^L \partial_x V dx = f L$, so
+In one dimension, \ref{eqn:steadyTemperatureODE} can be written as an ordinary differential equation of the form
+\begin{equation}
+T''(x) = \frac{\kappa J_s}{D} V'(x)
+\end{equation}
+
+We can solve this equation by integrating both sides twice to give:
 
 \begin{equation}
-S_s = \kappa J_s f
+T(x) = \frac{\kappa J_s}{D} \int_0^x V(x') dx' + \xi x + d \label{eqn:steadyTemperature}
 \end{equation}
-
-and
-
+for unkown constants $\xi$ and $d$. By applying the boundary condition \ref{eqn:temperatureBoundary}, we find that
+\begin{align}
+T'(0) & = 0 = \frac{\kappa J_s}{D} V(0) + \xi \\
+T'(L) & = 0 = \frac{\kappa J_s}{D} V(L) + \xi
+\end{align}
+This implies that either $J_s = 0$ or $V(0) = V(L)$, meaning that the coupled system does not admit a steady state solution for a tilted potential. Later, we will see that it is possible to have a steady state in higher dimensions where the flow of heat from the environment can dissipate the heat produced by the Brownian particle. By recalling that $E = \int_0^L P(x') V(x') dx' + c \int_0^L T(x') dx'$ we are able to find an expression for $d$. First, we will integrate the temperature from $0$ to $L$
 \begin{equation}
-T(x) = T(0) + \frac{\kappa J_s}{D} \int_0^x \partial_x V dx - \frac{S_s}{D}x = T(0) + \frac{\kappa J_s}{D} (v_0(x) - v_0(0)) \label{eqn:SteadyTemperature}
+\int_0^L T(x') dx' = \frac{\kappa J_s}{D} \int_0^L dx' \int_0^{x'} V(x'') dx'' + \xi \frac{L^2}{2} + d L
+\end{equation}
+Therefore,
+\begin{equation}
+	d = \frac{1}{L} \left(c E - c\int_0^L P(x') V(x') dx' - \frac{\kappa J_s}{D} \int_0^L dx' \int_0^{x'} V(x'') d x'' + \xi \frac{L^2}{2} \right)
 \end{equation}
 
-It would seem that one should be able to calculate the steady state current and density directly from the equations shown above. However, we notice that the constants $J_s$ and $P_s(0)$ have to satisfy equations (\ref{eqn:SteadyCurrent}), (\ref{eqn:SteadyDensity}) and (\ref{eqn:SteadyTemperature}) while also satisfying the normalization condition $\int_0^L P(x) dx = 1$. To do this we define an objective function given by
+It would seem that one should be able to calculate the steady state current and density directly from the equations shown above. However, we notice that the constants $J_s$ and $P_s(0)$ have to satisfy equations (\ref{eqn:SteadyCurrent}), (\ref{eqn:SteadyDensity}) and (\ref{eqn:steadyTemperature}) while also satisfying the normalization condition $\int_0^L P(x) dx = 1$. To do this we define an objective function given by
 
 \begin{equation}
 obj(J_s, P_s(0)) = \left (J_s - \left [\frac{2 k_B T(L)}{\psi(L)} - \frac{2 k_B T(0)}{\psi(0)}  \right] P_s(0) \left [\int_0^L dx'/\psi(x') \right]^{-1} \right)^2  \label{eqn:Objective}
@@ -121,12 +131,12 @@ P_{j-1}^{n+1} a^{n+1} + P_j^{n+1} b^{n+1} + P_{j+1}^{n+1} c^{n+1} = P_{j-1}^{n} 
 \end{multline}
 This equation can be written in matrix form by defining the following matrices:
 \begin{equation}
-A = 
+A =
 \begin{bmatrix}
 	a_0^{n+1} & b_1^{n+1} & 0                & 0                & 0        & \dots                                 & 0        \\
 	c_0^{n+1} & a_1^{n+1} & b_2^{n+1} & 0                & 0        & \dots                                 & 0        \\
 	0                & c_1^{n+1} & a_2^{n+1} & b_3^{n+1}   & 0        & \dots                                 & 0        \\
-			     &                   &                   &                  &           &                                         &           \\       
+			     &                   &                   &                  &           &                                         &           \\
 	\vdots         & \vdots         & \ddots         & \ddots         & \ddots & \vdots                              & \vdots \\
 			     &                   &                   &                  &           &                                         &           \\
 			     &                   &                   &                  &           &                                         &           \\
@@ -148,7 +158,7 @@ P_J^{n+1}
 \end{equation}
 
 \begin{equation}
-B = 
+B =
 \begin{bmatrix}
 	a_0^{n} & b_1^{n}     & 0                 & 0          & 0                    & \dots            & 0        \\
 	c_0^{n} & a_1^{n}     & b_2^{n}      & 0          & 0                    & \dots            & 0        \\
