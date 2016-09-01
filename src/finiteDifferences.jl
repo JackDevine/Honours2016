@@ -406,8 +406,8 @@ temperature gradients diffuse.
 * `xAxis::AbstractArray`: The axis that we are working on.
 * `dt=1e-4`: Size of one time step for simulation.
 """
-function hopping_time(potentialTup::Tuple{Number, AbstractArray, Number}, dpotential::AbstractArray,
-                bump::Number, density::AbstractArray,
+function hopping_time(potentialTup::Tuple{Number, AbstractArray, Number},
+                dpotential::AbstractArray, bump::Number, density::AbstractArray,
                 temperature::AbstractArray, alpha::Number, beta::Number,
                 xAxis::AbstractArray; dt=1e-4)
     bump_ind = indmin(abs(xAxis - bump))

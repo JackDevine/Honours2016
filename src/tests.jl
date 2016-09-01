@@ -37,7 +37,8 @@ energy = energyFun(potential, P0, temperature, alpha, xAxis)
 # the time step should not cause the result of the simulation to change by much.
 tol = 1e-3  # The amount that the two results are allowed to differ by.
 evolveTime = 1.5  # The amount of time that we will evolve the system for.
-timeSteps = 0.1*evolveTime*[1/2048, 1/4096]  # Time steps used in the simulations.
+# Time steps used in the simulations.
+timeSteps = 0.1*evolveTime*[1/2048, 1/4096]
 timeStepsSystem = timeSteps  # Time steps for system evolution.
 facts("Convergence tests.") do
     temperature_step1 = evolveT(temperature, evolveTime, timeSteps[1],
@@ -95,7 +96,10 @@ sigma = 0.1
 bump = 0.0
 sigma = 0.1
 V(x) = x^4 - 3*(exp((-(x - 0.5)^2)/sigma) + exp((-(x + 0.5)^2)/sigma)) + 3x
-
+dV(x) = 4x^3 + 3*((2/sigma)*(x - 0.5)*exp((-(x - 0.5)^2)/sigma)
+                    + (2/sigma)*(x - 0.5)*exp((-(x - 0.5)^2)/sigma)) + 3
+dpotential = [dV(xAxis[1] - dx) ; Float64[dV(x) for x in xAxis]
+                        ; dV(xAxis[end] + dx)]
 potential = Float64[V(x) for x in xAxis]
 potential0, potentialEnd = V(xAxis[1] - dx), V(xAxis[end] + dx)
 potentialTup = (potential0, potential, potentialEnd)
@@ -112,13 +116,13 @@ density = P0
 
 # Define a method of hopping_time for this particular potential.
 hopping_time(alpha, beta) = hopping_time(potentialTup, bump, density,
-                temperature, alpha, beta, xAxis; dt=1e-4)
+                temperature, alpha, beta, xAxis; dt=1e-5)
 facts("Hopping time") do
-    @fact ( hopping_time(potentialTup, 1.0, density, temperature, alpha,
-                    beta, xAxis; dt=1e-4)
+    @fact ( hopping_time(potentialTup, dpotential, 1.0, density, temperature,
+                    alpha, beta, xAxis; dt=1e-5)
                     --> 0.0)
                     "This system has already crossed the supposed bump."
-    @fact (hopping_time(potentialTup, bump, density,
-                    temperature, alpha, beta, xAxis; dt=1e-4) --> 0.1568)
+    @fact (hopping_time(potentialTup,  dpotential, bump, density,
+                    temperature, alpha, beta, xAxis; dt=1e-5) --> 0.1568)
                     "hopping_time has regressed"
 end
