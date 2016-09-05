@@ -85,15 +85,29 @@ E(t) = \int V(x)P(x, t) dx + c_p \int T(x, t) dx
 By using the Smoluchowski equation and the heat equation, we can differentiate with respect to time to get:
 \begin{align}
 \frac{d E}{d t} & = \int V(x) \frac{\partial P}{\partial t} dx + c_p \int \frac{\partial T}{\partial t} dx \\
- & = -\int V(x) \frac{\partial J}{\partial x} + c_p \int -\kappa J \frac{\partial V}{\partial x} + D \frac{\partial^2 T}{\partial x^2} dx \\
+ & = -\int V(x) \frac{\partial J}{\partial x} + c_p \int -\kappa J(x) \frac{\partial V}{\partial x} + D \frac{\partial^2 T}{\partial x^2} dx \\
  & = [V(x)J(x)]_{-\infty}^\infty + \int \frac{\partial V}{\partial x} J(x) dx - \kappa c_p \int \frac{\partial V}{\partial x} J(x) dx + D \left [\frac{\partial T}{\partial x} \right]_{-\infty}^{\infty}
 \end{align}
-If there are no particles are flowing through the boundaries and if there is no heat flowing through the boundaries, then there is no exchange of energy with the external environment. Also, if there is no current or heat flow at the boundary then the first and last terms are zero. If we let $\kappa = \frac{1}{c_p}$, then the middle terms cancel and the first law is obeyed by the system.
+If there are no particles are flowing through the boundaries and if there is no heat flowing through the boundaries, then there is no exchange of energy with the external environment. If we let $\kappa = \frac{1}{c_p}$, then the middle terms cancel and the first law is obeyed by the system.
 
-As for the entropy, we have
-$$ S(t) = -\int P(x, t) ln(P(x, t)) dx + c_p \int \log(T(x, t))dx $$
-I don't understand the second term, but Streater proves that it is necessary in the paper ``A gas of Brownian Particles in Statistical Dynamics", I don't understand the proof either, I must try harder. Differentiating with respect to time, we get
-$$ \frac{d S}{d t} =  $$
+As for the entropy, we have \cite{Streater1997a}
+\begin{equation}
+S(t) = -\int P(x, t) \log(P(x, t)) dx + c_p \int \log(T(x, t))dx
+\end{equation}
+Differentiating with respect to time, we get
+
+\begin{align}
+\frac{d S}{d t} =  \int \frac{\partial J}{\partial x} + \frac{\partial J}{\partial x} \log P \ dx + c \int \frac{1}{T} \left(-\kappa J \partial_x V + c \beta \frac{\partial^2 T}{\partial x^2} \right) dx \\
+                     =  [J \log P]_{\partial \Omega} - \int_{\partial \Omega} \frac{J}{P} \frac{\partial P}{\partial x} dx + [\frac{\partial J}{\partial x}]_{\partial \Omega} - \int_{\partial \Omega} \frac{J}{T} \frac{\partial V}{\partial x} + c \beta \int_{\partial \Omega} \frac{1}{T} \frac{\partial^2 T}{\partial x^2} dx
+\end{align}
+
+We will denote the boundary terms with $B(t) =  [J \log P]_{\partial \Omega} + [\frac{\partial J}{\partial x}]_{\partial \Omega}$, now the change in entropy becomes:
+
+\begin{eqnarray}
+\frac{d S}{d t} & = & - \int_{\partial_\Omega} \frac{J}{P} \frac{\partial P}{\partial x} + \frac{J}{T} \frac{\partial V}{\partial x} dx +  c \beta \int_{\partial_\Omega} \frac{1}{T} \frac{\partial^2 T}{\partial x^2} dx + B(t) \\
+                    & = & \int_{\partial_\Omega} \frac{J^2}{T P} - \frac{J}{T} \frac{\partial T}{\partial x} dx + c \beta \int_{\partial_\Omega} \frac{1}{T} \frac{\partial^2 T}{\partial x^2} dx + B(t)
+\end{eqnarray}
+where in the second equality we used the fact that $J = P \frac{\partial V}{\partial x} + \frac{\partial}{\partial x} (TP)$.
 
 \section{Bistable potentials and Kramers Rate}
 

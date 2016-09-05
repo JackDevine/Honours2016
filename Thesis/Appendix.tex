@@ -1,0 +1,17 @@
+\chapter{Testing the numerics}
+
+The idea behind finite differences is that as the discretization size goes to zero, the numerical approximation should converge on the correct analytical solution. We will compare our numerics with some known analytical results as well as performing convergence tests.
+\section{A comparison with analytical results}
+\subsection{Smoluchowski equation}
+The Smoluchowski equation has a steady state probability density that takes on the form \cite{DasDasBarikEtAl2015}
+\begin{equation}
+P_{ss}(x) = \frac{N}{T(x)} \exp{\left(-\int_a^x \frac{V'(x)}{T(x')} dx' \right)}
+\end{equation}
+
+Although we are not able to solve the Smoluchowski equation in the dynamical sense, we are able to obtain a formula for the so called Kramers rate. Here we will compare our numerical results with some simulations on the Kramers rate.
+
+\subsection{Heat equation}
+The heat equation can be solved using a Fourier series technique
+
+\section{Convergence tests}
+Here we will decrease the step size and see whether or not the numerical scheme converges on a particular result

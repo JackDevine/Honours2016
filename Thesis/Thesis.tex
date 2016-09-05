@@ -4,7 +4,7 @@
 % This is a simple template for a LaTeX document using the "article" class.
 % See "book", "report", "letter" for other types of document.
 
-\documentclass[11pt]{report} % use larger type; default would be 10pt
+\documentclass[12pt]{report} % University guidelines recommend 12pt.
 
 \usepackage[utf8]{inputenc} % set input encoding (not needed with XeLaTeX)
 
@@ -35,6 +35,7 @@
 \usepackage{amsmath}
 \usepackage[numbers,sort&compress]{natbib}  % Make a group of citations appear in order in the document
 \usepackage{bbold} 
+\usepackage[toc,page]{appendix}
 % These packages are all incorporated in the memoir class to one degree or another...
 
 %%% HEADERS & FOOTERS
@@ -130,6 +131,16 @@ Brownian motors are capable of converting chemical energy directly into work and
 
 \input{Results}
 
+%----------------------------------------------------------------------------------------
+%	APPENDIX
+%----------------------------------------------------------------------------------------
+
+\begin{appendices}
+
+\input{Appendix}
+
+
+\end{appendices}
 %------------------------------------------------
 
 %------------------------------------------------
