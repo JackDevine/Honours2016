@@ -42,9 +42,9 @@ timeSteps = 0.1*evolveTime*[1/2048, 1/4096]
 timeStepsSystem = timeSteps  # Time steps for system evolution.
 facts("Convergence tests.") do
     temperature_step1 = evolveT(temperature, evolveTime, timeSteps[1],
-            potentialTup, P0, alpha, beta, energy, xAxis)
+            potential, dpotential, P0, alpha, beta, energy, xAxis)
     temperature_step2 = evolveT(temperature, evolveTime, timeSteps[2],
-            potentialTup, P0, alpha, beta, energy, xAxis)
+            potential, dpotential, P0, alpha, beta, energy, xAxis)
     @fact (norm(temperature_step1 - temperature_step2)
         /mean([norm(temperature_step1), norm(temperature_step2)])
             --> less_than(tol) ) "Temperature evolution is not converging."
@@ -61,11 +61,11 @@ facts("Convergence tests.") do
     # tolerance. The system evolution is much less convergent than the seperate
     # functions, so we need to decrease the step size.
     system_time_step1 = evolve_system(P0, temperature, evolveTime,
-                            timeStepsSystem[1], potentialTup, alpha, beta,
+                            timeStepsSystem[1], potential, dpotential, alpha, beta,
                             energy, xAxis)
 
     system_time_step2 = evolve_system(P0, temperature, evolveTime,
-                            timeStepsSystem[2], potentialTup, alpha, beta,
+                            timeStepsSystem[2], potential, dpotential, alpha, beta,
                             energy, xAxis)
 
     @fact (norm(system_time_step1[2] - system_time_step2[2])
@@ -76,53 +76,4 @@ facts("Convergence tests.") do
         /mean([norm(system_time_step1[1]), norm(system_time_step2[1])])
             --> less_than(tol) ) """The probability density in the system
                                     evolution is not converging."""
-end
-
-# Define the physics for the hopping_time function.
-LL = 1.0 # Length of one period
-T0 = 7.0 # Temperature at the ends (i.e. bath temperature)
-
-alpha = 0.0001
-beta = 0.1
-
-nPeriods = 6 # The number of periods to stretch out for
-nPoints = 600 # The number of points on the xAxis
-dt = 1e-4 # Size of the time step (keep this much smaller than the grid
-             # spacing)
-xAxis = linspace(-2LL, 2LL, nPoints)
-dx = (xAxis[end] - xAxis[1])/nPoints # Grid spacing
-
-sigma = 0.1
-bump = 0.0
-sigma = 0.1
-V(x) = x^4 - 3*(exp((-(x - 0.5)^2)/sigma) + exp((-(x + 0.5)^2)/sigma)) + 3x
-dV(x) = 4x^3 + 3*((2/sigma)*(x - 0.5)*exp((-(x - 0.5)^2)/sigma)
-                    + (2/sigma)*(x - 0.5)*exp((-(x - 0.5)^2)/sigma)) + 3
-dpotential = [dV(xAxis[1] - dx) ; Float64[dV(x) for x in xAxis]
-                        ; dV(xAxis[end] + dx)]
-potential = Float64[V(x) for x in xAxis]
-potential0, potentialEnd = V(xAxis[1] - dx), V(xAxis[end] + dx)
-potentialTup = (potential0, potential, potentialEnd)
-
-temperatureFun(x) = T0
-temperature = Float64[temperatureFun(x) for x in xAxis]
-
-sigma  = 0.05
-P0 = Float64[(1/(sigma*sqrt(2pi)))*exp(-((x-0.5)^2)/(2sigma^2))
-              for x in xAxis]
-# P0 = ones(xAxis)
-P0 /= discrete_quad(P0, xAxis[1], xAxis[end])
-density = P0
-
-# Define a method of hopping_time for this particular potential.
-hopping_time(alpha, beta) = hopping_time(potentialTup, bump, density,
-                temperature, alpha, beta, xAxis; dt=1e-5)
-facts("Hopping time") do
-    @fact ( hopping_time(potentialTup, dpotential, 1.0, density, temperature,
-                    alpha, beta, xAxis; dt=1e-5)
-                    --> 0.0)
-                    "This system has already crossed the supposed bump."
-    @fact (hopping_time(potentialTup,  dpotential, bump, density,
-                    temperature, alpha, beta, xAxis; dt=1e-5) --> 0.1568)
-                    "hopping_time has regressed"
 end
