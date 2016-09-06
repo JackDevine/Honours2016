@@ -29,13 +29,15 @@
 \usepackage{array} % for better arrays (eg matrices) in maths
 \usepackage{paralist} % very flexible & customisable lists (eg. enumerate/itemize, etc.)
 \usepackage{verbatim} % adds environment for commenting out b6locks of text & for better verbatim
-\usepackage{subfigure} % make it possible to include more than one captioned figure/table in a single float
+%\usepackage{subfigure} % make it possible to include more than one captioned figure/table in a single float
 \usepackage{cleveref}  % For referencing more than one equation at at time
 \usepackage[colorlinks=true,urlcolor=blue,citecolor=blue,linkcolor=black]{hyperref} % for hyper referencing
 \usepackage{amsmath}
 \usepackage[numbers,sort&compress]{natbib}  % Make a group of citations appear in order in the document
 \usepackage{bbold} 
 \usepackage[toc,page]{appendix}
+\usepackage{subcaption}
+\captionsetup{subrefformat=parens}
 % These packages are all incorporated in the memoir class to one degree or another...
 \usepackage{wrapfig}% http://ctan.org/pkg/wrapfig
 \usepackage{lipsum}% http://ctan.org/pkg/lipsum
@@ -78,7 +80,7 @@
 		\vspace{1cm}
 		{\scshape\LARGE The University of Otago \par}
 		\vspace{1cm}
-		\includegraphics[width=0.45\textwidth]{ou-logo.png}\par\vspace{1cm}
+		\includegraphics[width=0.2\textwidth]{thumbnail_OU-NZ-Coated.jpg}\par\vspace{1cm}
 		\vspace{1cm}
 		{\scshape\Large A thesis submitted for Honours in physics at the University of Otago, Dunedin, New Zealand\par}
 		\vspace{1.5cm}
@@ -119,9 +121,6 @@ Brownian motors are capable of converting chemical energy directly into work and
 \chapter{Introduction}
 
 \input{Introduction}
-%----------------------------------------------------------------------------------------
-%	RESULTS
-%----------------------------------------------------------------------------------------
 
 \chapter{Methods}
 
@@ -129,9 +128,9 @@ Brownian motors are capable of converting chemical energy directly into work and
 %----------------------------------------------------------------------------------------
 %	RESULTS
 %----------------------------------------------------------------------------------------
-\chapter{Results}
+%\chapter{Results}
 
-\input{Results}
+%\input{Results}
 
 %----------------------------------------------------------------------------------------
 %	APPENDIX

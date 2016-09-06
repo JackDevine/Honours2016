@@ -11,14 +11,14 @@ Brownian motors are devices that can use stored energy to create directed motion
 In this project, we will model Brownian motors using concepts from statistical mechanics. In particular, a Brownian motor will be modeled by a Brownian particle diffusing over its free energy landscape \cite{Reimann2001}, which in one dimension will be denoted by $x$. In the case of Brownian motion, it is natural to think of $x$ as a spatial coordinate, however in the case of Brownian motors this is not always the case. Often we will think of $x$ as a reaction coordinate for a chemical reaction, or in the case of a rotary motor, it could be the angle of the motor. We will think of a Brownian particle moving in titled periodic potential of the form $V(x) = f x + v_0(x)$ for some external forcing $f$ and some periodic function $v_0(x)$ with period $L$. This is shown schematically in figure \ref{fig:Schematic}, in this figure we have a particle with a certain known probability density. The particle is agitated by thermal vibrations in a random diffusive manner, however there is also a forcing on the particles that we describe using the potential. Different types of Brownian motors have been explored in the literature, including the Feynman ratchet \cite{Feynman1963}, the Landauer blowtorch \cite{Landauer1988}, thermal ratchets \cite{Pedro2014}, time dependent potentials \cite{JoelBader1999,BlickleBechinger2011} and tilted periodic potentials \cite{Leibler1993,Magnasco1994}.
 
 \begin{figure}[tb]
-	\centering
-	\subfigure{%
-		\includegraphics[width=0.45\columnwidth]{SchematicConstantTempInit}
-	}
-\quad
-	\subfigure{
-		\includegraphics[width=0.45\columnwidth]{SchematicConstantTempFinal}
-	}
+	\begin{subfigure}{0.49\textwidth}
+		\includegraphics[width=\columnwidth]{SchematicConstantTempInit}
+		\caption{\label{fig:Init}}
+	\end{subfigure}
+\begin{subfigure}{0.49\textwidth}
+		\includegraphics[width=\columnwidth]{SchematicConstantTempFinal}
+		\caption{\label{fig:Final}}
+\end{subfigure}
 \caption{Schematic showing the probability density of particles diffusing in a one dimensional tilted periodic potential at a fixed temperature. We see that the particles tend to drift down the potential as they diffuse, this drift will be called the current $J$ which we will quantify in section \ref{Smoluchowski}.}
 \label{fig:Schematic}
 \end{figure}
@@ -37,19 +37,20 @@ The Landauer blowtorch scheme involves a temperature that varies in space \cite{
 
 \subsection{Time dependent potentials}
 
-\begin{figure}[tb]
-	\centering
-	\subfigure{%
-		\includegraphics[width=0.45\columnwidth]{TimeDependentInit}
-	}
-\quad
-	\subfigure{
-		\includegraphics[width=0.45\columnwidth]{TimeDependentLater}
-	}
-	\subfigure{
-		\includegraphics[width=0.45\columnwidth]{TimeDependentFinal}
-	}
-\caption{Schematic of particles diffusing in a time dependent potential, the blue line represents the potential and the black line represents the particle probability density. In (a) the particles are stuck in the first potential well, a certain time later the electric field is turned off and the particles diffuse freely as shown in part (b). When the potential is turned back on again, a large number of the particles will get stuck in the well to the left of the first one thus creating a net current to the left.}
+\begin{figure}
+\begin{subfigure}{0.49\textwidth}
+		\includegraphics[width=\columnwidth]{TimeDependentInit}
+		\caption{\label{fig:Init}}
+\end{subfigure}
+\begin{subfigure}{0.49\textwidth}
+		\includegraphics[width=\columnwidth]{TimeDependentLater}
+		\caption{\label{fig:NoPot}}
+\end{subfigure}
+\begin{subfigure}{0.49\textwidth}
+		\includegraphics[width=\columnwidth]{TimeDependentFinal}
+             \caption{\label{fig:Final}}
+\end{subfigure}
+\caption{Schematic of particles diffusing in a time dependent potential, the blue line represents the potential and the black line represents the particle probability density. In \subref{fig:Init} the particles are stuck in the first potential well, a certain time later the electric field is turned off and the particles diffuse freely as shown in part \subref{fig:NoPot}. When the potential is turned back on again \subref{fig:Final}, a large number of the particles will get stuck in the well to the left of the first one thus creating a net current to the left.}
 \label{fig:TimeDependent}
 \end{figure}
 
