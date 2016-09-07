@@ -149,8 +149,8 @@ function current(potential, density, temperature)
     (density[2:end].*discrete_derivative(potential, xAxis)
     + discrete_derivative(density.*temperature, xAxis) )
 end
-""""
-stepT(temperature::AbstractArray, dt::Number,
+"""
+    stepT(temperature::AbstractArray, dt::Number,
             density::AbstractArray, potential::AbstractArray,
             dpotential::AbstractArray, alpha::Number,
             beta::Number, energy::Number,
@@ -260,8 +260,7 @@ temperature, must be the same length as the xAxis.
 * `xAxis::AbstractArray`: A vector describing the axis that we are discretizing
 over in the dimensionless coordinates.
 * `probBndType::Symbol = :periodic` The type of boundary condition on the
-probability
-density.
+probability density.
 """
 function evolveP(density::AbstractArray, evolveTime::Number, dt::Number,
             dpotential::AbstractArray, temperature::AbstractArray,

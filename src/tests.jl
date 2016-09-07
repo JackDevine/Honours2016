@@ -61,12 +61,12 @@ facts("Convergence tests.") do
     # tolerance. The system evolution is much less convergent than the seperate
     # functions, so we need to decrease the step size.
     system_time_step1 = evolve_system(P0, temperature, evolveTime,
-                            timeStepsSystem[1], potential, dpotential, alpha, beta,
-                            energy, xAxis)
+                            timeStepsSystem[1], potential, dpotential, alpha,
+                            beta, energy, xAxis)
 
     system_time_step2 = evolve_system(P0, temperature, evolveTime,
-                            timeStepsSystem[2], potential, dpotential, alpha, beta,
-                            energy, xAxis)
+                            timeStepsSystem[2], potential, dpotential, alpha,
+                            beta, energy, xAxis)
 
     @fact (norm(system_time_step1[2] - system_time_step2[2])
         /mean([norm(system_time_step1[2]), norm(system_time_step2[2])])
