@@ -70,11 +70,16 @@ finite differencing on, the points must be equally spaced.
     * `:dirichlet`: The density remains constant at the boudaries.
     * `:periodic`: The density is the same at the left and right sides.
     * `:neumann`: The derivative is zero at the boundaries.
+* `normalization::Bool`: Whether or not to normalize the solution after
+doing a finite differences step forward.
+* `returnMatrix::Bool`: If true then the function will return the finite
+differences matrix.
 """
 function stepP(P::AbstractArray, dt::Number,
             dpotential::AbstractArray,
             temperature::AbstractArray, xAxis::AbstractArray;
-            bndType::Symbol=:absorbing, normalization::Bool = true, returnMatrix::Bool = false)
+            bndType::Symbol=:absorbing, normalization::Bool = true,
+            returnMatrix::Bool = false)
     # Augment the discrete temperature and the discrete potential since we will
     # be evaluating them at points beyond the boundary.
     T0 = temperature[1]
@@ -88,18 +93,21 @@ function stepP(P::AbstractArray, dt::Number,
     # Create the diagonals of the matrix, in order to linearize the problem, we
     # had to assume that T(x, t + dt) = T(x, t). We could improve on this by
     # using an explicit method to estimate T(x, t + dt).
-    diag_minus1 = rr*(temperature[1:end-3] - 0.5dx*dpotential[1:end-3])
-    diag0 = -rr*2*temperature[2:end-1]
-    diag1 = rr*(temperature[4:end] + 0.5dx*dpotential[4:end])
+    diag_minus1 = rr*(-0.5dpotential[1:end-3]*dx +
+            0.25*(-temperature[3:end-1] + temperature[1:end-3]
+            + 4temperature[2:end-2]))
+    diag0 = -2rr*temperature[2:end-1]
+    diag1 = rr*(0.5*dpotential[4:end]*dx + 0.25*(temperature[4:end]
+                - temperature[2:end-2] + 4temperature[3:end-1]))
     if bndType == :absorbing
         A = Tridiagonal(diag_minus1, diag0, diag1)
         II = Tridiagonal(zeros(diag1), ones(diag0), zeros(diag1))
-        P = (II - 0.5A)\((II + 0.5A)*P)  # Since (1 - A/2)*P^{n+1} = (1 + A/2)*P^n.
+        P = (II - 0.5A)\((II + 0.5A)*P)
     elseif bndType == :periodic
         A = spdiagm((diag_minus1, diag0, diag1), (-1, 0, 1))
         A[1, end] = diag_minus1[1]
         A[end, 1] = diag1[end]
-        P = (speye(A) - 0.5A)\((speye(A) + 0.5A)*P)  # Since (1 - A/2)*P^{n+1} = (1 + A/2)*P^n.
+        P = (speye(A) - 0.5A)\((speye(A) + 0.5A)*P)
     elseif bndType == :neumann
         # Derivative is zero at the boundaries.
         A = spdiagm((diag_minus1, diag0, diag1), (-1, 0, 1))
@@ -121,9 +129,26 @@ function stepP(P::AbstractArray, dt::Number,
     P
 end
 
-current(potential, density, temperature) = (density[2:end].*discrete_derivative(potential, xAxis)
-                                          + discrete_derivative(density.*temperature, xAxis) )
+"""
+    kramers_rate(pRight::AbstractArray, timeVec::AbstractArray)
+Given the probability of the particle being in the top well, calculate the
+Kramers rate for the system.
+# Examples
+```julia
+julia> timeVec = linspace(0, 2, 1000)
+       pRight = Float64[exp(-2*t) for t in timeVec]
+       kramers_rate(pRight, timeVec)  # 2.0
+```
+"""
+function kramers_rate(pRight::AbstractArray, timeVec::AbstractArray)
+    slope = discrete_derivative(log(pRight), timeVec)
+    maximum(abs(slope[end]))
+end
 
+function current(potential, density, temperature)
+    (density[2:end].*discrete_derivative(potential, xAxis)
+    + discrete_derivative(density.*temperature, xAxis) )
+end
 """"
 stepT(temperature::AbstractArray, dt::Number,
             density::AbstractArray, potential::AbstractArray,
@@ -154,12 +179,15 @@ Returns the temperature evolved forward by an amount dt as well as the
 updated energy of the system, assumes periodic boundary conditions.
 * `bndType::Symbol=:neumann`: The type of boundary condition for the temperature
 can include `:neumann`, `:dirichlet`, `:periodic`.
+* `returnMatrix::Bool`: If true then the function will return the finite
+differences matrix.
 """
 function stepT(temperature::AbstractArray, dt::Number,
             density::AbstractArray, potential::AbstractArray,
             dpotential::AbstractArray, alpha::Number,
             beta::Number, energy::Number,
-            xAxis::AbstractArray; bndType::Symbol=:neumann)
+            xAxis::AbstractArray; bndType::Symbol=:neumann,
+            returnMatrix::Bool = false)
     # Augment the discrete density since we will be
     # evaluating them at points beyond the boundary.
     # The density is periodic.
@@ -171,7 +199,8 @@ function stepT(temperature::AbstractArray, dt::Number,
     # The inhomogeniety at the end of the equation.
     in_homo = -rr*alpha*density[2:end-1].*(dpotential[2:end-1].^2)*dx^2
     # The diagonals of the matrix.
-    diag_minus1 = rr*(-0.5*alpha*density[1:end-3].*dpotential[2:end-2]*dx + beta)
+    diag_minus1 = rr*(-0.5*alpha*density[1:end-3].*dpotential[2:end-2]*dx
+                        + beta)
     diag0 = -2*beta*rr*ones(xAxis)
     diag1 = rr*(0.5*alpha*density[4:end].*dpotential[3:end-1]*dx + beta)
     # Add the inhomogeneity to the diagonals.
@@ -199,6 +228,9 @@ function stepT(temperature::AbstractArray, dt::Number,
         B[end, end - 1] = -B[end, end]
         temperature = A\(B*temperature)
     end
+    if returnMatrix
+        return A
+    end
     # The scaling of the temperature.
     potential_energy = discrete_quad(potential.*density[2:end-1],
                             xAxis[1], xAxis[end])
@@ -210,7 +242,8 @@ end
 """
     evolveP(density::AbstractArray, evolveTime::Number, dt::Number,
             dpotential::AbstractArray, temperature::AbstractArray,
-            xAxis::AbstractArray ; probBndType::Symbol = :periodic, tempBndType = :neumann)
+            xAxis::AbstractArray ; probBndType::Symbol = :periodic,
+            tempBndType = :neumann)
 Evolve the probability density forward by an amount of time evolveTime using a
 time step dt.
 # Arguments:
@@ -222,11 +255,12 @@ for in the dimensionless time unit.
 * `dtpotential::AbstractArray`: A vector of the derivative of the potential,
 contains points just outside the boundaries so it needs to be the length of
 the xAxis plus 2.
-* `temperature::AbstractArray`: A vector containing the discretized temperature, must
-be the same length as the xAxis.
+* `temperature::AbstractArray`: A vector containing the discretized
+temperature, must be the same length as the xAxis.
 * `xAxis::AbstractArray`: A vector describing the axis that we are discretizing
 over in the dimensionless coordinates.
-* `probBndType::Symbol = :periodic` The type of boundary condition on the probability
+* `probBndType::Symbol = :periodic` The type of boundary condition on the
+probability
 density.
 """
 function evolveP(density::AbstractArray, evolveTime::Number, dt::Number,
@@ -234,7 +268,8 @@ function evolveP(density::AbstractArray, evolveTime::Number, dt::Number,
             xAxis::AbstractArray ; probBndType::Symbol = :periodic)
     n_steps = round(Int, evolveTime/dt)
     for i = 1:n_steps
-        density = stepP(density, dt, dpotential, temperature, xAxis ; bndType = probBndType)
+        density = stepP(density, dt, dpotential, temperature, xAxis;
+                        bndType = probBndType)
     end
     density
 end
@@ -242,7 +277,8 @@ end
     evolveT(temperature::AbstractArray, evolveTime::Number, dt::Number,
             potential::AbstractArray, dpotential::AbstractArray,
             density::AbstractArray, alpha::Number, beta::Number,
-            energy::Number, xAxis::AbstractArray ; tempBndType::Symbol = :neumann)
+            energy::Number, xAxis::AbstractArray ;
+            tempBndType::Symbol = :neumann)
 Evolve the dicrete temperature forward by an amount evolveTime using a time
 step dt. This function keeps the probability density constant.
 # Arguments:
@@ -255,8 +291,8 @@ temperature, must be the same length as the xAxis.
 * `dtpotential::AbstractArray`: A vector of the derivative of the potential,
 contains points just outside the boundaries so it needs to be the length of
 the xAxis plus 2.
-* `density::AbstractArray`: The initial value for the probability density, must be a
-             vector of the same size of the xAxis.
+* `density::AbstractArray`: The initial value for the probability density, must
+be a vector of the same size of the xAxis.
 * `alpha::Number`: Dimensionless parameter that describes the coupling between
              the probability density and the temperature.
 * `beta::Number`: Dimensionless parameter that describes how quickly the
@@ -264,17 +300,19 @@ temperature diffuses to a constant value.
 * `energy::Number`: The dimensionless energy of the system.
 * `xAxis::AbstractArray`: A vector describing the axis that we are discretizing
 over in the dimensionless coordinates.
-* `tempBndType::Symbol = :neumann` The type of boundary condition on the temperature.
+* `tempBndType::Symbol = :neumann` The type of boundary condition on the
+temperature.
 """
 function evolveT(temperature::AbstractArray, evolveTime::Number, dt::Number,
             potential::AbstractArray, dpotential::AbstractArray,
             density::AbstractArray, alpha::Number, beta::Number,
-            energy::Number, xAxis::AbstractArray ; tempBndType::Symbol = :neumann)
+            energy::Number, xAxis::AbstractArray;
+            tempBndType::Symbol = :neumann)
     n_steps = round(Int, evolveTime/dt)
     for i = 1:n_steps
         # Update temperature.
-        temperature = stepT(temperature, dt, density, potential, dpotential, alpha,
-                beta, energy, xAxis ; bndType = tempBndType)
+        temperature = stepT(temperature, dt, density, potential, dpotential,
+                alpha, beta, energy, xAxis ; bndType = tempBndType)
     end
     temperature
 end
@@ -305,8 +343,10 @@ the xAxis plus 2.
 * `energy::Number`: The dimensionless energy of the system.
 * `xAxis::AbstractArray`: A vector describing the axis that we are discretizing
  over in the dimensionless coordinates.
-* `tempBndType::Symbol = :neumann` The type of boundary condition on the temperature.
-* `probBndType::Symbol = :poeriodic`: The type of boundary condition for the probability
+* `tempBndType::Symbol = :neumann` The type of boundary condition on the
+temperature.
+* `probBndType::Symbol = :poeriodic`: The type of boundary condition for the
+probability
 distribution.
 """
 function evolve_system(density::AbstractArray, temperature::AbstractArray,
@@ -314,22 +354,28 @@ function evolve_system(density::AbstractArray, temperature::AbstractArray,
             potential::AbstractArray,
             dpotential::AbstractArray, alpha::Number,
             beta::Number, energy::Number,
-            xAxis::AbstractArray ; tempBndType::Symbol = :neumann, probBndType::Symbol = :periodic)
+            xAxis::AbstractArray ; tempBndType::Symbol = :neumann,
+            probBndType::Symbol = :periodic)
         n_steps = round(Int, evolveTime/dt)
     for i = 1:n_steps
-        temperature = stepT(temperature, dt, density, potential, dpotential, alpha, beta,
+        temperature = stepT(temperature, dt, density, potential, dpotential,
+                                alpha, beta,
                         energy, xAxis ; bndType = tempBndType)
-        density = stepP(density, dt, dpotential, temperature, xAxis ; bndType = probBndType)
+        density = stepP(density, dt, dpotential, temperature, xAxis ; bndType =
+        probBndType)
     end
     density, temperature
 end
 
 """
-    hermite_coeff(points::AbstractArray, fvals::AbstractArray, dfvals::AbsrtactArray)
-Use Hermite interpolation to fit the data, points is an array of the points in the x axis being used, fvals are the
+    hermite_coeff(points::AbstractArray, fvals::AbstractArray,
+         dfvals::AbsrtactArray)
+Use Hermite interpolation to fit the data, points is an array of the points in
+the x axis being used, fvals are the
 function values at those points, dfvals are the derivatives at those points.
 # Examples
-Say that you have a function that you want to interpolate, you know the function and its first derivative at the
+Say that you have a function that you want to interpolate, you know the
+function and its first derivative at the
 following points:
 
 x     = [0.0, 1.0, 2.0]
@@ -338,7 +384,8 @@ f(x)  = [0.0, 8.0, 2.0]
 
 f'(x) = [0.0, 0.0, 0.0]
 
-You can find the coefficients of the polynomial that interpolates this data as follows.
+You can find the coefficients of the polynomial that interpolates this data as
+ follows.
 ```julia
 julia> hermite_coeff([0.0, 1.0, 2.0], [0.0, 8.0, 2.0], [0.0, 0.0, 0.0])
 6-element Array{Float64,1}:
@@ -350,7 +397,8 @@ julia> hermite_coeff([0.0, 1.0, 2.0], [0.0, 8.0, 2.0], [0.0, 0.0, 0.0])
   -1.5
 ```
 """
-function hermite_coeff(points::AbstractArray, fvals::AbstractArray, dfvals::AbstractArray)
+function hermite_coeff(points::AbstractArray, fvals::AbstractArray,
+     dfvals::AbstractArray)
     polynomialOrder = length(fvals) + length(dfvals)
     A = Array(Float64, length(fvals) + length(dfvals), polynomialOrder)
     itr = 1
@@ -360,7 +408,8 @@ function hermite_coeff(points::AbstractArray, fvals::AbstractArray, dfvals::Abst
     end
     itr = 1
     for ii in (1:length(dfvals)) + length(fvals)
-        A[ii, :] = [n > 0 ? n*points[itr]^(n-1) : 0.0 for n in 0:(polynomialOrder-1)]
+        A[ii, :] = [n > 0 ? n*points[itr]^(n-1) : 0.0 for n in
+         0:(polynomialOrder-1)]
         itr += 1
     end
     A\[fvals ; dfvals]
