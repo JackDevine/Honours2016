@@ -1,6 +1,31 @@
 # Useful functions for doing finite differences on the system, all of these
 # functions use the dimensionalized equations.
 """
+    System
+Contains all of the data for the system in arrays.
+# Fields
+* `potential::AbstractArray`
+* `dpotential::AbstractArray`
+* `density::AbstractArray`
+* `temperature::AbstractArray`
+* `xAxis::AbstractArray`
+* `energy::Number`
+"""
+type System
+    potential::AbstractArray
+    dpotential::AbstractArray
+    density::AbstractArray
+    temperature::AbstractArray
+    xAxis::AbstractArray
+    energy::Number
+end
+
+"""
+Initialize an empty system.
+"""
+System() = System([], [], [], [], [], 0)
+
+"""
     discrete_quad(vec::AbstractArray, start::Number, fin::Number)
 Do discrete quadrature on a vector vec where the points in vec are evenly
 spaced from start to fin, if vec is even, use the Simpson rule, otherwise use
@@ -53,8 +78,10 @@ function energyFun(potential::AbstractArray, density::AbstractArray,
 end
 """
     stepP(P::AbstractArray, dt::Number,
-            potentialTup::Tuple{Number, AbstractArray, Number},
-            temperature::AbstractArray, xAxis::AbstractArray)
+                dpotential::AbstractArray,
+                temperature::AbstractArray, xAxis::AbstractArray;
+                bndType::Symbol=:absorbing, normalization::Bool = true,
+                returnMatrix::Bool = false)
 Evolve the probability density P forward by an amount dt.
 # Arguments:
 * `P::AbstractArray`: Initial probability density, this is a vector of the
@@ -127,6 +154,25 @@ function stepP(P::AbstractArray, dt::Number,
         P = P/discrete_quad(P, xAxis[1], xAxis[end])
     end
     P
+end
+
+"""
+    stepP(system::System, dt::Number;
+            bndType::Symbol = :absorbing, normalization::Bool = true,
+            returnMatrix::Bool = false)
+"""
+function stepP(system::System, dt::Number;
+            bndType::Symbol = :absorbing, normalization::Bool = true,
+            returnMatrix::Bool = false)
+    # Return the value from the more terse method of stepP.
+    if returnMatrix
+        return stepP(system.density, dt, system.dpotential, system.temperature,
+                        system.xAxis; bndType = bndType,
+                        normalization = normalization, returnMatrix = true)
+    end
+    stepP(system.density, dt, system.dpotential, system.temperature,
+            system.xAxis; bndType = bndType,
+            normalization = normalization, returnMatrix = false)
 end
 
 """
@@ -239,6 +285,28 @@ function stepT(temperature::AbstractArray, dt::Number,
     # Return the scaled temperature.
     temperature*scaling
 end
+
+"""
+    stepT(system::System, alpha::Number, beta::Number, dt::Number;
+            bndType::Symbol = :absorbing, normalization::Bool = true,
+            returnMatrix::Bool = false)
+"""
+function stepT(system::System, alpha::Number, beta::Number, dt::Number;
+            bndType::Symbol = :absorbing, normalization::Bool = true,
+            returnMatrix::Bool = false)
+    # Return the value from the more terse method of stepT.
+    if returnMatrix
+        return stepT(system.temperature, dt, system.density, system.potential,
+                system.dpotential, alpha, beta, system.energy, system.xAxis;
+                bndType = bndType,
+                normalization = normalization, returnMatrix = true)
+    end
+    stepT(system.temperature, dt, system.density, system.potential,
+            system.dpotential, alpha, beta, system.energy, system.xAxis;
+            bndType = bndType,
+            normalization = normalization, returnMatrix = false)
+end
+
 """
     evolveP(density::AbstractArray, evolveTime::Number, dt::Number,
             dpotential::AbstractArray, temperature::AbstractArray,
@@ -249,9 +317,9 @@ time step dt.
 # Arguments:
 * `density::AbstractArray`: The initial value for the probability density, must
 be a vector of the same size of the xAxis.
-* `evolveTime::Number`:  The amount of time to evolve the probability density
+* `evolveTime::Number`: The amount of time to evolve the probability density
 for in the dimensionless time unit.
-* `dt::Number`:          The time step that we are using for the evolution.
+* `dt::Number`: The time step that we are using for the evolution.
 * `dtpotential::AbstractArray`: A vector of the derivative of the potential,
 contains points just outside the boundaries so it needs to be the length of
 the xAxis plus 2.
