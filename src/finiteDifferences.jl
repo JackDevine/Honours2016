@@ -1,3 +1,21 @@
+module FiniteDifferences
+export stepP, stepT, energyFun, hermite_coeff, discrete_quad,
+discrete_derivative, System, constant
+
+
+"""
+    @constant(varname, varvalue)
+A macro for making the data in varvalue available to all of the workers
+through the name varvalue.
+"""
+macro constant(varname, varvalue)
+  tmp = eval(varvalue)
+  quote
+    for i in procs()
+            @spawnat i global const $varname = $tmp
+    end
+  end
+end
 # Useful functions for doing finite differences on the system, all of these
 # functions use the dimensionalized equations.
 """
@@ -75,6 +93,11 @@ function energyFun(potential::AbstractArray, density::AbstractArray,
     right_bnd = xAxis[end]
     (discrete_quad(potential.*density, left_bnd, right_bnd)
         + (1/alpha)*discrete_quad(temperature, left_bnd, right_bnd))
+end
+
+function energyFun(system::System, alpha::Number)
+        energyFun(system.potential, system.density, system.temperature,
+                alpha, system.xAxis)
 end
 """
     stepP(P::AbstractArray, dt::Number,
@@ -173,22 +196,6 @@ function stepP(system::System, dt::Number;
     stepP(system.density, dt, system.dpotential, system.temperature,
             system.xAxis; bndType = bndType,
             normalization = normalization, returnMatrix = false)
-end
-
-"""
-    kramers_rate(pRight::AbstractArray, timeVec::AbstractArray)
-Given the probability of the particle being in the top well, calculate the
-Kramers rate for the system.
-# Examples
-```julia
-julia> timeVec = linspace(0, 2, 1000)
-       pRight = Float64[exp(-2*t) for t in timeVec]
-       kramers_rate(pRight, timeVec)  # 2.0
-```
-"""
-function kramers_rate(pRight::AbstractArray, timeVec::AbstractArray)
-    slope = discrete_derivative(log(pRight), timeVec)
-    maximum(abs(slope[end]))
 end
 
 function current(potential, density, temperature)
@@ -478,3 +485,82 @@ function hermite_coeff(points::AbstractArray, fvals::AbstractArray,
     end
     A\[fvals ; dfvals]
 end
+
+"""
+    kramers_rate(pRight::AbstractArray, timeVec::AbstractArray)
+Given the probability of the particle being in the top well, calculate the
+Kramers rate for the system by measuring the mean of the log of the slope of
+the probability of being in the right well.
+# Examples
+```julia
+julia> timeVec = linspace(0, 2, 1000)
+       pRight = Float64[exp(-2*t) for t in timeVec]
+       kramers_rate(pRight, timeVec)  # 2.0
+```
+"""
+function kramers_rate(pRight::AbstractArray, timeVec::AbstractArray)
+    slope = discrete_derivative(log(pRight), timeVec)
+    mean(abs(slope[end]))
+end
+
+
+"""
+    measure_kramers(wellPositions::AbstractArray, system::System,
+                        alpha::Number, beta::Number, dt::Number,
+                        nSteps::Integer)
+Given the system in an intial state as well as the values of `alpha` and
+`beta`, calculate the krammers rate by evolving the system forward and running
+`kramers_rate` on `pRight`, where `pRight` is the proability of being in the
+right well.
+"""
+function measure_kramers(wellPositions::AbstractArray, system::System,
+                        alpha::Number, beta::Number, dt::Number,
+                        nSteps::Integer)
+    nPoints = length(system.density)
+    energy = energyFun(system, alpha)
+    systemLocal = System(system.potential, system.dpotential, system.density,
+                            system.temperature, system.xAxis, energy)
+
+    hIndex = round(Int, nPoints/2)
+    pRight = Array(Float64, nSteps)
+        pRight[1] = discrete_quad(system.density[hIndex:end],
+                            system.xAxis[hIndex], system.xAxis[end])
+
+    for i in 2:nSteps
+        systemLocal.density = stepP(systemLocal, dt; bndType = :absorbing)
+        systemLocal.temperature = stepT(systemLocal, alpha, beta, dt,
+                                                bndType = :neumann)
+        pRight[i] = discrete_quad(systemLocal.density[hIndex:end],
+                        systemLocal.xAxis[hIndex], systemLocal.xAxis[end])
+    end
+    kramers_rate(pRight, (1:nSteps)*dt)
+end
+
+"""
+    measure_kramers(wellPositions::AbstractArray, system::System,
+                        dt::Number, nSteps::Integer)
+Given the system in an intial state, calculate the krammers rate by evolving
+the uncoupled system forward and running `kramers_rate` on `pRight`, where
+`pRight` is the proability of being in the right well.
+"""
+function measure_kramers(wellPositions::AbstractArray, system::System,
+                        alpha::Number, beta::Number, dt::Number,
+                        nSteps::Integer)
+    nPoints = length(system.density)
+    systemLocal = System(system.potential, system.dpotential, system.density,
+                            system.temperature, system.xAxis, 0.0)
+
+    hIndex = round(Int, nPoints/2)
+    pRight = Array(Float64, nSteps)
+        pRight[1] = discrete_quad(system.density[hIndex:end],
+                            system.xAxis[hIndex], system.xAxis[end])
+
+    for i in 2:nSteps
+        systemLocal.density = stepP(systemLocal, dt; bndType = :absorbing)
+        pRight[i] = discrete_quad(systemLocal.density[hIndex:end],
+                        systemLocal.xAxis[hIndex], systemLocal.xAxis[end])
+    end
+    kramers_rate(pRight, (1:nSteps)*dt)
+end
+
+end  # module
