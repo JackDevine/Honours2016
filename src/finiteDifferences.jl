@@ -273,14 +273,11 @@ function stepT(temperature::AbstractArray, dt::Number,
         temperature = (speye(A) - 0.5A)\((speye(A) + 0.5A)*temperature)
     elseif bndType == :neumann
         # Derivative is zero at the boundaries.
-        A = spdiagm((diag_minus1, diag0, diag1), (-1, 0, 1))
-        B = speye(A) + 0.5A
-        A = speye(A) - 0.5A
-        A[1, 2] = -A[1, 1]
-        A[end, end - 1] = -A[end, end]
-        B[1, 2] = -B[1, 1]
-        B[end, end - 1] = -B[end, end]
-        temperature = A\(B*temperature)
+        II = Tridiagonal(zeros(diag1), ones(diag0), zeros(diag1))
+        diag1[1] = -diag0[1]
+        diag_minus1[end] = -diag0[end]
+        A = Tridiagonal(diag_minus1, diag0, diag1)
+        temperature = (II - 0.5A)\((II + 0.5A)*temperature)
     end
     if returnMatrix
         return A
