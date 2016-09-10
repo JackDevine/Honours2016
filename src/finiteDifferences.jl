@@ -292,19 +292,16 @@ end
             returnMatrix::Bool = false)
 """
 function stepT(system::System, alpha::Number, beta::Number, dt::Number;
-            bndType::Symbol = :absorbing, normalization::Bool = true,
-            returnMatrix::Bool = false)
+            bndType::Symbol = :absorbing, returnMatrix::Bool = false)
     # Return the value from the more terse method of stepT.
     if returnMatrix
         return stepT(system.temperature, dt, system.density, system.potential,
                 system.dpotential, alpha, beta, system.energy, system.xAxis;
-                bndType = bndType,
-                normalization = normalization, returnMatrix = true)
+                bndType = bndType, returnMatrix = true)
     end
     stepT(system.temperature, dt, system.density, system.potential,
             system.dpotential, alpha, beta, system.energy, system.xAxis;
-            bndType = bndType,
-            normalization = normalization, returnMatrix = false)
+            bndType = bndType, returnMatrix = false)
 end
 
 """
