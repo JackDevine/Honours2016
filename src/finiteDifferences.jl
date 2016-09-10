@@ -1,6 +1,7 @@
 module FiniteDifferences
 export stepP, stepT, energyFun, hermite_coeff, discrete_quad,
-discrete_derivative, System, constant
+        discrete_derivative, System, measure_kramers, kramers_rate,
+        kramers_rate_analytical, @constant
 
 
 """
@@ -544,8 +545,7 @@ the uncoupled system forward and running `kramers_rate` on `pRight`, where
 `pRight` is the proability of being in the right well.
 """
 function measure_kramers(wellPositions::AbstractArray, system::System,
-                        alpha::Number, beta::Number, dt::Number,
-                        nSteps::Integer)
+                            dt::Number, nSteps::Integer)
     nPoints = length(system.density)
     systemLocal = System(system.potential, system.dpotential, system.density,
                             system.temperature, system.xAxis, 0.0)
@@ -561,6 +561,41 @@ function measure_kramers(wellPositions::AbstractArray, system::System,
                         systemLocal.xAxis[hIndex], systemLocal.xAxis[end])
     end
     kramers_rate(pRight, (1:nSteps)*dt)
+end
+
+"""
+    kramers_rate_analytical(coeff::AbstractArray, wellPositions::AbstractArray,
+                                temperature::Number)
+Given the coefficients of the polynomial representing the potential, calculate
+the kramers rate from the upper well to the lower well.
+# Examples
+```julia
+    wellPositions = [-2.0, 0.0, 2.0]
+    coeff = hermite_coeff(wellPositions, [0.0, 7.0, 2.0], [0.0, 0.0, 0.0])
+    kramers_rate_analytical(coeff, wellPositions, 1.0)  # 0.0061340150666157394
+```
+"""
+function kramers_rate_analytical(coeff::AbstractArray,
+                        wellPositions::AbstractArray, temperature::Number)
+    potentialA = sum([coeff[i+1]*wellPositions[3]^i
+                                for i in 0:(length(coeff) - 1)])
+    potentialB = sum([coeff[i+1]*wellPositions[2]^i
+                                for i in 0:(length(coeff) - 1)])
+    potentialC = sum([coeff[i+1]*wellPositions[1]^i
+                                for i in 0:(length(coeff) - 1)])
+    ddpotentialA = sum([i*(i - 1)*coeff[i+1]*wellPositions[3]^(i - 2)
+                                for i in 2:(length(coeff) - 1)])
+    ddpotentialB = sum([i*(i - 1)*coeff[i+1]*wellPositions[2]^(i - 2)
+                                for i in 2:(length(coeff) - 1)])
+    ddpotentialC = sum([i*(i - 1)*coeff[i+1]*wellPositions[1]^(i - 2)
+                                for i in 2:(length(coeff) - 1)])
+    Eforwards = potentialB - potentialA
+    Ebackwards = potentialB - potentialC
+    (
+    ((sqrt(abs(ddpotentialA*ddpotentialB)))/(2pi))*exp(-Eforwards/temperature)
+     -
+    ((sqrt(abs(ddpotentialC*ddpotentialB)))/(2pi))*exp(-Ebackwards/temperature)
+    )
 end
 
 end  # module
