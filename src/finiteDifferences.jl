@@ -7,7 +7,7 @@ export stepP, stepT, energyFun, hermite_coeff, discrete_quad,
 """
     @constant(varname, varvalue)
 A macro for making the data in varvalue available to all of the workers
-through the name varvalue.
+through varname.
 """
 macro constant(varname, varvalue)
   tmp = eval(varvalue)
@@ -151,10 +151,12 @@ function stepP(P::AbstractArray, dt::Number,
     diag1 = rr*(0.5*dpotential[4:end]*dx + 0.25*(temperature[4:end]
                 - temperature[2:end-2] + 4temperature[3:end-1]))
     if bndType == :absorbing
+        # The density is zero at both boundaries.
         A = Tridiagonal(diag_minus1, diag0, diag1)
         II = Tridiagonal(zeros(diag1), ones(diag0), zeros(diag1))
         P = (II - 0.5A)\((II + 0.5A)*P)
     elseif bndType == :periodic
+        # The density is the same at both boundaries.
         A = spdiagm((diag_minus1, diag0, diag1), (-1, 0, 1))
         A[1, end] = diag_minus1[1]
         A[end, 1] = diag1[end]
@@ -199,6 +201,11 @@ function stepP(system::System, dt::Number;
             normalization = normalization, returnMatrix = false)
 end
 
+"""
+    current(potential, density, temperature)
+Calculate the current of the system, where the current is the value inside
+the derivative on the RHS of the Smoluchowski equation.
+"""
 function current(potential, density, temperature)
     (density[2:end].*discrete_derivative(potential, xAxis)
     + discrete_derivative(density.*temperature, xAxis) )
@@ -267,10 +274,24 @@ function stepT(temperature::AbstractArray, dt::Number,
         II = Tridiagonal(zeros(diag1), ones(diag0), zeros(diag1))
         temperature = (II - 0.5A)\((II + 0.5A)*temperature)
     elseif bndType == :periodic
+        # The value at the left boundary is the same as the value at the right
+        # boundary.
         A = spdiagm((diag_minus1, diag0, diag1), (-1, 0, 1))
         A[1, end] = diag_minus1[1]
         A[end, 1] = diag1[end]
         temperature = (speye(A) - 0.5A)\((speye(A) + 0.5A)*temperature)
+    elseif bndType == :dirichlet
+        # The value at the boundary remains fixed.
+        II = Tridiagonal(zeros(diag1), ones(diag0), zeros(diag1))
+        diag0[1] = 1.5
+        diag0[end] = 1.5
+        A = Tridiagonal(diag_minus1, diag0, diag1)
+        diag0[1] = 0.5
+        diag0[end] = 0.5
+        B = Tridiagonal(diag_minus1, diag0, diag1)
+        temperatureLeft, temperatureRight = temperature[1], temperature[end]
+        temperature = (II - 0.5A)\((II + 0.5B)*temperature)
+        temperature[1], temperature[end] = temperatureLeft, temperatureRight
     elseif bndType == :neumann
         # Derivative is zero at the boundaries.
         II = Tridiagonal(zeros(diag1), ones(diag0), zeros(diag1))
