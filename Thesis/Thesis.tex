@@ -32,6 +32,7 @@
 %\usepackage{subfigure} % make it possible to include more than one captioned figure/table in a single float
 \usepackage{cleveref}  % For referencing more than one equation at at time
 \usepackage[colorlinks=true,urlcolor=blue,citecolor=blue,linkcolor=black]{hyperref} % for hyper referencing
+\renewcommand{\sectionautorefname}{\S}  % To reference sections using a fancy symbol.
 \usepackage{amsmath}
 \usepackage[numbers,sort&compress]{natbib}  % Make a group of citations appear in order in the document
 \usepackage{bbold} 
@@ -80,10 +81,9 @@
 		\vspace{1cm}
 		{\scshape\LARGE The University of Otago \par}
 		\vspace{1cm}
-		\includegraphics[width=0.2\textwidth]{thumbnail_OU-NZ-Coated.jpg}\par\vspace{1cm}
+		\includegraphics[width=0.24\textwidth]{thumbnail_OU-NZ-Coated.jpg}\par\vspace{1cm}
 		\vspace{1cm}
 		{\scshape\Large A thesis submitted for Honours in physics at the University of Otago, Dunedin, New Zealand\par}
-		\vspace{1.5cm}
 		\vspace{2cm}
 		\vfill
 		supervised by\par
@@ -131,6 +131,11 @@
 %\chapter{Results}
 
 %\input{Results}
+%----------------------------------------------------------------------------------------
+%	OUTLOOK
+%----------------------------------------------------------------------------------------
+\chapter{Outlook}
+\input{Outlook}
 
 %----------------------------------------------------------------------------------------
 %	APPENDIX

@@ -101,17 +101,17 @@ And we minimize this objective function with respect to $J_s$ and $P_s(0)$ under
 Here we will non-dimensionalize the equations, to do this, introduce $\bar{x} = \frac{x}{L}$, then the Smoluchowski equation becomes
 
 \begin{equation}
-\frac{\partial P}{\partial t} = \gamma^{-1}\frac{1}{L^2} \frac{\partial}{\partial \bar{x}} \left (P \frac{\partial V}{\partial \bar{x}} + k_B \frac{\partial}{\partial \bar{x}}(TP) \right )
+\frac{\partial P}{\partial t} = \gamma^{-1}\frac{1}{L^2} \frac{\partial}{\partial \bar{x}} \left (P \frac{\partial V}{\partial \bar{x}} + k_B T \frac{\partial}{\partial \bar{x}}(P) \right )
 \end{equation}
 Now let $E_0$ be the potential energy difference along one period, i.e. $E_0 = \max(v_0(x)) - \min(v_0(x))$. Now we will introduce the dimensionless potential and the dimensionless temperature as $\hat{V}(x) = \frac{V(x)}{E_0}$ and $\hat{T}(x) = \frac{k_B T(x)}{E_0}$ respectively. Now the Smoluchowski equation becomes
 
 \begin{equation}
-\frac{\partial P}{\partial t} = \frac{E_0}{\gamma L^2} \frac{\partial}{\partial \bar{x}} \left (P \frac{\partial \hat{V}}{\partial \bar{x}} + \frac{\partial}{\partial \bar{x}}(\hat{T}P) \right )
+\frac{\partial P}{\partial t} = \frac{E_0}{\gamma L^2} \frac{\partial}{\partial \bar{x}} \left (P \frac{\partial \hat{V}}{\partial \bar{x}} + \hat{T} \frac{\partial P}{\partial \bar{x}} \right )
 \end{equation}
 Let $\tau = \frac{E_0}{\gamma L^2}$ and $\hat{P} = L P $, with this we have:
 
 \begin{equation}
-\frac{\partial \hat{P}}{\partial \tau} = \frac{\partial}{\partial \bar{x}} \left (\hat{P} \frac{\partial \hat{V}}{\partial \bar{x}} + \frac{\partial}{\partial \bar{x}}(\hat{T} \hat{P}) \right ) \label{eqn:dimensionlessSmoluchowski}
+\frac{\partial \hat{P}}{\partial \tau} = \frac{\partial}{\partial \bar{x}} \left (\hat{P} \frac{\partial \hat{V}}{\partial \bar{x}} + \hat{T}  \frac{\partial \hat{P}}{\partial \bar{x}} \right ) \label{eqn:dimensionlessSmoluchowski}
 \end{equation}
 Now we define $\hat{J} = \frac{\gamma L^2}{E_0} J $, applying these definitions to the equation for the temperature evolution, we find that:
 
@@ -137,7 +137,7 @@ Let $\hat{E}(t) = \frac{E(t)}{E_0}$, we have:
 \end{eqnarray}
 
 
-So our system depends on the parameters $\alpha$ and $\beta$ as well as the shape of the potential. Physically, $\alpha$ represents how much the motor will interact with the environment thermally and $\beta$ represents how quickly the temperature diffuses.
+So our system depends on the parameters $\alpha$ and $\beta$ as well as the shape of the potential. Physically, $\alpha$ represents how much the particle interacts with the environment thermally and $\beta$ represents how quickly the temperature diffuses.
 
 \subsection{Finite differences}
 The one dimensional equation can be solved on a discrete grid by using the finite differences method, the main idea behind this strategy is to approximate derivatives with equations of the form:
@@ -146,22 +146,27 @@ The one dimensional equation can be solved on a discrete grid by using the finit
 \frac{d f}{d x} \approx \frac{f(x - h) - f(x + h)}{2h}
 \end{equation}
 
-for some small $h$. In our simulations, we will use the Crank Nicolson scheme to solve the equations. From now on, we will use the notation that $F(j \Delta x, n \Delta t) = F_j^n$, the key equation for the Crank Nicolson scheme is:
+for some small $h$, likewise the second derivative of a function is approximated with
+\begin{equation}
+\frac{d^2 f}{d x^2} = \frac{f(x - h) - 2f(x) + f(x + h)}{h^2}
+\end{equation}
+In our simulations, we will use the Crank Nicolson scheme to solve the equations. From now on, we will use the notation that $F(j \Delta x, n \Delta t) = F_j^n$, the key equation for the Crank Nicolson scheme is:
 \begin{equation}
 \frac{P_j^{n+1} - P_j^n}{\Delta t} = \frac{1}{2}(F_j^{n+1} + F_j^n)
 \end{equation}
 where $F$ represents the right hand side of the equation that we are doing finite differences on. By applying finite differences to the dimensionless Smoluchowski equation (eq \ref{eqn:dimensionlessSmoluchowski}), we find that:
 \begin{equation}
-F_j^{i} = \frac{P^i_{j+1} \partial V^i_{j+1} - P^i_{j-1} \partial V^i_{j-1}}{2 \Delta x} + \frac{P^i_{j+1} T^i_{j+1} - 2P^i_j T^i_j + P^i_{j-1} T^i_{j-1}}{\Delta x^2} 
+F_j^{i} = \frac{P^i_{j+1} \partial V^i_{j+1} - P^i_{j-1} \partial V^i_{j-1}}{2 \Delta x} + \frac{T^i_{j+1} - T^i_{j-1}}{2 \Delta x} \frac{P^i_{j+1} - P^i_{j-1}}{2 \Delta x} + T^i_j \frac{}{} \frac{P^i_{j+1}- 2P^i_j + P^i_{j-1}}{\Delta x^2} 
 \end{equation}
+where we omitted the hats for notational convenience.
 We make the following definitions:
 \begin{align*}
-a_j^{n+1} &= -\frac{\partial_x V^{n+1}_{j-1}}{2\Delta x} + \frac{T^{n+1}_{j-1}}{\Delta x^2} \\
-b_j^{n+1} &= \frac{-2 T^{n+1}_j}{\Delta x^2} \\
-c_j^{n+1} &=  \frac{\partial_x V^{n+1}_{j+1}}{2\Delta x} + \frac{T^{n+1}_{j+1}}{\Delta x^2}  \\
-a_j^{n} &= -\frac{\partial_x V^n_{j-1}}{2\Delta x} + \frac{T^n_{j-1}}{\Delta x^2} \\
-b_j^{n} &= \frac{-2 T^n_j}{\Delta x^2} \\
-c_j^{n} &=  \frac{\partial_x V^n_{j+1}}{2\Delta x} + \frac{T^n_{j+1}}{\Delta x^2}  \\ \numberthis
+a_j^{n+1} &= \frac{-2 T^{n+1}_j}{\Delta x^2} \\
+b_j^{n+1} &=  \frac{\partial_x V^{n+1}_{j+1}}{2\Delta x} + \frac{T^{n+1}_{j+1} - T^{n+1}_{j-1}}{4 \Delta x^2} \\
+c_j^{n+1} &= -\frac{\partial_x V^{n+1}_{j-1}}{2\Delta x}  - \frac{T^{n+1}_{j+1} - T^{n+1}_{j-1}}{4 \Delta x^2} \\ 
+a_j^{n} &= \frac{-2 T^{n}_j}{\Delta x^2} \\
+b_j^{n} &=  \frac{\partial_x V^{n}_{j+1}}{2\Delta x} + \frac{T^{n}_{j+1} - T^{n}_{j-1}}{4 \Delta x^2} \\
+c_j^{n} &= -\frac{\partial_x V^{n}_{j-1}}{2\Delta x}  - \frac{T^{n}_{j+1} - T^{n}_{j-1}}{4 \Delta x^2} \numberthis
 \end{align*}
 With these definitions, the Crank Nicolson scheme can be written down as follows:
 \begin{multline}
@@ -222,7 +227,14 @@ P_{J-1}^{n} \\
 P_J^{n}
 \end{bmatrix}
 \end{equation}
-With these matrices the equation now becomes $(\mathbb{1} - \frac{\Delta t}{2}A) \cdot P^{n+1} = (\mathbb{1} - \frac{\Delta t}{2}B) \cdot P^n$, this equation can be used to step forward $P$.
+With these matrices the equation now becomes,
+\begin{equation}
+\left (\mathbb{1} - \frac{\Delta t}{2}A \right) \cdot P^{n+1} = \left (\mathbb{1} - \frac{\Delta t}{2}B \right) \cdot P^n
+\end{equation}
+we interpret this equation as saying that half of a backwards Euler step acting on $P^{n+1}$ is equal to half of a forward Euler step acting on $P^n$. We write the equation to step $P$ forward one time step as
+\begin{equation}
+P^{n+1} = \frac{\mathbb{1} - \frac{\Delta t}{2}B}{\mathbb{1} - \frac{\Delta t}{2}A} P^n
+\end{equation}
 Each time that we step forward using this equation we will be out by a factor, this means that at each step we will need to renormalize using the equation $\int P(x) dx = 1$.
 
 Likewise, we can apply the Crank Nicolson scheme to the heat equation, (eq \ref{eqn:dimensionlessHeat}), by looking at the right hand side of this equation, we find that
@@ -233,7 +245,7 @@ F_j^i = -\alpha \left (P_j^i (\partial_x V_j^i)^2 + \frac{T_{j+1}^i - T_{j-1}^i 
 
 Just like the discretized Smoluchowski equation, these equations can be written in matrix form. The temperature is normalized by assuming that the energy remains fixed, this will be true as long as no heat or current flows through the boundaries, i.e. $J(x=a) = 0 = J(x = b)$ and $\frac{\partial T}{\partial x} \rvert_a = 0 = \frac{\partial T}{\partial x} \rvert_b$. In this case, the energy is constant and is given by $E = \int P(x) V(x) dx + c_p \int T(x) dx$, so each time that we step the temperature forward, we have to calculate the potential and thermal energy and then scale the temperature so that the total energy remains fixed.
 
-Fortunately the matrices that we are dealing with are very sparse, so the program used to solve these equations can save on memory by calling sparse matrix libraries.
+Fortunately the matrices that we are dealing with are very sparse, so the program used to solve these equations can save on memory by calling sparse matrix libraries. 
 
 %\subsection{Stochastic methods}
 %We can simulate the path of a single particle by using stochastic methods to solve the Langevin equation. By simulating many times we should be able to recover the distributions that were found through finite differencing. When simulating the system  at the microscopic level, equation (\ref{eqn:Smoluchowski}) becomes \cite{Reimann2001}
