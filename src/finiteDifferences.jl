@@ -280,14 +280,28 @@ function stepT(temperature::AbstractArray, dt::Number,
         A[1, end] = diag_minus1[1]
         A[end, 1] = diag1[end]
         temperature = (speye(A) - 0.5A)\((speye(A) + 0.5A)*temperature)
-    elseif bndType == :dirichlet
-        # The value at the boundary remains fixed.
+    elseif bndType == :dirichlet  # The value at the boundary remains fixed.
+        # Calculate the heat due to the motor at the boundaries.
+        heatLeft = (density[2]*dpotential[2] +
+                temperature[1]*(density[3] - density[1])/(2dx))*dpotential[2]
+        heatRight = (density[end-1]*dpotential[end-1]
+                        + temperature[end]*(density[end] -
+                          density[end-2])/(2dx))*dpotential[end-1]
+        heat = heatRight - heatLeft
+        # Calculate the heat due to temperature gradients at the boundaries.
+        heatLeft = (temperature[2] - temperature[1])/(2dx)
+        heatRight = (temperature[end] - temperature[end-1])/(2dx)
+        heat += heatRight - heatLeft
+        energy -= heat
+        # Step the system forward.
         II = Tridiagonal(zeros(diag1), ones(diag0), zeros(diag1))
-        diag0[1] = 1.5
-        diag0[end] = 1.5
+        diag0[1] = 0.0
+        diag0[end] = 0.0
+        diag1[1] = 0.0
+        diag_minus1[end] = 0.0
         A = Tridiagonal(diag_minus1, diag0, diag1)
-        diag0[1] = 0.5
-        diag0[end] = 0.5
+        diag0[1] = 0.0
+        diag0[end] = 0.0
         B = Tridiagonal(diag_minus1, diag0, diag1)
         temperatureLeft, temperatureRight = temperature[1], temperature[end]
         temperature = (II - 0.5A)\((II + 0.5B)*temperature)
