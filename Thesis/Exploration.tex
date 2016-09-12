@@ -1,0 +1,17 @@
+\section{Bistable potentials and Kramers Rate}
+
+\begin{figure}[tb]
+\includegraphics[width=\columnwidth]{bistablePotential}
+\caption{Bistable potential: In this plot we show the potential where we explore the Kramers rate, the potential has local minima at $a$ and $c$ and a maximum at $b$. If we begin with a probability distribution in the upper well, then the distribution will decay into the ground state of the upper well and then begin to decay into the lower well. The rate of flow from the upper well to the lower one will be denoted by $\kappa_+$ and the rate of flow from the lower well into the upper one will be denoted by $\kappa_-$.}
+\label{fig:bistablePotential}
+\end{figure}
+
+A bistable potential is one that has two stable minima and an intermediate unstable maximum, these potentials occur in a wide range of applications including digital logic \cite{MyersCelebranoKrishnan2015}, protein folding \cite{BryngelsonWolynes1989} and chemical reactions \cite{BernePecora1976}. In the context of Brownian motion, understanding the nature of bistable potentials can help one to build a master equation describing more complicated potentials comprised of multiple deep wells \cite{Barcilon1996, ChallisJack2014}. Consider the potential shown in Figure \ref{fig:bistablePotential}, if we begin in a state where we are certain that the particle is in the upper well, then as time passes, we should expect the probability distribution to move from point $a$ over the barrier at $b$ and into the well at point $c$. We will consider the regime where $E^+_B = V(x_b) - V(x_a) \gg k_B T$, in this regime the rate at which the particles flow from $a$ to $c$ is given by the Eyring-Kramers law \cite{Eyring1935, Kramers1940}, for our dimensionless equations, this has the form,
+\begin{equation}
+\kappa_+ = \frac{\sqrt{-V''(x_b) V''(x_a)}}{2 \pi} \exp \left({\frac{-E^+_B}{T}} \right)
+\end{equation}
+Likewise, there will be a current flowing from $c$ to $a$, we will denote this by $\kappa_-$, once we have calculated both of these rates, the population in the upper well will be given by:
+\begin{equation}
+P_+(t) = \exp{((\kappa_+ - \kappa_- )t)}.
+\end{equation}
+We can also achieve this result numerically by starting the system off in the upper well and simulating forward while calculating the probability that the particle is in the upper well at each step. We then fit an exponential to this data and the fitted rate will be our numerically estimated Kramers rate.

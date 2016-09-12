@@ -1,7 +1,7 @@
 module FiniteDifferences
 export stepP, stepT, energyFun, hermite_coeff, discrete_quad,
         discrete_derivative, System, measure_kramers, kramers_rate,
-        kramers_rate_analytical, @constant
+        kramers_rate_analytical, @constant, evolveP, evolveT
 
 
 """

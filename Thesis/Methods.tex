@@ -1,6 +1,133 @@
-In order to see how these equations behave with time, we have to resort to numerical methods (see section \ref{numerics}). However we note that for a given potential there will be a stationary solution that we will refer to as the ``steady state'', given periodic boundary conditions, we will derive an analytical form for this steady state.
+\section{The Smoluchowski equation} \label{Smoluchowski}
+
+As we will see, the diffusion is increased by increasing the temperature, while the derivative of the potential describes the external force on the particle. In some cases such as the Landauer blowtorch, the environment has a non uniform temperature held fixed by an external heat source \cite{Landauer1988}. With this in mind, we interpret Figure {\color{red} make reference to Landauer blowtorch and explain how the project is different} \ref{fig:Schematic} as follows: Brownian particles are subject to a given potential and are agitated by thermal noise, these agitations can give the particles the energy to move over barriers created by the potential. As one could imagine, these thermal interactions draw energy from the environment causing the temperature of the environment to change. Normally two simplifying assumptions are made at this point \cite{Reimann2001}, (i) that the thermal fluctuations created by the motor are very small compared to the thermal energy of the surrounding environment which is assumed to be effectively infinite, (ii) that when these temperature fluctuations occur, they diffuse away so rapidly that they do not need to be accounted for. In this project, we will question the second assumption in the case of Brownian motors, the aims of this project are as follows:
+\begin{itemize}
+\item{Determine a consistent physical description of Brownian motion involving self-induced temperature gradients, this description must be consistent with the laws of thermodynamics.}
+\item{Explore how this model differs from previous models of Brownian motion}
+\item{Determine conditions under which the model becomes the same as the previous models}
+\end{itemize}
+
+%Assumption (ii) has also been questioned previously by Streater in the context of Brownian motion \cite{Streater1997, Streater1997a}. In these articles, Streater investigates Brownian motion from a microscopic view and then comes up with a mathematical model to describe Brownian particles that are thermally coupled to the environment, he then goes on to prove that the model is thermostatistically consistent in the sense that energy is conserved and that entropy increases. We will explore a similar set of equations in the context of Brownian motors and we will try to determine the length scales at which the thermal interaction is important.
+
+This project will be focused on understanding the behavior of the coupled partial differential equations given by:
+
+{\color{red} Put a reference to the Soluchowski equation earlier in the text, so that it is only reiterated here}
+\begin{eqnarray}
+J(x, t) &=& -\gamma^{-1} \frac{\partial}{\partial x} \left ( \frac{\partial V(x, t)}{\partial x} P(x, t) + k_B T(x, t) \frac{\partial P(x, t)}{\partial x} \right )  \\
+\frac{\partial P(x, t)}{\partial t} &=& \frac{\partial J}{\partial x} \label{eqn:Smoluchowski} \\
+\frac{\partial T(x, t)}{\partial t} &=& -\kappa q(x, t) + D \frac{\partial^2 T(x, t)}{\partial x^2} \label{eqn:TemperatureEvolution}
+\end{eqnarray}
+
+Where
+\begin{itemize}
+\item{$P(x, t)$ is the probability density as a function of  reaction coordinate $x$ and time $t$}
+\item{$J(x, t)$ is called the current}
+\item{$\gamma$ is the friction coefficient}
+\item{$V(x, t)$ is the potential for the motor}
+\item{$k_B$ is the Boltzmann constant}
+\item{$q(x, t) = \partial_x V(x, t) J(x, t)$ is the heat from the motor}
+\item{$\kappa$ is the thermal conductivity}
+\item{$D$ is the thermal diffusivity}
+\end{itemize}
+
+Equation (\ref{eqn:Smoluchowski}) is called the Smoluschowski equation \cite{KellerBustamante2000} and equation \ref{eqn:TemperatureEvolution} is the heat equation. These equations make our intuitive notions more precise, we see that the first term on the right hand side of the Smoluchowski equation (equation \ref{eqn:Smoluchowski}) is a drift term that is forced by our potential and that the second term contains a diffusion term that is scaled by our temperature. In fact, Figure \ref{fig:Schematic} was made by solving equation (\ref{eqn:Smoluchowski}) numerically. Likewise, equation (\ref{eqn:TemperatureEvolution}) also appeals to our intuition of how the motor should effect its environment. The first term represents the heat flux being produced by the motor \cite{M.W.Jack2016}, while the second term represents the diffusion of temperature into the environment. This model includes a temperature that depends on $x$ and $t$, which has been explored in the literature {\color{red} [citations]}, where our model departs from previous work is that the temperature now depends on the evolution of the probability distribution as well. Coupled models of this type have been mentioned earlier by Streater \cite{Streater1997, Streater1997a}, our work uses a similar model.
+
+% THERMODYNAMICS
+\section{System thermodynamics}
+Equation \ref{eqn:Smoluchowski} and equation \ref{eqn:TemperatureEvolution} define equations of motion for our system, the system may be confined to a region $\Omega$ embedded in a larger environment which interacts with our system through the boundary conditions. In this section, we will show that our equations of motion obey the first and second laws of thermodynamics. The potential energy of the particle is $U_P = \int_{\Omega} V(x) P(x) dx$ and the thermal energy of the bath is $c_p \int_{\Omega} T(x) dx$, where $c_p$ is the specific heat capacity of the environment, with this we have.
+\begin{equation}
+E(t) = \int_{\Omega} V(x)P(x, t) dx + c_p \int_{\Omega} T(x, t) dx
+\end{equation}
+By using the Smoluchowski equation and the heat equation, we can differentiate with respect to time to get:
+\begin{align}
+\frac{d E}{d t} & = \int_{\Omega} V(x) \frac{\partial P}{\partial t} dx + c_p \int_{\Omega} \frac{\partial T}{\partial t} dx \\
+ & = -\int_{\Omega} V(x) \frac{\partial J}{\partial x} + c_p \int_{\Omega} -\kappa J(x) \frac{\partial V}{\partial x} + D \frac{\partial^2 T}{\partial x^2} dx \\
+ & = [V(x)J(x)]_{\partial \Omega}+ \int_{\Omega} \frac{\partial V}{\partial x} J(x) dx - \kappa c_p \int_{\Omega} \frac{\partial V}{\partial x} J(x) dx + D \left [\frac{\partial T}{\partial x} \right]_{\partial \Omega}
+\end{align}
+Notice that if the middle two terms cancel, then the change in energy is equal to the flow of energy through the boundaries. Thus, the first law of thermodynamics requires that $\kappa = \frac{1}{c_p}$, physically we can understand this by looking at the first term of equation \ref{eqn:TemperatureEvolution}. When the heat capacity is small, $\kappa$ becomes large and in this case, even a small amount of heat being produced by the Brownian particle will have a large effect on the evolution of the temperature. Conversely, if the heat capacity is large, then the heat produced by the Brownian particle will have a very small effect on the temperature. We therefore expect that our model can be neglected in the case where the environment has a very large heat capacity compared to the heat being produced by the Brownian particle.
+
+As for the entropy, we have \cite{Streater1997a}
+\begin{equation}
+S(t) = -k_B \int_{\Omega} P(x, t) \log(P(x, t)) dx + c_p \int_{\Omega} \log(T(x, t))dx
+\end{equation}
+The first term is the Gibbs energy in the continuous case \cite{Jaynes1965} and the second term is the entropy of an incompressible fluid \cite{CengelBoles1994}.
+Differentiating with respect to time, we get
+
+\begin{align}
+\frac{d S}{d t} =  k_B \int_{\Omega} \frac{\partial J}{\partial x} + \frac{\partial J}{\partial x} \log P \ dx + c_p \int_{\Omega} \frac{1}{T} \left(-\kappa J \partial_x V + c D \frac{\partial^2 T}{\partial x^2} \right) dx \\
+                     = k_B \left ( [J \log P]_{\partial \Omega} - \int_{\Omega} \frac{J}{P} \frac{\partial P}{\partial x} dx + [J]_{\partial \Omega} \right) - \int_{\Omega} \frac{J}{T} \frac{\partial V}{\partial x} + c_p D \int_{\Omega} \frac{1}{T} \frac{\partial^2 T}{\partial x^2} dx
+\end{align}
+
+We will denote the boundary terms with $B(t) = k_B( [J \log P]_{\partial \Omega} + \left[\frac{\partial J}{\partial x} \right]_{\partial \Omega} ) $, now the change in entropy becomes:
+
+\begin{eqnarray}
+\frac{d S}{d t} & = & - \int_{\Omega} \frac{J}{P} \frac{\partial P}{\partial x} + \frac{J}{T} \frac{\partial V}{\partial x} dx +  c D \int_{\Omega} \frac{1}{T} \frac{\partial^2 T}{\partial x^2} dx + B(t) \\
+                    & = & \int_{\Omega} \frac{J^2}{T P} dx + c D \int_{\Omega} \frac{1}{T} \frac{\partial^2 T}{\partial x^2} dx + B(t)
+\end{eqnarray}
+where in the second equality we used the fact that $J = P \frac{\partial V}{\partial x} + T \frac{\partial P}{\partial x}$. The first term on the right hand side is the entropy generated by the motor and the second is the entropy generated by temperature gradients, if no particles are flowing through the boundaries and if the nett heat flowing through the boundaries is zero, then the boundary terms vanish and we find that entropy always increases, in agreement with the second law of thermodynamics. Some authors write the Smoluchowski equation with $J = P \frac{\partial V}{\partial x} + T \frac{\partial P}{\partial x}$. By noticing that
+\begin{equation}
+\frac{\partial}{\partial x} \left(\frac{1}{T} \frac{\partial T}{\partial x} \right) = -\frac{1}{T^2} \left(\frac{\partial T}{\partial x} \right)^2 + \frac{1}{T} \frac{\partial^2 T}{\partial x^2}
+\end{equation}
+we can rewrite the third term as:
+\begin{eqnarray}
+c_p D \int_{\Omega} \frac{1}{T} \frac{\partial^2 T}{\partial x^2} dx &=& c_p D \int_{\Omega} \frac{\partial}{\partial x} \left(\frac{1}{T} \frac{\partial T}{\partial x} \right) + \frac{1}{T^2} \left(\frac{\partial T}{\partial x} \right)^2 dx \\
+ &=& c_p D \int_{\Omega} \frac{1}{T^2} \left(\frac{\partial T}{\partial x} \right)^2 dx + c_p D\left[\frac{1}{T} \frac{\partial T}{\partial x} \right]_{\partial \Omega}
+\end{eqnarray}
+which means that we can now absorb the third term into the boundary terms. If we define
+\begin{eqnarray}
+\dot{S}_{gen} &\equiv& \int_{\Omega} \frac{J^2}{T P} + c_p D \frac{1}{T^2} \left(\frac{\partial T}{\partial x} \right)^2 dx \\
+\text{and} \nonumber \\
+B(t) &\equiv& k_B \left( [J \log P]_{\partial \Omega} + \left[\frac{\partial J}{\partial x}\right]_{\partial \Omega} \right) + c_p D\left[\frac{1}{T} \frac{\partial T}{\partial x} \right]_{\partial \Omega}
+\end{eqnarray}
+Then we notice that the change in entropy is equal to a positive number $\dot{S}_{gen}$ plus the entropy flowing through the boundaries, this is precisely the second law of thermodynamics. Furthermore, the generated entropy can be split into two terms, the first term is to be interpreted as the entropy generated by the Brownian particle, since the motion of the particle is random, as the Brownian particle diffuses we will become less certain of its position. The second term is the entropy generated by the diffusion of temperature gradients, if one studies the solutions to the heat equation, then one will find that any spikes in the temperature will flatten out and eventually the temperature will be flat. This flattening out of the temperature is naturally associated with an increase in entropy.
+% DIMENSIONLESS
+\section{Dimensionalizing the equations}
+
+Upon viewing equations \ref{eqn:Smoluchowski} and \ref{eqn:TemperatureEvolution}, we see that there is a large number of constants that are set by the properties of the Brownian particle that we are modeling. We would like to reduce the number of variables for two reasons (i) by reducing the number of variables we will hopefully gain a more concise physical description of the system (ii) having a small number of free variables is very convenient for creating a program to approximate the equations numerically, dimensionless equations tend to be less prone to numerical error because they avoid cases where small numbers are compared to large ones in a floating point system {\color{red} [citation]}
+Here we will non-dimensionalize the equations, to do this, introduce $\bar{x} = \frac{x}{L}$, then the Smoluchowski equation becomes
+
+\begin{equation}
+\frac{\partial P}{\partial t} = \gamma^{-1}\frac{1}{L^2} \frac{\partial}{\partial \bar{x}} \left (P \frac{\partial V}{\partial \bar{x}} + k_B T \frac{\partial}{\partial \bar{x}}(P) \right )
+\end{equation}
+Now let $E_0$ be the potential energy difference along one period, i.e. $E_0 = \max(v_0(x)) - \min(v_0(x))$. Now we will introduce the dimensionless potential and the dimensionless temperature as $\hat{V}(x) = \frac{V(x)}{E_0}$ and $\hat{T}(x) = \frac{k_B T(x)}{E_0}$ respectively. Now the Smoluchowski equation becomes
+
+\begin{equation}
+\frac{\partial P}{\partial t} = \frac{E_0}{\gamma L^2} \frac{\partial}{\partial \bar{x}} \left (P \frac{\partial \hat{V}}{\partial \bar{x}} + \hat{T} \frac{\partial P}{\partial \bar{x}} \right )
+\end{equation}
+Let $\tau = \frac{E_0}{\gamma L^2}$ and $\hat{P} = L P $, with this we have:
+
+\begin{equation}
+\frac{\partial \hat{P}}{\partial \tau} = \frac{\partial}{\partial \bar{x}} \left (\hat{P} \frac{\partial \hat{V}}{\partial \bar{x}} + \hat{T}  \frac{\partial \hat{P}}{\partial \bar{x}} \right ) \label{eqn:dimensionlessSmoluchowski}
+\end{equation}
+Now we define $\hat{J} = \frac{\gamma L^2}{E_0} J $, applying these definitions to the equation for the temperature evolution, we find that:
+
+\begin{equation}
+\frac{E_0^2}{\gamma k_B L^2} \frac{\partial \hat{T}}{\partial \tau} = -\kappa \frac{E_0}{\gamma L^2}\hat{J}(\bar{x}) \frac{E_0}{L} \frac{\partial \hat{V}}{\partial \bar{x}} + \frac{D E_0}{k_B L^2} \frac{\partial^2 \hat{T}}{\partial \bar{x}^2}
+\end{equation}
+Now let $\alpha = \frac{\kappa k_B}{L}$ and $\beta = \frac{D \gamma}{E_0}$, then we have
+
+\begin{equation}
+\frac{\partial \hat{T}}{\partial \tau} = -\alpha \hat{J}(\bar{x}) \frac{\partial \hat{V}}{\partial \bar{x}} + \beta \frac{\partial^2 \hat{T}}{\partial \bar{x}^2} \label{eqn:dimensionlessHeat}
+\end{equation}
+
+As for the energy of the system, the dimensioned version is:
+
+\begin{equation}
+E(t) = \int P(x) V(x) dx + \frac{1}{\kappa} \int T(x) dx
+\end{equation}
+Let $\hat{E}(t) = \frac{E(t)}{E_0}$, we have:
+
+\begin{eqnarray}
+\hat{E}(t) & = & \int \hat{P} \hat{V} d \bar{x} + \frac{L}{k_B \kappa} \int \hat{T} d\bar{x} \\
+              & = & \int \hat{P} \hat{V} d \bar{x} + \frac{1}{\alpha} \int \hat{T} d\bar{x}
+\end{eqnarray}
+
+
+So our system depends on the parameters $\alpha$ and $\beta$ as well as the shape of the potential. Physically, $\alpha$ represents how much the particle interacts with the environment thermally and $\beta$ represents how quickly the temperature diffuses.
 
 \section{Steady state solution} \label{SteadyState}
+In order to see how the equations of motion behave with time, we have to resort to numerical methods (see section \ref{numerics}). However we note that for a given potential there will be a stationary solution that we will refer to as the ``steady state'', given periodic boundary conditions, we will derive an analytical form for this steady state.
+
 In the steady state, we have:
 
 \begin{eqnarray}
@@ -68,78 +195,7 @@ And we minimize this objective function with respect to $J_s$ and $P_s(0)$ under
 %----------------------------------------------------------------------------------------
 %	NUMERICS
 %----------------------------------------------------------------------------------------
-
-\section{Numerical simulation} \label{numerics}
-
-\subsection{Dimensionalizing the equations}
-
-%In order to make the numerical simulation easier we will dimensionalize the equations, to do this, introduce $\bar{x} = \frac{x}{L}$, then the Smoluchowski equation becomes
-%
-%\begin{equation}
-%\frac{\partial P}{\partial t} = \gamma^{-1}\frac{1}{L^2} \frac{\partial}{\partial \bar{x}} \left (P \frac{\partial V}{\partial \bar{x}} + k_B \frac{\partial}{\partial \bar{x}}(TP) \right )
-%\end{equation}
-%Now let $E_0$ be the potential energy gained by moving along one period, i.e. $E_0 = V(x + L) - V(x) = f L$. Now we will introduce the dimensionless potential and the dimensionless temperature as $\hat{V}(x) = \frac{V(x)}{E_0}$ and $\hat{T}(x) = \frac{k_B T(x)}{E_0}$ respectively. Now the Smoluchowski equation becomes
-%\begin{equation}
-%\frac{\partial P}{\partial t} = \frac{E_0}{\gamma L^2} \frac{\partial}{\partial \bar{x}} \left (P \frac{\partial \hat{V}}{\partial \bar{x}} + \frac{\partial}{\partial \bar{x}}(\hat{T}P) \right )
-%\end{equation}
-%Let $\tau = \frac{E_0}{\gamma L^2}$, with this we have:
-%\begin{equation}
-%\frac{\partial P}{\partial \tau} = \frac{\partial}{\partial \bar{x}} \left (P \frac{\partial \hat{V}}{\partial \bar{x}} + \frac{\partial}{\partial \bar{x}}(\hat{T}P) \right )
-%\end{equation}
-%Applying these definitions to the equation for the temperature evolution, we find that:
-%
-%\begin{equation}
-%\frac{E_0^2}{\gamma k_B L^2} \frac{\partial \hat{T}}{\partial \tau} = -\kappa \frac{E_0}{L^2}\hat{J}(\bar{x}) \frac{E_0}{L} \frac{\partial \hat{V}}{\partial \bar{x}} + \frac{D E_0}{k_B L^2} \frac{\partial^2 \hat{T}}{\partial \bar{x}^2}
-%\end{equation}
-%Now let $\alpha = \kappa \gamma k_B$ and $\beta = \frac{D \gamma}{E_0}$, then we have
-%\begin{equation}
-%\frac{\partial \hat{T}}{\partial \tau} = -\alpha \hat{J}(\bar{x}) \frac{\partial \hat{V}}{\partial \bar{x}} + \beta \frac{\partial^2 \hat{T}}{\partial \bar{x}^2}
-%\end{equation}
-%
-%The energy of the system is given by $E = \int P(x) V(x) dx + c \int T(x) dx $, in the dimensionless form
-
-Here we will non-dimensionalize the equations, to do this, introduce $\bar{x} = \frac{x}{L}$, then the Smoluchowski equation becomes
-
-\begin{equation}
-\frac{\partial P}{\partial t} = \gamma^{-1}\frac{1}{L^2} \frac{\partial}{\partial \bar{x}} \left (P \frac{\partial V}{\partial \bar{x}} + k_B T \frac{\partial}{\partial \bar{x}}(P) \right )
-\end{equation}
-Now let $E_0$ be the potential energy difference along one period, i.e. $E_0 = \max(v_0(x)) - \min(v_0(x))$. Now we will introduce the dimensionless potential and the dimensionless temperature as $\hat{V}(x) = \frac{V(x)}{E_0}$ and $\hat{T}(x) = \frac{k_B T(x)}{E_0}$ respectively. Now the Smoluchowski equation becomes
-
-\begin{equation}
-\frac{\partial P}{\partial t} = \frac{E_0}{\gamma L^2} \frac{\partial}{\partial \bar{x}} \left (P \frac{\partial \hat{V}}{\partial \bar{x}} + \hat{T} \frac{\partial P}{\partial \bar{x}} \right )
-\end{equation}
-Let $\tau = \frac{E_0}{\gamma L^2}$ and $\hat{P} = L P $, with this we have:
-
-\begin{equation}
-\frac{\partial \hat{P}}{\partial \tau} = \frac{\partial}{\partial \bar{x}} \left (\hat{P} \frac{\partial \hat{V}}{\partial \bar{x}} + \hat{T}  \frac{\partial \hat{P}}{\partial \bar{x}} \right ) \label{eqn:dimensionlessSmoluchowski}
-\end{equation}
-Now we define $\hat{J} = \frac{\gamma L^2}{E_0} J $, applying these definitions to the equation for the temperature evolution, we find that:
-
-\begin{equation}
-\frac{E_0^2}{\gamma k_B L^2} \frac{\partial \hat{T}}{\partial \tau} = -\kappa \frac{E_0}{\gamma L^2}\hat{J}(\bar{x}) \frac{E_0}{L} \frac{\partial \hat{V}}{\partial \bar{x}} + \frac{D E_0}{k_B L^2} \frac{\partial^2 \hat{T}}{\partial \bar{x}^2}
-\end{equation}
-Now let $\alpha = \frac{\kappa k_B}{L}$ and $\beta = \frac{D \gamma}{E_0}$, then we have
-
-\begin{equation}
-\frac{\partial \hat{T}}{\partial \tau} = -\alpha \hat{J}(\bar{x}) \frac{\partial \hat{V}}{\partial \bar{x}} + \beta \frac{\partial^2 \hat{T}}{\partial \bar{x}^2} \label{eqn:dimensionlessHeat}
-\end{equation}
-
-As for the energy of the system, the dimensioned version is:
-
-\begin{equation}
-E(t) = \int P(x) V(x) dx + \frac{1}{\kappa} \int T(x) dx
-\end{equation}
-Let $\hat{E}(t) = \frac{E(t)}{E_0}$, we have:
-
-\begin{eqnarray}
-\hat{E}(t) & = & \int \hat{P} \hat{V} d \bar{x} + \frac{L}{k_B \kappa} \int \hat{T} d\bar{x} \\
-              & = & \int \hat{P} \hat{V} d \bar{x} + \frac{1}{\alpha} \int \hat{T} d\bar{x}
-\end{eqnarray}
-
-
-So our system depends on the parameters $\alpha$ and $\beta$ as well as the shape of the potential. Physically, $\alpha$ represents how much the particle interacts with the environment thermally and $\beta$ represents how quickly the temperature diffuses.
-
-\subsection{Finite differences}
+\section{Finite differences}  \label{numerics}
 The one dimensional equation can be solved on a discrete grid by using the finite differences method, the main idea behind this strategy is to approximate derivatives with equations of the form:
 
 \begin{equation}
@@ -229,11 +285,11 @@ P_J^{n}
 \end{equation}
 With these matrices the equation now becomes,
 \begin{equation}
-\left (\mathbb{1} - \frac{\Delta t}{2}A \right) \cdot P^{n+1} = \left (\mathbb{1} - \frac{\Delta t}{2}B \right) \cdot P^n
+\left (\mathbb{1} - \frac{\Delta t}{2}A \right) \cdot P^{n+1} = \left (\mathbb{1} + \frac{\Delta t}{2}B \right) \cdot P^n
 \end{equation}
 we interpret this equation as saying that half of a backwards Euler step acting on $P^{n+1}$ is equal to half of a forward Euler step acting on $P^n$. We write the equation to step $P$ forward one time step as
 \begin{equation}
-P^{n+1} = \frac{\mathbb{1} - \frac{\Delta t}{2}B}{\mathbb{1} - \frac{\Delta t}{2}A} P^n
+P^{n+1} = \frac{\mathbb{1} + \frac{\Delta t}{2}B}{\mathbb{1} - \frac{\Delta t}{2}A} P^n
 \end{equation}
 Each time that we step forward using this equation we will be out by a factor, this means that at each step we will need to renormalize using the equation $\int P(x) dx = 1$.
 
