@@ -1,7 +1,8 @@
 module FiniteDifferences
 export stepP, stepT, energyFun, hermite_coeff, discrete_quad,
         discrete_derivative, System, measure_kramers, kramers_rate,
-        kramers_rate_analytical, @constant, evolveP, evolveT
+        kramers_rate_analytical, @constant, evolveP, evolveT, discrete_quad,
+        discrete_derivative
 
 
 """
@@ -558,7 +559,8 @@ right well.
 """
 function measure_kramers(wellPositions::AbstractArray, system::System,
                         alpha::Number, beta::Number, dt::Number,
-                        nSteps::Integer)
+                        nSteps::Integer; probBndType::Symbol = :absorbing,
+                        tempBndType::Symbol = :neumann)
     nPoints = length(system.density)
     energy = energyFun(system, alpha)
     systemLocal = System(system.potential, system.dpotential, system.density,
@@ -566,13 +568,22 @@ function measure_kramers(wellPositions::AbstractArray, system::System,
 
     hIndex = round(Int, nPoints/2)
     pRight = Array(Float64, nSteps)
-        pRight[1] = discrete_quad(system.density[hIndex:end],
+    pRight[1] = discrete_quad(system.density[hIndex:end],
                             system.xAxis[hIndex], system.xAxis[end])
 
+    if tempBndType == :dirichlet
+        for i in 2:nSteps
+            systemLocal.density = stepP(systemLocal, dt; bndType = probBndType)
+            systemLocal.energy, systemLocal.temperature = stepT(systemLocal,
+                                    alpha, beta, dt; bndType = :dirichlet)
+            pRight[i] = discrete_quad(systemLocal.density[hIndex:end],
+                            systemLocal.xAxis[hIndex], systemLocal.xAxis[end])
+        end
+    end
     for i in 2:nSteps
-        systemLocal.density = stepP(systemLocal, dt; bndType = :absorbing)
-        systemLocal.temperature = stepT(systemLocal, alpha, beta, dt,
-                                                bndType = :neumann)
+        systemLocal.density = stepP(systemLocal, dt; bndType = probBndType)
+        systemLocal.temperature = stepT(systemLocal, alpha,
+                                                beta, dt; bndType = tempBndType)
         pRight[i] = discrete_quad(systemLocal.density[hIndex:end],
                         systemLocal.xAxis[hIndex], systemLocal.xAxis[end])
     end
@@ -587,7 +598,8 @@ the uncoupled system forward and running `kramers_rate` on `pRight`, where
 `pRight` is the proability of being in the right well.
 """
 function measure_kramers(wellPositions::AbstractArray, system::System,
-                            dt::Number, nSteps::Integer)
+                            dt::Number, nSteps::Integer;
+                            probBndType::Symbol = :absorbing)
     nPoints = length(system.density)
     systemLocal = System(system.potential, system.dpotential, system.density,
                             system.temperature, system.xAxis, 0.0)
@@ -598,9 +610,57 @@ function measure_kramers(wellPositions::AbstractArray, system::System,
                             system.xAxis[hIndex], system.xAxis[end])
 
     for i in 2:nSteps
-        systemLocal.density = stepP(systemLocal, dt; bndType = :absorbing)
+        systemLocal.density = stepP(systemLocal, dt; bndType = probBndType)
         pRight[i] = discrete_quad(systemLocal.density[hIndex:end],
                         systemLocal.xAxis[hIndex], systemLocal.xAxis[end])
+    end
+    kramers_rate(pRight, (1:nSteps)*dt)
+end
+
+
+"""
+    measure_kramers(wellPositions::AbstractArray, coeff::AbstractArray,
+                        initDensity::AbstractArray, temperature::AbstractArray,
+                        xAxis::AbstractArray,
+                        dt::Number, nSteps::Integer;
+                        probBndType = :absorbing)
+Measure the Kramers rate using the coefficients in `coeff` to create the
+potential.
+"""
+function measure_kramers(wellPositions::AbstractArray, coeff::AbstractArray,
+                        initDensity::AbstractArray, temperature::AbstractArray,
+                        xAxis::AbstractArray,
+                        dt::Number, nSteps::Integer;
+                        probBndType = :absorbing)
+    dx = (xAxis[end] - xAxis[1])/length(xAxis)
+    function V(x, coeff)
+        acc = 0
+        for ii = 1:length(coeff)
+            acc += coeff[ii]*x^(ii-1)
+        end
+        acc
+    end
+    V(x) = V(x, coeff)
+    dV(x) = ForwardDiff.derivative(V, x)
+
+    potential = Float64[V(x) for x in xAxis]
+    dpotential = [dV(xAxis[1] - dx) ; Float64[dV(x) for x in xAxis] ;
+                                        dV(xAxis[end] + dx)]
+
+    nPoints = length(initDensity)
+    energy = 0.0
+    system = System(potential, dpotential, initDensity,
+                            temperature, xAxis, energy)
+
+    hIndex = round(Int, nPoints/2)
+    pRight = Array(Float64, nSteps)
+        pRight[1] = discrete_quad(system.density[hIndex:end],
+                            system.xAxis[hIndex], system.xAxis[end])
+
+    for i in 2:nSteps
+        system.density = stepP(system, dt; bndType = probBndType)
+        pRight[i] = discrete_quad(system.density[hIndex:end],
+                        system.xAxis[hIndex], system.xAxis[end])
     end
     kramers_rate(pRight, (1:nSteps)*dt)
 end
