@@ -1,8 +1,9 @@
 module FiniteDifferences
+using ForwardDiff
 export stepP, stepT, energyFun, hermite_coeff, discrete_quad,
         discrete_derivative, System, measure_kramers, kramers_rate,
         kramers_rate_analytical, @constant, evolveP, evolveT, discrete_quad,
-        discrete_derivative
+        discrete_derivative, evolve_system
 
 
 """
@@ -579,6 +580,7 @@ function measure_kramers(wellPositions::AbstractArray, system::System,
             pRight[i] = discrete_quad(systemLocal.density[hIndex:end],
                             systemLocal.xAxis[hIndex], systemLocal.xAxis[end])
         end
+        return kramers_rate(pRight, (1:nSteps)*dt)
     end
     for i in 2:nSteps
         systemLocal.density = stepP(systemLocal, dt; bndType = probBndType)
