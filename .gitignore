@@ -160,7 +160,6 @@ TSWLatexianTemp*
 
 # Ignore Mathematica and ipython notebooks
 *.nb
-*.ipynb
 
 *.html
 *.png
