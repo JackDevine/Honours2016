@@ -303,17 +303,85 @@ Just like the discretized Smoluchowski equation, these equations can be written 
 
 Fortunately the matrices that we are dealing with are very sparse, so the program used to solve these equations can save on memory by calling sparse matrix libraries. 
 
-%\subsection{Stochastic methods}
-%We can simulate the path of a single particle by using stochastic methods to solve the Langevin equation. By simulating many times we should be able to recover the distributions that were found through finite differencing. When simulating the system  at the microscopic level, equation (\ref{eqn:Smoluchowski}) becomes \cite{Reimann2001}
+\section{Testing the numerics}
 
-%\begin{equation}
-%\gamma \dot{x}(t) = -V'(x(t)) + \xi(t)
-%\end{equation}
-%
-%Where $\xi(t)$ is called Gaussian white noise of zero mean and has the essential properties that: $\langle \xi(t) \rangle = 0$ and $\langle \xi(t) \xi(s) \rangle = 2 \gamma k_B T \delta(t - s) $. We can also consider the stochastic equation with time discretized, in which case we get:
-%
-%\begin{equation}
-%x(t_{n+1}) = x(t_n) - \Delta t [V'(x(t_n)) + \xi_n]/\gamma
-%\end{equation}
-%
-%This equation can be simulated numerically, or can be used to derive Equation (\ref{eqn:Smoluchowski}) by taking the limit $\Delta t \to 0$ as is done in Appendix B of \cite{Reimann2001}. In the results section, we will show some results of these numerical simulations.
+The idea behind finite differences is that as the discretization size goes to zero, the numerical approximation should converge on the correct analytical solution. We will compare our numerics with some known analytical results as well as performing convergence tests.
+\subsection{A comparison with analytical results}
+
+The Smoluchowski equation has a steady state probability density that takes on the form
+\begin{equation}
+P_{ss}(x) = N \exp{\left(-\int_a^x \frac{V'(x')}{T(x')} dx' \right)} \label{eqn:analSteadyState}
+\end{equation}
+
+Figure \ref{fig:smoluchowskiCompare} shows the a simulation where we began the system in the analytically calculated steady state, we then used finite differences to step forward 50,000 steps with $\Delta t = 10^{-4}$. After this simulation, we only found a minimal divergence from the steady state.
+\begin{figure}
+	\begin{subfigure}{0.49\textwidth}
+	\includegraphics[width=\columnwidth]{smoluchowskiAnalytic}
+	\end{subfigure}
+	\begin{subfigure}{0.49\textwidth}
+	\includegraphics[width=\columnwidth]{smoluchowskiAnalyticNormDiff}
+	\end{subfigure}
+	\caption{Finite differences in the steady state: The steady state for the system was calculated using equation ~\ref{eqn:analSteadyState}, we start the system off in this state and then simulate the system forward 50,000 steps with $\Delta t = 10^{-4}$ and $\Delta x = 0.02$. (a) shows the analytical steady state with the state after the simulation, (b) shows the absolute difference between these two vectors. Even after 50,000 steps the system has not deviated from the analytical steady state significantly. \label{fig:smoluchowskiCompare}}
+\end{figure}
+
+The heat equation can be solved using a Fourier series technique
+\begin{equation}
+\frac{\partial T}{\partial t} = \beta \frac{\partial^2 T}{\partial x^2}
+\end{equation}
+the initial condition for the temperature will be denoted by,
+\begin{equation}
+T(x, 0) = f(x)
+\end{equation}
+
+Lets say that the boundaries are at $x = \pm \infty$ and that the derivative of the temperature is zeros at the boudaries. The solution to the heat equation is given by:
+
+\begin{equation}
+T(x, t) = \sum_{n=1}^\infty D_n \sin \left(\frac{n \pi x}{L} \right) \exp\left(\frac{-n^2 \pi^2 \beta t}{L^2}\right)  \label{eqn:analTemperature}
+\end{equation}
+where
+\begin{equation}
+D_n = \frac{2}{L} \int_0^L f(x) \sin \left(\frac{n \pi x}{L} \right) dx
+\end{equation}
+We can compare these analytical results to the numerical ones obtained through finite differences, this is done in Figure ~\ref{fig:smoluchowskiCompare}
+
+\begin{figure}
+	\begin{subfigure}{0.49\textwidth}
+	\includegraphics[width=\columnwidth]{temperatureAnalytic}
+	\end{subfigure}
+	\begin{subfigure}{0.49\textwidth}
+	\includegraphics[width=\columnwidth]{temperatureAbsDiff}
+	\end{subfigure}
+	\caption{Finite differences on the heat equation: We simulate a situation where there are no sources for the heat equation and use equation \ref{eqn:analTemperature} to obtain the analytical result we then compare this to the result of finite differences with $\Delta t = 10^{-2}$ and $\Delta x = 0.02$. \label{fig:temperatureCompare}}
+\end{figure}
+
+\subsection{Convergence tests}
+The idea of finite differences is that as the step size goes to zero, the numerical approximation will converge on the correct solution to the underlying equation being approximated. In the previous section we showed that finite differences approximated the solution very closely in some instances where the analytical result could be obtained. In general, we will not have an analytical solution to compare to but we would still like to be able to quantify the performance of our techniques.
+
+Convergence tests involve decreasing the discretization size and checking whether the numerical solutions converge at all. In Figure \ref{fig:Convergence}, the Smoluchowski equation was simulated while keeping the temperature fixed, each time we halve $\Delta t$ and measure the normed difference between the new result and the previous one.
+
+%Here we will decrease the step size and see whether or not the numerical scheme converges on a particular result
+
+\begin{figure}[tb]
+	\begin{subfigure}{0.49\textwidth}
+		\includegraphics[width=\columnwidth]{probabilityConvergence}
+	\end{subfigure}
+	\begin{subfigure}{0.49\textwidth}
+		\includegraphics[width=\columnwidth]{probabilityConvergenceRate}
+	\end{subfigure}
+\caption{The convergence of the probability distribution as $\Delta t$ is decreased, the spatial discretization $\Delta x$ is kept constant at 0.006. (a) the Smoluchoski equation is simulated forward for 1.0 seconds each line shows the result with a different value of the time step $\Delta t$. (b) the normed difference between each of the successive vectors is calculated and the result is plotted on  a log scale, the slope of this graph is called the convergence rate.}
+\label{fig:Convergence}
+\end{figure}
+
+Likewise, we can do convergence tests for the coupled system, for brevity we have only included the results for the evolution of the temperature. All of these plots show that the approximation converges exponentially to the solution.
+
+\begin{figure}[b]
+	\begin{subfigure}{0.49\textwidth}
+		\includegraphics[width=\columnwidth]{temperatureConvergence}
+	\end{subfigure}
+	\begin{subfigure}{0.49\textwidth}
+		\includegraphics[width=\columnwidth]{temperatureNormDiff}
+	\end{subfigure}
+\caption{The convergence of the temperature as $\Delta t$ is decreased, the spatial discretization $\Delta x$ is kept constant at 0.006. (a) the coupled equations are simulated forward for 1.0 seconds each line shows the temperature with a different value of the time step $\Delta t$. (b) the normed difference between each of the successive vectors is calculated and the result is plotted on  a log scale.}
+\label{fig:temperatureConvergence}
+\end{figure}
+
