@@ -15,7 +15,7 @@
 %%% PAGE DIMENSIONS
 \usepackage{geometry} % to change the page dimensions
 \geometry{a4paper} % or letterpaper (US) or a5paper or....
-\geometry{margin=3.5cm} % for example, change the margins to 2 inches all round
+\geometry{margin=3cm} % for example, change the margins to 2 inches all round
 % \geometry{landscape} % set up the page for landscape
 %   read geometry.pdf for detailed page layout information
 
@@ -42,6 +42,8 @@
 % These packages are all incorporated in the memoir class to one degree or another...
 \usepackage{wrapfig}% http://ctan.org/pkg/wrapfig
 \usepackage{lipsum}% http://ctan.org/pkg/lipsum
+\usepackage{epstopdf}
+\epstopdfsetup{update}
 
 %%% HEADERS & FOOTERS
 \usepackage{fancyhdr} % This should be set AFTER setting up the page geometry
@@ -81,7 +83,7 @@
 		\vspace{1cm}
 		{\scshape\LARGE The University of Otago \par}
 		\vspace{1cm}
-		\includegraphics[width=0.24\textwidth]{thumbnail_OU-NZ-Coated.jpg}\par\vspace{1cm}
+		\includegraphics[width=0.24\textwidth]{OtagoLogo.eps}\par\vspace{1cm}
 		\vspace{1cm}
 		{\scshape\Large A thesis submitted for Honours in physics at the University of Otago, Dunedin, New Zealand\par}
 		\vspace{2cm}
