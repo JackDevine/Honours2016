@@ -37,7 +37,8 @@
 \usepackage[numbers,sort&compress]{natbib}  % Make a group of citations appear in order in the document
 \usepackage{bbold} 
 \usepackage[toc,page]{appendix}
-\usepackage{subcaption}
+\usepackage[labelfont=bf]{subcaption}
+\usepackage[labelfont=bf]{caption}
 \captionsetup{subrefformat=parens}
 % These packages are all incorporated in the memoir class to one degree or another...
 \usepackage{wrapfig}% http://ctan.org/pkg/wrapfig
@@ -75,6 +76,7 @@
          % otherwise the current date is printed
 
 \begin{document}
+\frontmatter
 	\begin{titlepage}
 		\centering
 		{\huge\bfseries Self induced temperature gradients in Brownian dynamics\par}
@@ -99,7 +101,6 @@
 
 
 \newpage
-
 %----------------------------------------------------------------------------------------
 %	ABSTRACT
 %----------------------------------------------------------------------------------------
@@ -120,6 +121,7 @@
 %	INTRODUCTION
 %----------------------------------------------------------------------------------------
 
+\mainmatter
 \chapter{Introduction}
 
 \input{Introduction}

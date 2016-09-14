@@ -194,7 +194,7 @@ Figure \ref{fig:smoluchowskiCompare} shows the a simulation where we began the s
 	\begin{subfigure}{0.49\textwidth}
 	\includegraphics[width=\columnwidth]{smoluchowskiAnalyticNormDiff}
 	\end{subfigure}
-	\caption{Finite differences in the steady state: The steady state for the system was calculated using equation ~\ref{eqn:analSteadyState}, we start the system off in this state and then simulate the system forward 50,000 steps with $\Delta t = 10^{-4}$ and $\Delta x = 0.02$. (a) shows the analytical steady state with the state after the simulation, (b) shows the absolute difference between these two vectors. Even after 50,000 steps the system has not deviated from the analytical steady state significantly. \label{fig:smoluchowskiCompare}}
+	\caption{\textbf{Finite differences in the steady state.} The steady state for the system was calculated using equation ~\ref{eqn:analSteadyState}, we start the system off in this state and then simulate the system forward 50,000 steps with $\Delta t = 10^{-4}$ and $\Delta x = 0.02$. (a) shows the analytical steady state with the state after the simulation, (b) shows the absolute difference between these two vectors. Even after 50,000 steps the system has not deviated from the analytical steady state significantly. \label{fig:smoluchowskiCompare}}
 \end{figure}
 
 The heat equation can be solved using a Fourier series technique
@@ -224,7 +224,7 @@ We can compare these analytical results to the numerical ones obtained through f
 	\begin{subfigure}{0.49\textwidth}
 	\includegraphics[width=\columnwidth]{temperatureAbsDiff}
 	\end{subfigure}
-	\caption{Finite differences on the heat equation: We simulate a situation where there are no sources for the heat equation and use equation \ref{eqn:analTemperature} to obtain the analytical result we then compare this to the result of finite differences with $\Delta t = 10^{-2}$ and $\Delta x = 0.02$. \label{fig:temperatureCompare}}
+	\caption{\textbf{Finite differences on the heat equation.} We simulate a situation where there are no sources for the heat equation and use equation \ref{eqn:analTemperature} to obtain the analytical result we then compare this to the result of finite differences with $\Delta t = 10^{-2}$ and $\Delta x = 0.02$. \label{fig:temperatureCompare}}
 \end{figure}
 
 \subsection{Convergence tests}
@@ -234,26 +234,26 @@ Convergence tests involve decreasing the discretization size and checking whethe
 
 %Here we will decrease the step size and see whether or not the numerical scheme converges on a particular result
 
-\begin{figure}[tb]
+\begin{figure}
 	\begin{subfigure}{0.49\textwidth}
 		\includegraphics[width=\columnwidth]{probabilityConvergence}
 	\end{subfigure}
 	\begin{subfigure}{0.49\textwidth}
 		\includegraphics[width=\columnwidth]{probabilityConvergenceRate}
 	\end{subfigure}
-\caption{The convergence of the probability distribution as $\Delta t$ is decreased, the spatial discretization $\Delta x$ is kept constant at 0.006. (a) the Smoluchoski equation is simulated forward for 1.0 seconds each line shows the result with a different value of the time step $\Delta t$. (b) the normed difference between each of the successive vectors is calculated and the result is plotted on  a log scale, the slope of this graph is called the convergence rate.}
+\caption{\textbf{The convergence of the probability distribution.} As $\Delta t$ is decreased, the spatial discretization $\Delta x$ is kept constant at 0.006. (a) the Smoluchoski equation is simulated forward for 1.0 seconds each line shows the result with a different value of the time step $\Delta t$. (b) the normed difference between each of the successive vectors is calculated and the result is plotted on  a log scale, the slope of this graph is called the convergence rate.}
 \label{fig:Convergence}
 \end{figure}
 
 Likewise, we can do convergence tests for the coupled system, for brevity we have only included the results for the evolution of the temperature. All of these plots show that the approximation converges exponentially to the solution.
 
-\begin{figure}[b]
+\begin{figure}
 	\begin{subfigure}{0.49\textwidth}
 		\includegraphics[width=\columnwidth]{temperatureConvergence}
 	\end{subfigure}
 	\begin{subfigure}{0.49\textwidth}
 		\includegraphics[width=\columnwidth]{temperatureNormDiff}
 	\end{subfigure}
-\caption{The convergence of the temperature as $\Delta t$ is decreased, the spatial discretization $\Delta x$ is kept constant at 0.006. (a) the coupled equations are simulated forward for 1.0 seconds each line shows the temperature with a different value of the time step $\Delta t$. (b) the normed difference between each of the successive vectors is calculated and the result is plotted on  a log scale.}
+\caption{\textbf{The convergence of the temperature.} As $\Delta t$ is decreased, the spatial discretization $\Delta x$ is kept constant at 0.006. (a) the coupled equations are simulated forward for 1.0 seconds each line shows the temperature with a different value of the time step $\Delta t$. (b) the normed difference between each of the successive vectors is calculated and the result is plotted on  a log scale.}
 \label{fig:temperatureConvergence}
 \end{figure}
