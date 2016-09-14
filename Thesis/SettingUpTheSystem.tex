@@ -33,7 +33,7 @@ Where
 Equation (\ref{eqn:Smoluchowski}) is called the Smoluschowski equation \cite{KellerBustamante2000} and equation \ref{eqn:TemperatureEvolution} is the heat equation. These equations make our intuitive notions more precise, we see that the first term on the right hand side of the Smoluchowski equation (equation \ref{eqn:Smoluchowski}) is a drift term that is forced by our potential and that the second term contains a diffusion term that is scaled by our temperature. In fact, Figure \ref{fig:Schematic} was made by solving equation (\ref{eqn:Smoluchowski}) numerically. Likewise, equation (\ref{eqn:TemperatureEvolution}) also appeals to our intuition of how the motor should effect its environment. The first term represents the heat flux being produced by the motor \cite{M.W.Jack2016}, while the second term represents the diffusion of temperature into the environment. This model includes a temperature that depends on $x$ and $t$, which has been explored in the literature {\color{red} [citations]}, where our model departs from previous work is that the temperature now depends on the evolution of the probability distribution as well. Coupled models of this type have been mentioned earlier by Streater \cite{Streater1997, Streater1997a}, our work uses a similar model.
 
 % THERMODYNAMICS
-\section{System thermodynamics}
+\section{System thermodynamics} \label{thermodynamics}
 Equation \ref{eqn:Smoluchowski} and equation \ref{eqn:TemperatureEvolution} define equations of motion for our system, the system may be confined to a region $\Omega$ embedded in a larger environment which interacts with our system through the boundary conditions. In this section, we will show that our equations of motion obey the first and second laws of thermodynamics. The potential energy of the particle is $U_P = \int_{\Omega} V(x) P(x) dx$ and the thermal energy of the bath is $c_p \int_{\Omega} T(x) dx$, where $c_p$ is the specific heat capacity of the environment, with this we have.
 \begin{equation}
 E(t) = \int_{\Omega} V(x)P(x, t) dx + c_p \int_{\Omega} T(x, t) dx
@@ -50,8 +50,9 @@ As for the entropy, we have \cite{Streater1997a}
 \begin{equation}
 S(t) = -k_B \int_{\Omega} P(x, t) \log(P(x, t)) dx + c_p \int_{\Omega} \log(T(x, t))dx
 \end{equation}
-The first term is the Gibbs energy in the continuous case \cite{Jaynes1965} and the second term is the entropy of an incompressible fluid \cite{CengelBoles1994}.
-Differentiating with respect to time, we get
+The first term is the Gibbs energy in the continuous case \cite{Jaynes1965} and the second term is the entropy of an incompressible fluid \cite{CengelBoles1994}. Using the entropy of an incompressible fluid restricts the sytems that can be modelled by our equations of motion, in particular we will not be able to treat Brownian particles suspended in a gas since a gas is compressible by defintion. The courageous reader may want to use our model in the case of a compressible fluid, however in this case we can no longer guarantee this reader that entropy will increase for them. The goal of this project is not to create a system that models many different systems in nature, but rather to create a system that is self-consistent.
+
+Differentiating the entropy with respect to time, we get
 
 \begin{align}
 \frac{d S}{d t} =  k_B \int_{\Omega} \frac{\partial J}{\partial x} + \frac{\partial J}{\partial x} \log P \ dx + c_p \int_{\Omega} \frac{1}{T} \left(-\kappa J \partial_x V + c D \frac{\partial^2 T}{\partial x^2} \right) dx \\
@@ -124,4 +125,3 @@ Let $\hat{E}(t) = \frac{E(t)}{E_0}$, we have:
 
 
 So our system depends on the parameters $\alpha$ and $\beta$ as well as the shape of the potential. Physically, $\alpha$ represents how much the particle interacts with the environment thermally and $\beta$ represents how quickly the temperature diffuses. $\alpha$ has units $m^{-1}$ and $\beta$ has units $m^2 s^{-1}$
-

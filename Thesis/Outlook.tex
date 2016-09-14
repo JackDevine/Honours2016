@@ -1,1 +1,23 @@
-This chapter will discuss possible future work and goals that are beyond the scope of this honors project. In particular we will discuss the role of extra dimensions in our system. In ~\autoref{SteadyState}, we mentioned that it is not possible for the 1d system to admit a steady state for a tilted potential. 
+This chapter will discuss possible future work and goals that are beyond the scope of this honors project, the main focus of this section is as follows:
+
+\begin{itemize}
+    \item{Generalization to 2d and 3d systems}
+    \item{Inter-particle interactions}
+    \item{Flow of heat via convection as well as an extension to compressible fluids and gases}
+\end{itemize}
+
+\section{Generalization to 2d and 3d systems}
+Many systems of interest are multi-dimensional and cannot be approximated by a one-dimensional system {\color{red} citations}. In particular, finding the efficiency of a molecular motor involves calculating the flow of energy from one degree of freedom to another {\color{red} [citations]}. Furthermore, generalizing our system to more dimensions gives more directions in which heat can flow, therefore allowing us to conserve energy in a more general sense {\color{red} is this true? We can sort of do things without this by considering energy flows at the 1d boundaries.}
+
+\section{Inter-particle interactions}
+Inter-particle interactions play a very important role in Brownian dynaimcs {\color{red} [citations]}, an example of this is the myosin protein in cells which is used in the contraction of muscles {\color{red} citations}. Individually, myosin proteins are poor at carrying loads when compared to their kinesin couterparts {\color{red} [citations]}, however their collective actions are very powerful due to the rich nature of their inter-motor interactions.
+
+The set of equations that we have been using doe not apply to more than one Brownian particle without some considerable changes. This is due to very complicated inter-particle interactions that can occur when considering thermal fluctautions of the kind that we are focusing on. To visualize this intuilively, imagine two particles diffusing in their reaction coordinates, both subject to the same potential. Particle one may induce local temperature gradients that will affect particle two if particle two moves to where particle one created those temperature gradients. These interactions involve second order statistics that are beyond the scope of this project.
+
+\section{Fluid dynamics}
+The Brownian particles that we have been modelling have been suspended in a fliud. The dynamics of fluids present a formidablle and exciting challenge to both physicicsts and mathematicians alike {\color{red} [citations]}, as well as this there has been effort in the literature to combine the Smoluchowski equation with the Navier-Stokes equation, thus linking the worlds of Brownian dynamics with fluid dynamics {\color{red} [citations]}. The two physical phenomena that we neglect which could be treated with techniques from fluid dynamics are compressible fluids and heat convection through fluid flow. Despite the fact that we neglected these phenomena, our system is still physical and is self consistent.
+
+In section \ref{thermodynamics}, in order to gain insight on the entropy we had to assume that we were dealing with an incompressible fluid. Without this assumption, we would not be able to gauruntee that our equations of motion
+increase the entropy. Therefore, in order to obey the laws of thermodynamics in a compressible fluid, we would have to include extra terms in our equations of motion.
+
+The second important phenomena that can be described by fluid dynamics is fluid flow. This phenomena is responsible for heat transport via convection, currently we only consider heat flow via diffusion, this means that we are tacitly assuming that the fluid in which our Brownian particle is suspended, is stationary. Including convection into our model would involve modifying our heat equation so that it reads {\color{red} include the modified heat equation}.
