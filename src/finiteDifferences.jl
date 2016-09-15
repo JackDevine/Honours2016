@@ -545,7 +545,7 @@ julia> timeVec = linspace(0, 2, 1000)
 """
 function kramers_rate(pRight::AbstractArray, timeVec::AbstractArray)
     slope = discrete_derivative(log(pRight), timeVec)
-    mean(abs(slope[end]))
+    abs(slope[end])
 end
 
 
@@ -621,7 +621,7 @@ end
 
 
 """
-    measure_kramers(wellPositions::AbstractArray, coeff::AbstractArray,
+    measure_kramers(coeff::AbstractArray,
                         initDensity::AbstractArray, temperature::AbstractArray,
                         xAxis::AbstractArray,
                         dt::Number, nSteps::Integer;
@@ -629,7 +629,7 @@ end
 Measure the Kramers rate using the coefficients in `coeff` to create the
 potential.
 """
-function measure_kramers(wellPositions::AbstractArray, coeff::AbstractArray,
+function measure_kramers(coeff::AbstractArray,
                         initDensity::AbstractArray, temperature::AbstractArray,
                         xAxis::AbstractArray,
                         dt::Number, nSteps::Integer;
@@ -656,7 +656,7 @@ function measure_kramers(wellPositions::AbstractArray, coeff::AbstractArray,
 
     hIndex = round(Int, nPoints/2)
     pRight = Array(Float64, nSteps)
-        pRight[1] = discrete_quad(system.density[hIndex:end],
+    pRight[1] = discrete_quad(system.density[hIndex:end],
                             system.xAxis[hIndex], system.xAxis[end])
 
     for i in 2:nSteps
