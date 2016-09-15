@@ -174,7 +174,38 @@ F_j^i = -\alpha \left (P_j^i (\partial_x V_j^i)^2 + \frac{T_{j+1}^i - T_{j-1}^i 
 
 Just like the discretized Smoluchowski equation, these equations can be written in matrix form. The temperature is normalized by assuming that the energy remains fixed, this will be true as long as no heat or current flows through the boundaries, i.e. $J(x=a) = 0 = J(x = b)$ and $\frac{\partial T}{\partial x} \rvert_a = 0 = \frac{\partial T}{\partial x} \rvert_b$. In this case, the energy is constant and is given by $E = \int P(x) V(x) dx + c_p \int T(x) dx$, so each time that we step the temperature forward, we have to calculate the potential and thermal energy and then scale the temperature so that the total energy remains fixed.
 
-Fortunately the matrices that we are dealing with are very sparse, so the program used to solve these equations can save on memory by calling sparse matrix libraries. 
+Fortunately the matrices that we are dealing with are very sparse, so the program used to solve these equations can save on memory by calling sparse matrix libraries.
+
+\subsection{Boundary conditions}
+So far we have discussed how to solve the equations inside the domain of interest, however we our equations of motion will require that we prescribe boundary conditions that the system must satisfy. The boundary conditions that have been implemented for this project are as follows:
+
+\begin{itemize}
+\item{Dirichlet: The value of the solution is specified at the boundaries}
+\item{Neumann: The value of the first derivative of the solution is specified at the boundaries}
+\item{Periodic: The value at the boundaries is not specified, but the left and right boundaries must take on the same value}
+\end{itemize}
+
+Each type of boundary conditions comes along with its own physical interpretation, first we will deal with the boundary conditions imposed on the probability distribution. If the potential goes to infinity at the boundaries, then the probability distribution must vanish at the boundaries before applying boundary conditions at all, therefore no boundary conditions need to be applied. There are some potentials that are periodic where the value of the potential is the same finite number at both sides, in this case it can be interesting to apply periodic boundary conditions to the probability distribution. Physically, this corresponds to a system where a particle passing through the left side will appear at the right side and vice-versa. One can picture this by imagining a particle constrained to a circular domain.
+
+As for the temperature, both Neumann and Dirichlet boundary conditions are realized. In the case of Neumann boundary conditions, the derivative was set to zero at both boundaries. This is a very interesting case to imagine, because the derivative of the temperature physically represents the flow of heat in our system. Therefore the physical interpretation of a vanishing derivative at the boundary is that no heat is flowing through the boundaries, or in other words the system is enclosed in a perfectly insulating box. This system conserves energy, which is convenient when one goes to renormalize the calculated temperature by using the energy of the system. The second type of boundary condition that can be imposed on the temperature is the Dirichlet type where the value of the temperature is specified at both boundaries. The physical interpretation of this requirement is that the system is embedded in a much larger system that is at a fixed temperature. The tacit assumption made is that no matter what the system does, it is not able to affect the temperature of the environment. One must take care when using the energy to renormalize when considering Dirichlet boundary conditions, this is because the energy in the system is no longer conserved. To account for this, we calculated the heat flowing through the boundaries at each step and subtracted this from the energy of the system before we renormalized the system.
+
+Implementing these boundary conditions requires that we change our matrices $A$ and $B$, specifically we will need to modify the top and bottom rows. The reason that we can do this is because a matrix represents a system of equations, the first and last rows of the matrices effects the first and last components of the vectors that we are doing finite differences on. For each boundary condition, we need to make sure that the equations represented by our first and last rows reflect our desired boundary conditions.
+
+\subsubsection{Dirichlet boundary conditions}
+Imagine that we have a $n \times n$ vector $u$ that we want to step forward with finite differences while keeping the first and last components of $u$ fixed. The equation for stepping $u$ forward is given by:
+
+\begin{equation}
+u^{n+1} = \frac{\mathbb{1} + \frac{\Delta t}{2} B}{\mathbb{1} - \frac{\Delta t}{2} A} u^n
+\end{equation}
+
+This equation will certainly affect the first and last components of $u$, in order to avoid this, we need to make sure that the first and last rows of $(\mathbb{1} + \frac{\Delta t}{2} B)$ and $(\mathbb{1} - \frac{\Delta t}{2} A)$ are the same as the first and last rows of the identity matrix.
+
+\subsubsection{Neumann boundary conditions}
+The derivative at the boundaries can be made to be zero at the boundaries by making sure that the first and last rows of our matrices represent the equations $u_J - u_{J-1} = 0$ and $u_0 - u_1 = 0$ respectively.
+
+\subsubsection{Periodic boundary conditions}
+
+All of these boundary conditions were implemented in Julia \cite{Bezanson2014}, the user can decide which boundary condition that they want through a keyword argument and then the program will implement finite differences for that boundary type.
 
 \section{Testing the numerics}
 
