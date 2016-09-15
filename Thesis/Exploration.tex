@@ -6,10 +6,10 @@
 \label{fig:bistablePotential}
 \end{figure}
 
-A bistable potential one that has two stable minima and an intermediate unstable maximum, these potentials occur in a wide range of applications including digital logic \cite{MyersCelebranoKrishnan2015}, protein folding \cite{BryngelsonWolynes1989} and chemical reactions \cite{BernePecora1976}. The bistable potential well is one of the simplest ways to approach the Kramer's rate and many other important properties of a system {\color{red} [citations]}. In the context of Brownian motion, understanding the nature of bistable potentials can help one to build a master equation describing more complicated potentials comprised of multiple deep wells \cite{Barcilon1996, ChallisJack2014}. 
+A bistable potential one that has two stable minima and an intermediate unstable maximum, these potentials occur in a wide range of applications including digital logic \cite{MyersCelebranoKrishnan2015}, protein folding \cite{BryngelsonWolynes1989} and chemical reactions \cite{BernePecora1976}. The bistable potential well is one of the simplest ways to approach the Kramer's rate and many other important properties of a system \cite{MyersCelebranoKrishnan2015,Barcilon1996,SantamariaHolekGadomskiRubi2011}. In the context of Brownian motion, understanding the nature of bistable potentials can help one to build a master equation describing more complicated potentials comprised of multiple deep wells \cite{Barcilon1996, ChallisJack2014}. 
 
 \subsection{Kramer's rate}
-Consider the potential shown in Figure \ref{fig:bistablePotential}, if we begin in a state where we are certain that the particle is in the upper well, then as time passes, we should expect the probability distribution to move from point $a$ over the barrier at $b$ and into the well at point $c$. We will consider the regime where $E^+_B = V(x_b) - V(x_a) \gg k_B T$, where $T$ is constant, in this regime the rate at which the particles flow from $a$ to $c$ is given by the Eyring-Kramers law \cite{Eyring1935, Kramers1940}, say that the particle begins at $a$, we are interested in knowing how long it will take to reach a point $x$. This function is denoted by $\tau(x)$ and is called the first passage time {\color{red} [citations]} the first passage time is associated with a density $f(x, \, t)$. In particular, $f(x, \, t)$ denotes the probability that the particle has not passed the point $x$ after a time $t$, given that the particle started at $c$. We would like to obtain the mean first passage time $\langle \tau(x) \rangle \equiv \int_0^{\infty} t \, f(x, \, t) \, dt$, to do this we consider the dimensionless form of the Smoluchowski equation: 
+Consider the potential shown in Figure \ref{fig:bistablePotential}, if we begin in a state where we are certain that the particle is in the upper well, then as time passes, we should expect the probability distribution to move from point $a$ over the barrier at $b$ and into the well at point $c$. We will consider the regime where $E^+_B = V(x_b) - V(x_a) \gg k_B T$, where $T$ is constant, in this regime the rate at which the particles flow from $a$ to $c$ is given by the Eyring-Kramers law \cite{Eyring1935, Kramers1940}, say that the particle begins at $a$, we are interested in knowing how long it will take to reach a point $x$. This function is denoted by $\tau(x)$ and is called the first passage time \cite{Gardiner2009} the first passage time is associated with a density $f(x, \, t)$. In particular, $f(x, \, t)$ denotes the probability that the particle has not passed the point $x$ after a time $t$, given that the particle started at $c$. We would like to obtain the mean first passage time $\langle \tau(x) \rangle \equiv \int_0^{\infty} t \, f(x, \, t) \, dt$, to do this we consider the dimensionless form of the Smoluchowski equation: 
 
 \begin{equation}
 \frac{\partial P(x, \, t)}{\partial t} = \frac{\partial}{\partial x} \left(P(x, \, t) \partial_x V + T \partial_x P(x, \, t) \right)
@@ -58,7 +58,7 @@ V(z) &\approx& V(a) + \frac{V''(a)}{2}(x - a)^2
 So for the mean first passage time of particles going from $a$ to $c$ we find,
 
 \begin{equation}
-\langle \tau_{a \to c} \rangle = \frac{2 \pi}{\sqrt{-V''(b) V''(a)}} \exp{\left (\frac{V(b) - V(a)}{T} \right)}
+\langle \tau_{a \to c} \rangle = \frac{2 \pi}{\sqrt{-V''(b) V''(a)}} \exp{\left (\frac{V(b) - V(a)}{T} \right)}  \label{eqn:kramersRate}
 \end{equation}
 
 
@@ -72,7 +72,7 @@ The Kramer's rate is given by one over the mean first passage time, we will deno
 Likewise, there will be a current flowing from $c$ to $a$, we will denote this by $\kappa_-$, once we have calculated both of these rates, the population in the upper well will be given by the differential equation
 
 \begin{equation}
-\frac{d P}{dt} = -\kappa_+ P_+(t) + \kappa_- P_-(t)
+\frac{d P_+}{dt} = -\kappa_+ P_+(t) + \kappa_- P_-(t)
 \end{equation}
 
 If we start with the population situated entirely in the upper well, then we get:
@@ -80,7 +80,7 @@ If we start with the population situated entirely in the upper well, then we get
 \begin{equation}
 P_+(t) = \exp{(-(\kappa_+ - \kappa_- )t)}.
 \end{equation}
-We can also achieve this result numerically by starting the system off in the upper well and simulating forward while calculating the probability that the particle is in the upper well at each step. We then fit an exponential to this data and the fitted rate will be our numerically estimated Kramers rate. To assist with measuring the Kramer's rate, we used Hermite interpolation to create a sixth order polynomial with the desired bistable shape. Specifically, we would allow $V(x)$ to be a general 6th order polynomial and then we would specify the value of the polynomial at the locations $a$, $b$ and $c$, we would also enforce that the first derivative vanished at these locations. This would yield 6 equations which we would solve to give us the coefficients of $V(x)$, an example of such a polynomial is shown in Figure \ref{fig:bistablePotential}. Using these interpolating polynomials, we could keep the locations of the wells fixed while controlling the barrier height $E_B^+$. Once we had a potential, we would place the probability distribution in the upper well and then measure the probability that the particle is in the upper well with time and use this information to obtain the Kramer's rate, as shown in Figure {\color{red} make this figure}. This same technique can be used to obtain the Kramer's rate when the temperature is not held fixed. In this case, the Kramer's rate is sensitive to the boundary conditions imposed on the temperature and on the precise values of $\alpha$ and $\beta$ as shown in Figure {\color{red} make this figure}.
+We can also achieve this result numerically by starting the system off in the upper well and simulating forward while calculating the probability that the particle is in the upper well at each step. We then fit an exponential to this data and the fitted rate will be our numerically estimated Kramers rate. To assist with measuring the Kramer's rate, we used Hermite interpolation to create a sixth order polynomial with the desired bistable shape. Specifically, we would allow $V(x)$ to be a general 6th order polynomial and then we would specify the value of the polynomial at the locations $a$, $b$ and $c$, we would also enforce that the first derivative vanished at these locations. This would yield 6 equations which we would solve to give us the coefficients of $V(x)$, an example of such a polynomial is shown in Figure \ref{fig:bistablePotential}. Using these interpolating polynomials, we could keep the locations of the wells fixed while controlling the barrier height $E_B^+$. Once we had a potential, we would place the probability distribution in the upper well and then measure the probability that the particle is in the upper well with time and use this information to obtain the Kramer's rate, as shown in Figure {\color{red} make this figure}. This technique was used to calculate the Kramer's rate for multiple barrier height and potentials and it was found to be in excellent agreement with equation \ref{eqn:kramersRate}. The same technique can be used to obtain the Kramer's rate when the temperature is not held fixed. In this case, the Kramer's rate is sensitive to the boundary conditions imposed on the temperature and on the precise values of $\alpha$ and $\beta$ as shown in Figure {\color{red} make this figure}. We therefore conclude that the Kramer's rate is dependent on the heat capacity and thermal diffusivity of the system.
 
 \section{The reverse Landauer blowtorch}
 
@@ -98,4 +98,14 @@ As noted in ~\autoref{landauersBlowtorch}, the relative occupancy of wells depen
 %they have moved into the lower well they will cause the upper well to become colder in a process called Brownian cooling, a simulation of this process is shown in Figure \ref{fig:reverseBlowtorch}. In this paper, the authors treat the system stochastically and are not able to model the diffusion of temperature. This is the same as our model with $\beta$ in equation \ref{eqn:dimensionlessHeat} set to zero. 
 
 \section{Titlted periodic potentials}
-Tilted periodic potentials are very important in biology where they can be used to model molecular motors.
+Tilted periodic potentials are very important in biology where they can be used to model molecular motors, in Ref \cite{MaLaiAckersonEtAl2015, MaLaiAckersonEtAl2015a} the authors synthesize a tilted periodic potential by placing Brownian particles on a crystalline surface. The surface is then titled at an angle $\theta$ relative to the normal defined by gravity, in their theoretical analysis, the authors assume a constant temperature and are therefore able to describe a non-equilibrium steady state. Interestingly, in section \ref{SteadyState}, we showed that our system does not have such a well defined steady state for tilted periodic potentials.
+
+\begin{figure}
+	\begin{subfigure}{0.49\textwidth}
+		\includegraphics[width=\textwidth]{tiltedPeriodicInit}
+	\end{subfigure}
+	\begin{subfigure}{0.49\textwidth}
+		\includegraphics[width=\textwidth]{tiltedPeriodicFinal}
+	\end{subfigure}
+	\caption{\textbf{Tilted periodic potential.} Imposing Dirichlet boundary conditions maintaining that the temperature is equal to 0.8 at the boundaries (temperature is dimensionless), we have $\alpha = 1 \cdot 10^{-3} \, m^{-1}$ and $\beta = 1 \cdot 10^{-2}  \, m^2 s^{-1}$. (a) The system begins with a uniform temperature with a Gaussian probability distribution located near the top of the potential. (b) after some time, the particle has moved down the potential, removing heat from the environment as it overcomes the periodic barriers provided by the potential. We notice that unlike Figure \ref{fig:Schematic}, the probability distribution does not decay into Gaussian distributions in the wells, instead the temperature gradients cause the probability distribution to take on a very complicated form.}
+\end{figure}
