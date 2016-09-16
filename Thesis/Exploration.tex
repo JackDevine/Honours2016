@@ -80,9 +80,23 @@ If we start with the population situated entirely in the upper well, then we get
 \begin{equation}
 P_+(t) = \exp{(-(\kappa_+ - \kappa_- )t)}.
 \end{equation}
-We can also achieve this result numerically by starting the system off in the upper well and simulating forward while calculating the probability that the particle is in the upper well at each step. We then fit an exponential to this data and the fitted rate will be our numerically estimated Kramers rate. To assist with measuring the Kramer's rate, we used Hermite interpolation to create a sixth order polynomial with the desired bistable shape. Specifically, we would allow $V(x)$ to be a general 6th order polynomial and then we would specify the value of the polynomial at the locations $a$, $b$ and $c$, we would also enforce that the first derivative vanished at these locations. This would yield 6 equations which we would solve to give us the coefficients of $V(x)$, an example of such a polynomial is shown in Figure \ref{fig:bistablePotential}. Using these interpolating polynomials, we could keep the locations of the wells fixed while controlling the barrier height $E_B^+$. Once we had a potential, we would place the probability distribution in the upper well and then measure the probability that the particle is in the upper well with time and use this information to obtain the Kramer's rate, as shown in Figure {\color{red} make this figure}. This technique was used to calculate the Kramer's rate for multiple barrier height and potentials and it was found to be in excellent agreement with equation \ref{eqn:kramersRate}. The same technique can be used to obtain the Kramer's rate when the temperature is not held fixed. In this case, the Kramer's rate is sensitive to the boundary conditions imposed on the temperature and on the precise values of $\alpha$ and $\beta$ as shown in Figure {\color{red} make this figure}. We therefore conclude that the Kramer's rate is dependent on the heat capacity and thermal diffusivity of the system.
+We can also achieve this result numerically by starting the system off in the upper well and simulating forward while calculating the probability that the particle is in the upper well at each step. We then fit an exponential to this data and the fitted rate will be our numerically estimated Kramers rate. To assist with measuring the Kramer's rate, we used Hermite interpolation to create a sixth order polynomial with the desired bistable shape. Specifically, we would allow $V(x)$ to be a general 6th order polynomial and then we would specify the value of the polynomial at the locations $a$, $b$ and $c$, we would also enforce that the first derivative vanished at these locations. This would yield 6 equations which we would solve to give us the coefficients of $V(x)$, an example of such a polynomial is shown in Figure \ref{fig:bistablePotential}. Using these interpolating polynomials, we could keep the locations of the wells fixed while controlling the barrier height $E_B^+$. Once we had a potential, we would place the probability distribution in the upper well and then measure the probability that the particle is in the upper well with time and use this information to obtain the Kramer's rate, as shown in Figure \ref{fig:kramersLinear}.
 
-\section{The reverse Landauer blowtorch}
+\begin{figure}
+	\includegraphics[width=0.8\textwidth]{kramersLinear}
+	\caption{\textbf{The probability of being to the right of the barrier.} Here we see that the system decays into the ground state of the upper well and then begins to decay exponentially into the lower well. At the end of this, the probability of finding the particle on the upper well is almost zero. We can fit an exponential to this decay in order to estimate the Kramers' rate. \label{fig:kramersLinear}}
+\end{figure}
+
+This technique was used to calculate the Kramer's rate for multiple barrier height and potentials and it was found to be in excellent agreement with equation \ref{eqn:kramersRate}. The same technique can be used to obtain the Kramer's rate when the temperature is not held fixed. In this case, the Kramer's rate is sensitive to the boundary conditions imposed on the temperature and on the precise values of $\alpha$ and $\beta$ as shown in Figure \ref{fig:kramersAlphaBeta}.
+
+\begin{figure}
+	\includegraphics[width=0.8\textwidth]{kramersAlphaBeta}
+	\caption{\textbf{Kramers' rate} Here we vary $\alpha$ and $\beta$ and perform the same measurements as in Figure \ref{fig:kramersLinear}, the results show that the Kramers' rate varies with $\alpha$ and $\beta$. \label{fig:kramersAlphaBeta}}
+\end{figure}
+
+We therefore conclude that the Kramer's rate is dependent on the heat capacity and thermal diffusivity of the system.
+
+\subsection{The reverse Landauer blowtorch}
 
 \begin{figure}
 	\begin{subfigure}{0.49\textwidth}
@@ -99,6 +113,8 @@ As noted in ~\autoref{landauersBlowtorch}, the relative occupancy of wells depen
 
 \section{Titlted periodic potentials}
 Tilted periodic potentials are very important in biology where they can be used to model molecular motors, in Ref \cite{MaLaiAckersonEtAl2015, MaLaiAckersonEtAl2015a} the authors synthesize a tilted periodic potential by placing Brownian particles on a crystalline surface. The surface is then titled at an angle $\theta$ relative to the normal defined by gravity, in their theoretical analysis, the authors assume a constant temperature and are therefore able to describe a non-equilibrium steady state. Interestingly, in section \ref{SteadyState}, we showed that our system does not have such a well defined steady state for tilted periodic potentials.
+
+Despite not being able to easily calculate the steady state for titled periodic potentials, we can still 
 
 \begin{figure}
 	\begin{subfigure}{0.49\textwidth}

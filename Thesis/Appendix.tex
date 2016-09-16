@@ -1,46 +1,17 @@
-\chapter{Testing the numerics}
+\chapter{Interesting }
 
-The idea behind finite differences is that as the discretization size goes to zero, the numerical approximation should converge on the correct analytical solution. We will compare our numerics with some known analytical results as well as performing convergence tests.
-\section{A comparison with analytical results}
-\subsection{Smoluchowski equation}
-The Smoluchowski equation has a steady state probability density that takes on the form
-\begin{equation}
-P_{ss}(x) = N \exp{\left(-\int_a^x \frac{V'(x')}{T(x')} dx' \right)}
-\end{equation}
+There are a lot of interesting phenomena that occur when one explores the system that we explored in detail. In this appendix, we would like to share some of the exciting results that we found during the project, these results do not directly contribute to the narrative of the thesis which is why they were not included in the main body of the text.
 
-Although we are not able to solve the Smoluchowski equation in the dynamical sense, we are able to obtain a formula for the Kramers rate. Here we will compare our numerical results with some simulations on the Kramers rate.
+\begin{figure}
+	\center
+	\textbf{Periodic boundary conditions}
+	\vspace{0.5cm}
 
-\subsection{Heat equation}
-The heat equation can be solved using a Fourier series technique
-\begin{equation}
-\frac{\partial T}{\partial t} = \beta \frac{\partial^2 T}{\partial x^2}
-\end{equation}
-the initial condition for the temperature will be denoted by,
-\begin{equation}
-T(x, 0) = f(x)
-\end{equation}
-
-Lets say that the boundaries are at $x = \pm \infty$ and that the derivative of the temperature is zeros at the boudaries. The solution to the heat equation is given by:
-
-\begin{equation}
-T(x, t) = \sum_{n=1}^\infty D_n \sin \left(\frac{n \pi x}{L} \right) \exp\left(\frac{-n^2 \pi^2 \beta t}{L^2}\right)
-\end{equation}
-where
-\begin{equation}
-D_n = \frac{2}{L} \int_0^L f(x) \sin \left(\frac{n \pi x}{L} \right) dx
-\end{equation}
-We can compare these analytical results to the numerical ones obtained through finite differences
-
-\section{Convergence tests}
-Here we will decrease the step size and see whether or not the numerical scheme converges on a particular result
-
-\begin{figure}[b]
 	\begin{subfigure}{0.49\textwidth}
-		\includegraphics[width=\columnwidth]{probabilityConvergence}
+		\includegraphics[width=\textwidth]{PeriodicInit}
 	\end{subfigure}
 	\begin{subfigure}{0.49\textwidth}
-		\includegraphics[width=\columnwidth]{probabilityConvergenceRate}
+		\includegraphics[width=\textwidth]{PeriodicFinal}
 	\end{subfigure}
-\caption{The convergence of the probability distribution as $\Delta t$ is decreased, the spatial discretization $\Delta x$ is kept constant at 0.006.}
-\label{fig:Convergence}
+	\caption{\textbf{An example of a periodic system visualized in one dimension.} We have $\alpha = 1 \cdot 10^{-2} \, m^{-1}$ and $\beta = 1 \cdot 10^{-3}  \, m^2 s^{-1}$}
 \end{figure}

@@ -48,9 +48,9 @@ for unkown constants $\xi$ and $d$. By applying the boundary condition \ref{eqn:
 T'(0) & = 0 = \frac{\kappa J_s}{D} V(0) + \xi \\
 T'(L) & = 0 = \frac{\kappa J_s}{D} V(L) + \xi
 \end{align}
-This implies that either $J_s = 0$ or $V(0) = V(L)$, meaning that the coupled system does not admit a steady state solution for a tilted potential. Later, we will see that it is possible to have a steady state in higher dimensions where the flow of heat from the environment can dissipate the heat produced by the Brownian particle. By recalling that $E = \int_0^L P(x') V(x') dx' + c \int_0^L T(x') dx'$ we are able to find an expression for $d$. First, we will integrate the temperature from $0$ to $L$
+This implies that either $J_s = 0$ or $V(0) = V(L)$, meaning that the coupled system does not admit a steady state solution for a tilted potential, since for a titled potential, $J$ cannot be zero. Later, we will see that it is possible to have a steady state in higher dimensions where the flow of heat from the environment can dissipate the heat produced by the Brownian particle. By recalling that $E = \int_0^L P(x') V(x') dx' + c_p \int_0^L T(x') dx'$ we are able to find an expression for $d$. First, we will integrate the temperature from $0$ to $L$
 \begin{equation}
-\int_0^L T(x') dx' = \frac{\kappa J_s}{D} \int_0^L dx' \int_0^{x'} V(x'') dx'' + \xi \frac{L^2}{2} + d L
+\int_0^L T(x') dx' = \frac{\kappa J_s}{D} \int_0^L dx' \int_0^{x'} V(x'') dx'' + \xi \frac{L^2}{2} + L d
 \end{equation}
 Therefore,
 \begin{equation}
@@ -63,7 +63,7 @@ It would seem that one should be able to calculate the steady state current and 
 obj(J_s, P_s(0)) = \left (J_s - \left [\frac{2 k_B T(L)}{\psi(L)} - \frac{2 k_B T(0)}{\psi(0)}  \right] P_s(0) \left [\int_0^L dx'/\psi(x') \right]^{-1} \right)^2  \label{eqn:Objective}
 \end{equation}
 
-And we minimize this objective function with respect to $J_s$ and $P_s(0)$ under the constraint $\int_0^L P(x) dx = 1$. Another way to do this is to guess a steady state density and temperature and use finite differencing to simulate forward in time until the transients die out.
+And we minimize this objective function with respect to $J_s$ and $P_s(0)$ under the constraint $\int_0^L P(x) dx = 1$. Another way to do this is to guess a steady state density and temperature and use finite differencing to simulate forward in time until the transients die out. As well as this, one can write down the system as an ordinary differential equation in one dimension, this coupled set of ODEs can be solved numerically using Runge Kutte algorithms. 
 
 %----------------------------------------------------------------------------------------
 %	NUMERICS
@@ -74,7 +74,6 @@ The one dimensional equation can be solved on a discrete grid by using the finit
 \begin{equation}
 \frac{d f}{d x} \approx \frac{f(x - h) - f(x + h)}{2h}
 \end{equation}
-
 for some small $h$, likewise the second derivative of a function is approximated with
 \begin{equation}
 \frac{d^2 f}{d x^2} = \frac{f(x - h) - 2f(x) + f(x + h)}{h^2}
@@ -83,7 +82,9 @@ In our simulations, we will use the Crank Nicolson scheme to solve the equations
 \begin{equation}
 \frac{P_j^{n+1} - P_j^n}{\Delta t} = \frac{1}{2}(F_j^{n+1} + F_j^n)
 \end{equation}
-where $F$ represents the right hand side of the equation that we are doing finite differences on. By applying finite differences to the dimensionless Smoluchowski equation (eq \ref{eqn:dimensionlessSmoluchowski}), we find that:
+where $F$ represents the right hand side of the equation that we are doing finite differences on. This is an implicit set of equations that we will need to solve, in particular one may notice that $F$ needs to be estimated at the future time in order for the equation to make sense. We will linearize the problem by assuming that the quantities of interest do not change by much in one time step.
+
+By applying finite differences to the dimensionless Smoluchowski equation (eq \ref{eqn:dimensionlessSmoluchowski}), we find that:
 \begin{equation}
 F_j^{i} = \frac{P^i_{j+1} \partial V^i_{j+1} - P^i_{j-1} \partial V^i_{j-1}}{2 \Delta x} + \frac{T^i_{j+1} - T^i_{j-1}}{2 \Delta x} \frac{P^i_{j+1} - P^i_{j-1}}{2 \Delta x} + T^i_j \frac{}{} \frac{P^i_{j+1}- 2P^i_j + P^i_{j-1}}{\Delta x^2} 
 \end{equation}
@@ -128,6 +129,7 @@ P_1^{n+1}	     \\
 P_{J-1}^{n+1} \\
 P_J^{n+1}
 \end{bmatrix}
+\label{eqn:matrix}
 \end{equation}
 
 \begin{equation}
@@ -156,7 +158,7 @@ P_{J-1}^{n} \\
 P_J^{n}
 \end{bmatrix}
 \end{equation}
-With these matrices the equation now becomes,
+With these matrices, the equation now becomes,
 \begin{equation}
 \left (\mathbb{1} - \frac{\Delta t}{2}A \right) \cdot P^{n+1} = \left (\mathbb{1} + \frac{\Delta t}{2}B \right) \cdot P^n
 \end{equation}
@@ -164,7 +166,7 @@ we interpret this equation as saying that half of a backwards Euler step acting 
 \begin{equation}
 P^{n+1} = \frac{\mathbb{1} + \frac{\Delta t}{2}B}{\mathbb{1} - \frac{\Delta t}{2}A} P^n
 \end{equation}
-Each time that we step forward using this equation we will be out by a factor, this means that at each step we will need to renormalize using the equation $\int P(x) dx = 1$.
+Each time that we step forward using this equation we will be out by a factor, this means that at each step we will need to renormalize using the equation $\int P(x) dx = 1$. If we do not apply this normalization, then the norm of our vector will change dramatically during a simulation. In order to estimate the integrals involved, we used the Simpson's rule of integration.
 
 Likewise, we can apply the Crank Nicolson scheme to the heat equation, (eq \ref{eqn:dimensionlessHeat}), by looking at the right hand side of this equation, we find that
 
@@ -177,17 +179,20 @@ Just like the discretized Smoluchowski equation, these equations can be written 
 Fortunately the matrices that we are dealing with are very sparse, so the program used to solve these equations can save on memory by calling sparse matrix libraries.
 
 \subsection{Boundary conditions}
-So far we have discussed how to solve the equations inside the domain of interest, however we our equations of motion will require that we prescribe boundary conditions that the system must satisfy. The boundary conditions that have been implemented for this project are as follows:
+So far we have discussed how to solve the equations inside the domain of interest $\Omega$, however our equations of motion will require that we prescribe boundary conditions that the system must satisfy. The boundary conditions that have been implemented for this project are as follows:
 
 \begin{itemize}
 \item{Dirichlet: The value of the solution is specified at the boundaries}
 \item{Neumann: The value of the first derivative of the solution is specified at the boundaries}
 \item{Periodic: The value at the boundaries is not specified, but the left and right boundaries must take on the same value}
 \end{itemize}
+Each type of boundary conditions comes along with its own physical interpretation, first we will deal with the boundary conditions imposed on the probability distribution.
 
-Each type of boundary conditions comes along with its own physical interpretation, first we will deal with the boundary conditions imposed on the probability distribution. If the potential goes to infinity at the boundaries, then the probability distribution must vanish at the boundaries before applying boundary conditions at all, therefore no boundary conditions need to be applied. There are some potentials that are periodic where the value of the potential is the same finite number at both sides, in this case it can be interesting to apply periodic boundary conditions to the probability distribution. Physically, this corresponds to a system where a particle passing through the left side will appear at the right side and vice-versa. One can picture this by imagining a particle constrained to a circular domain.
+If the potential goes to infinity at the boundaries, then the probability distribution must vanish at the boundaries before applying boundary conditions at all, therefore no boundary conditions need to be applied. There are some potentials that are periodic where the value of the potential is the same finite number at both sides, in this case it can be interesting to apply periodic boundary conditions to the probability distribution. Physically, this corresponds to a system where a particle passing through the left side will appear at the right side and vice-versa. One can picture this by imagining a particle constrained to a circular domain.
 
-As for the temperature, both Neumann and Dirichlet boundary conditions are realized. In the case of Neumann boundary conditions, the derivative was set to zero at both boundaries. This is a very interesting case to imagine, because the derivative of the temperature physically represents the flow of heat in our system. Therefore the physical interpretation of a vanishing derivative at the boundary is that no heat is flowing through the boundaries, or in other words the system is enclosed in a perfectly insulating box. This system conserves energy, which is convenient when one goes to renormalize the calculated temperature by using the energy of the system. The second type of boundary condition that can be imposed on the temperature is the Dirichlet type where the value of the temperature is specified at both boundaries. The physical interpretation of this requirement is that the system is embedded in a much larger system that is at a fixed temperature. The tacit assumption made is that no matter what the system does, it is not able to affect the temperature of the environment. One must take care when using the energy to renormalize when considering Dirichlet boundary conditions, this is because the energy in the system is no longer conserved. To account for this, we calculated the heat flowing through the boundaries at each step and subtracted this from the energy of the system before we renormalized the system.
+As for the temperature, both Neumann and Dirichlet boundary conditions are realized. In the case of Neumann boundary conditions, the derivative was set to zero at both boundaries. This is a very interesting case to imagine, because the derivative of the temperature physically represents the flow of heat in our system. Therefore the physical interpretation of a vanishing derivative at the boundary is that no heat is flowing through the boundaries, or in other words the system is enclosed in a perfectly insulating box. This system conserves energy, which is convenient when one goes to renormalize the calculated temperature by using the energy of the system.
+
+The second type of boundary condition that can be imposed on the temperature is the Dirichlet type where the value of the temperature is specified at both boundaries. The physical interpretation of this requirement is that the domain is embedded in a much larger system that is at a fixed temperature. The tacit assumption made is that no matter what the system does, it is not able to affect the temperature of the environment. One must take care when using the energy to renormalize when considering Dirichlet boundary conditions, this is because the energy in the system is no longer conserved. To account for this, we calculate the heat flowing through the boundaries at each step and subtracted this from the energy of the system before we renormalized the system.
 
 Implementing these boundary conditions requires that we change our matrices $A$ and $B$, specifically we will need to modify the top and bottom rows. The reason that we can do this is because a matrix represents a system of equations, the first and last rows of the matrices effects the first and last components of the vectors that we are doing finite differences on. For each boundary condition, we need to make sure that the equations represented by our first and last rows reflect our desired boundary conditions.
 
@@ -201,15 +206,33 @@ u^{n+1} = \frac{\mathbb{1} + \frac{\Delta t}{2} B}{\mathbb{1} - \frac{\Delta t}{
 This equation will certainly affect the first and last components of $u$, in order to avoid this, we need to make sure that the first and last rows of $(\mathbb{1} + \frac{\Delta t}{2} B)$ and $(\mathbb{1} - \frac{\Delta t}{2} A)$ are the same as the first and last rows of the identity matrix.
 
 \subsubsection{Neumann boundary conditions}
-The derivative at the boundaries can be made to be zero at the boundaries by making sure that the first and last rows of our matrices represent the equations $u_J - u_{J-1} = 0$ and $u_0 - u_1 = 0$ respectively.
+The derivative at the boundaries can be made to be zero at the boundaries by making sure that the first and last rows of our matrices represent the equations $u_J - u_{J-1} = 0$ and $u_0 - u_1 = 0$ respectively. This can be done by replacing the first row with $\{ 1, \, -1, \, 0, \, \dots \, , \, 0 \}$ and the last row with $\{0, \, 0, \, \dots, \, 0, \, -1, \, 1 \}$.
 
 \subsubsection{Periodic boundary conditions}
+Periodic boundary conditions state that $u_0 = u_J$, if this is true at step $i$, then we can make sure that it is true at step $i+1$ by modifying our matrix appropriately. To be more precise if our finite differences matrix takes the form of equation \ref{eqn:matrix}, then in order to have periodic boundary conditions we would have to modify it to read:
+
+\begin{equation}
+A =
+\begin{bmatrix}
+	a_0^{n+1} & b_1^{n+1} & 0                & 0                & 0        & \dots                                 & c_0^{n+1}        \\
+	c_0^{n+1} & a_1^{n+1} & b_2^{n+1} & 0                & 0        & \dots                                 & 0        \\
+	0                & c_1^{n+1} & a_2^{n+1} & b_3^{n+1}   & 0        & \dots                                 & 0        \\
+			     &                   &                   &                  &           &                                         &           \\
+	\vdots         & \vdots         & \ddots         & \ddots         & \ddots & \vdots                              & \vdots \\
+			     &                   &                   &                  &           &                                         &           \\
+			     &                   &                   &                  &           &                                         &           \\
+	0                &                   & \dots           &                   &  c_{J-2}^{n+1} & a_{J-1}^{n+1}  & b_J^{n+1} \\
+	b_J^{n+1}                &                   & \dots           &                   &                         &  c_{J-1}^{n+1} & a_J^{n+1}
+\end{bmatrix}
+\end{equation}
+
+This is equivalent to stretching out the matrix
 
 All of these boundary conditions were implemented in Julia \cite{Bezanson2014}, the user can decide which boundary condition that they want through a keyword argument and then the program will implement finite differences for that boundary type.
 
 \section{Testing the numerics}
 
-The idea behind finite differences is that as the discretization size goes to zero, the numerical approximation should converge on the correct analytical solution. We will compare our numerics with some known analytical results as well as performing convergence tests.
+The idea behind finite differences is that as the discretization size goes to zero, the numerical approximation should converge on the correct analytical solution. Here we will compare our numerics with some known analytical results as well as performing convergence tests.
 \subsection{A comparison with analytical results}
 
 The Smoluchowski equation has a steady state probability density that takes on the form
@@ -246,7 +269,7 @@ where
 \begin{equation}
 D_n = \frac{2}{L} \int_0^L f(x) \sin \left(\frac{n \pi x}{L} \right) dx
 \end{equation}
-We can compare these analytical results to the numerical ones obtained through finite differences, this is done in Figure ~\ref{fig:smoluchowskiCompare}
+We can compare these analytical results to the numerical ones obtained through finite differences, this is done in Figures ~\ref{fig:smoluchowskiCompare} and \ref{fig:temperatureCompare}
 
 \begin{figure}
 	\begin{subfigure}{0.49\textwidth}
@@ -259,7 +282,7 @@ We can compare these analytical results to the numerical ones obtained through f
 \end{figure}
 
 \subsection{Convergence tests}
-The idea of finite differences is that as the step size goes to zero, the numerical approximation will converge on the correct solution to the underlying equation being approximated. In the previous section we showed that finite differences approximated the solution very closely in some instances where the analytical result could be obtained. In general, we will not have an analytical solution to compare to but we would still like to be able to quantify the performance of our techniques.
+As the step size goes to zero, the numerical approximation will converge on the correct solution to the underlying equation being approximated. In the previous section we showed that finite differences approximated the solution very closely in some instances where the analytical result could be obtained. In general, we will not have an analytical solution to compare to but we would still like to be able to quantify the performance of our techniques.
 
 Convergence tests involve decreasing the discretization size and checking whether the numerical solutions converge at all. In Figure \ref{fig:Convergence}, the Smoluchowski equation was simulated while keeping the temperature fixed, each time we halve $\Delta t$ and measure the normed difference between the new result and the previous one.
 
