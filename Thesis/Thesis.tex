@@ -52,6 +52,9 @@
 \renewcommand{\headrulewidth}{0pt} % customise the layout...
 \lhead{}\chead{}\rhead{}
 \lfoot{}\cfoot{\thepage}\rfoot{}
+\usepackage{epigraph}
+\setlength\epigraphwidth{.9\textwidth}
+\setlength\epigraphrule{0pt}
 
 %%% SECTION TITLE APPEARANCE
 \usepackage{sectsty}
@@ -66,7 +69,6 @@
 \usepackage[titles,subfigure]{tocloft} % Alter the style of the Table of Contents
 \renewcommand{\cftsecfont}{\rmfamily\mdseries\upshape}
 \renewcommand{\cftsecpagefont}{\rmfamily\mdseries\upshape} % No bold!
-
 %%% END Article customizations
 
 %%% The "real" document content comes below...
@@ -109,6 +111,21 @@
 \section*{Abstract} % This section will not appear in the table of contents due to the star (\section*)
 \end{center}
 
+\clearpage
+
+\null\vfill
+{
+\centering{
+{\Large%
+  At the atomic level, we have new kinds of forces and new kinds of possibilities, new kinds of effects. The problems of manufacture and reproduction of materials will be quite different. I am, as I said, inspired by the biological phenomena in which chemical forces are used in a repetitious fashion to produce all kinds of weird effects (one of which is the author).} \\
+\vspace{1cm}
+  \raggedleft{\Large\textbf{ Richard Feynman \\ -- There's Plenty of room at the bottom (1959).}}\par%
+}
+}
+\vfill\vfill
+
+\clearpage
+
 %Brownian motors are capable of converting chemical energy directly into work and are crucial for many biological processes. The purpose of this project is to consider the motors thermal interaction with  the environment, we want to know whether these thermal interactions will change the properties of the Brownian motors as compared to calculations made without considering coupling to the environment.
 
 %----------------------------------------------------------------------------------------
@@ -116,6 +133,8 @@
 \newpage % Start the article content on the second page, remove this if you have a longer abstract that goes onto the second page
 
 \tableofcontents
+
+
 
 %----------------------------------------------------------------------------------------
 %	INTRODUCTION
@@ -156,6 +175,17 @@
 \input{Outlook}
 
 %----------------------------------------------------------------------------------------
+%	BIBLIOGRAPHY
+%----------------------------------------------------------------------------------------
+
+%\renewcommand{\refname}{\spacedlowsmallcaps{References}} % For modifying the bibliography heading
+
+\clearpage{}   % Make sure that the references are on a new page.
+\bibliography{BibData}{} % The file containing the bibliography
+
+\bibliographystyle{unsrt}
+
+%----------------------------------------------------------------------------------------
 %	APPENDIX
 %----------------------------------------------------------------------------------------
 
@@ -169,16 +199,6 @@
 
 %------------------------------------------------
 
-%----------------------------------------------------------------------------------------
-%	BIBLIOGRAPHY
-%----------------------------------------------------------------------------------------
-
-%\renewcommand{\refname}{\spacedlowsmallcaps{References}} % For modifying the bibliography heading
-
-\clearpage{}   % Make sure that the references are on a new page.
-\bibliography{BibData}{} % The file containing the bibliography
-
-\bibliographystyle{unsrt}
 %----------------------------------------------------------------------------------------
 
 \end{document}

@@ -1,3 +1,5 @@
+\epigraph{He who refuses to do arithmetic is doomed to talk nonsense.}{\textbf{John McCarthy \\ -- Progress and it's sustainability (1995)}}
+Now that we have determined that our system is physical and we have made insights into the qualitative nature of our system, we must build techniques for solving the system so that we can gain quantitative insights. We will begin in ~\autoref{SteadyState} by using analytical techniques to find stationary solutions to our equations of motion.
 \section{Steady state solution} \label{SteadyState}
 In order to see how the equations of motion behave with time, we have to resort to numerical methods (see section \ref{numerics}). However we note that for a given potential there will be a stationary solution that we will refer to as the ``steady state'', given periodic boundary conditions, we will derive an analytical form for this steady state.
 
@@ -85,9 +87,10 @@ In our simulations, we will use the Crank Nicolson scheme to solve the equations
 where $F$ represents the right hand side of the equation that we are doing finite differences on. This is an implicit set of equations that we will need to solve, in particular one may notice that $F$ needs to be estimated at the future time in order for the equation to make sense. We will linearize the problem by assuming that the quantities of interest do not change by much in one time step.
 
 By applying finite differences to the dimensionless Smoluchowski equation (eq \ref{eqn:dimensionlessSmoluchowski}), we find that:
-\begin{equation}
-F_j^{i} = \frac{P^i_{j+1} \partial V^i_{j+1} - P^i_{j-1} \partial V^i_{j-1}}{2 \Delta x} + \frac{T^i_{j+1} - T^i_{j-1}}{2 \Delta x} \frac{P^i_{j+1} - P^i_{j-1}}{2 \Delta x} + T^i_j \frac{}{} \frac{P^i_{j+1}- 2P^i_j + P^i_{j-1}}{\Delta x^2} 
-\end{equation}
+\begin{multline}
+F_j^{i} = \frac{P^i_{j+1} \partial V^i_{j+1} - P^i_{j-1} \partial V^i_{j-1}}{2 \Delta x} + \frac{T^i_{j+1} - T^i_{j-1}}{2 \Delta x} \frac{P^i_{j+1} - P^i_{j-1}}{2 \Delta x} \\
+ + T^i_j \frac{}{} \frac{P^i_{j+1}- 2P^i_j + P^i_{j-1}}{\Delta x^2} 
+\end{multline}
 where we omitted the hats for notational convenience.
 We make the following definitions:
 \begin{align*}
@@ -100,7 +103,8 @@ c_j^{n} &= -\frac{\partial_x V^{n}_{j-1}}{2\Delta x}  - \frac{T^{n}_{j+1} - T^{n
 \end{align*}
 With these definitions, the Crank Nicolson scheme can be written down as follows:
 \begin{multline}
- -\frac{\Delta t}{2}a_j^{n+1}P_{j-1}^{n+1} + \left (1 - \frac{\Delta t}{2}b_j^{n+1} \right) P_j^{n+1} - \frac{\Delta t}{2} c_j^{n+1} P_{j+1}^{n+1} = a_j^n P_{j-1}^{n}
+ -\frac{\Delta t}{2}a_j^{n+1}P_{j-1}^{n+1} + \left (1 - \frac{\Delta t}{2}b_j^{n+1} \right) P_j^{n+1} - \frac{\Delta t}{2} c_j^{n+1} P_{j+1}^{n+1} \\
+ = a_j^n P_{j-1}^{n}
 + \left (1 + \frac{\Delta t}{2}b_j^n \right) P_j^{n}  + \frac{\Delta t}{2} c_j^n P_{j+1}^{n}
 \end{multline}
 This equation can be written in matrix form by defining the following matrices:
