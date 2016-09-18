@@ -1,4 +1,6 @@
-\epigraph{He who refuses to do arithmetic is doomed to talk nonsense.}{\textbf{John McCarthy \\ -- Progress and it's sustainability (1995)}}
+%\epigraph{He who refuses to do arithmetic is doomed to talk nonsense.}{\textbf{John McCarthy \\ -- Progress and it's sustainability (1995)}}
+\setlength\epigraphwidth{.6\textwidth}
+\epigraph{People either write code that works, or they don't.}{\textbf{Colin Fox -- 2016}}
 Now that we have determined that our system is physical and we have made insights into the qualitative nature of our system, we must build techniques for solving the system so that we can gain quantitative insights. We will begin in ~\autoref{SteadyState} by using analytical techniques to find stationary solutions to our equations of motion.
 \section{Steady state solution} \label{SteadyState}
 In order to see how the equations of motion behave with time, we have to resort to numerical methods (see section \ref{numerics}). However we note that for a given potential there will be a stationary solution that we will refer to as the ``steady state'', given periodic boundary conditions, we will derive an analytical form for this steady state.
@@ -16,7 +18,7 @@ P(x = 0) & = P(x = L) \\
 J(x = 0) & = J(x = L) \\
 \left. \frac{\partial T}{\partial x} \right \rvert_{x = 0} & = 0 = \left. \frac{\partial T}{\partial x} \right \rvert_{x = L} \label{eqn:temperatureBoundary}
 \end{align}
-where $L$ is the length scale of the system. Physically, these conditions say that the nett current flowing out of the boundaries is zero and that no heat escapes from the system, thus the energy of the sytem is conserved. Section 5.2 of \cite{Gardiner2009} gives the steady state current as:
+where $L$ is the length scale of the domain. Physically, these conditions say that the nett current flowing out of the boundaries is zero and that no heat escapes from the system, thus the energy of the sytem is conserved. Section 5.2 of \cite{Gardiner2009} gives the steady state current as:
 
 \begin{equation}
 J_s = \left [\frac{2 k_B T(L)}{\psi(L)} - \frac{2 k_B T(0)}{\psi(0)}  \right] P_s(0) \left [\int_0^L dx'/\psi(x') \right]^{-1}
@@ -34,12 +36,10 @@ In this case, $J_s$ is a constant and $P_s(0)$ is also a constant. Assuming that
 \begin{equation}
 \frac{\partial T}{\partial t} = 0 = -\kappa J_s \partial_x V + D \frac{\partial^2 T}{\partial x^2} \label{eqn:steadyTemperatureODE}
 \end{equation}
-
 In one dimension, \ref{eqn:steadyTemperatureODE} can be written as an ordinary differential equation of the form
 \begin{equation}
 T''(x) = \frac{\kappa J_s}{D} V'(x)
 \end{equation}
-
 We can solve this equation by integrating both sides twice to give:
 
 \begin{equation}
@@ -50,13 +50,19 @@ for unkown constants $\xi$ and $d$. By applying the boundary condition \ref{eqn:
 T'(0) & = 0 = \frac{\kappa J_s}{D} V(0) + \xi \\
 T'(L) & = 0 = \frac{\kappa J_s}{D} V(L) + \xi
 \end{align}
-This implies that either $J_s = 0$ or $V(0) = V(L)$, meaning that the coupled system does not admit a steady state solution for a tilted potential, since for a titled potential, $J$ cannot be zero. Later, we will see that it is possible to have a steady state in higher dimensions where the flow of heat from the environment can dissipate the heat produced by the Brownian particle. By recalling that $E = \int_0^L P(x') V(x') dx' + c_p \int_0^L T(x') dx'$ we are able to find an expression for $d$. First, we will integrate the temperature from $0$ to $L$
+This implies that either or $V(0) = V(L)$ or $J_s$ is a function of $x$, so in the tilted case, we find that the steady state current is a function of $x$. In the case of a titled periodic potential it is not sensible to think of a steady state solution because there will always be a flow of the probability distribution. This will be associated with  a flow of energy through the boundaries meaning that energy is no longer conserved.
+
+On the other hand, if we have $V(0) = V(L)$, then we can solve for $\xi$ to give:
+\begin{equation}
+\xi = - \frac{\kappa J_s}{D} V(0)
+\end{equation}
+Later, we will see that it is possible to have a steady state in higher dimensions where the flow of heat from the environment can dissipate the heat produced by the Brownian particle. By recalling that $E = \int_0^L P(x') V(x') dx' + c_p \int_0^L T(x') dx'$ we are able to find an expression for $d$. First, we will integrate the temperature from $0$ to $L$
 \begin{equation}
 \int_0^L T(x') dx' = \frac{\kappa J_s}{D} \int_0^L dx' \int_0^{x'} V(x'') dx'' + \xi \frac{L^2}{2} + L d
 \end{equation}
 Therefore,
 \begin{equation}
-	d = \frac{1}{L} \left(c E - c\int_0^L P(x') V(x') dx' - \frac{\kappa J_s}{D} \int_0^L dx' \int_0^{x'} V(x'') d x'' + \xi \frac{L^2}{2} \right)
+	d = \frac{1}{L} \left(c_p E - c_p \int_0^L P(x') V(x') dx' - \frac{\kappa J_s}{D} \int_0^L dx' \int_0^{x'} V(x'') d x'' + \xi \frac{L^2}{2} \right)
 \end{equation}
 
 It would seem that one should be able to calculate the steady state current and density directly from the equations shown above. However, we notice that the constants $J_s$ and $P_s(0)$ have to satisfy equations (\ref{eqn:SteadyCurrent}), (\ref{eqn:SteadyDensity}) and (\ref{eqn:steadyTemperature}) while also satisfying the normalization condition $\int_0^L P(x) dx = 1$. To do this we define an objective function given by
@@ -71,16 +77,16 @@ And we minimize this objective function with respect to $J_s$ and $P_s(0)$ under
 %	NUMERICS
 %----------------------------------------------------------------------------------------
 \section{Finite differences}  \label{numerics}
-The one dimensional equation can be solved on a discrete grid by using the finite differences method, the main idea behind this strategy is to approximate derivatives with equations of the form:
+Our one dimensional equations can be solved on a discrete grid by using the finite differences method, the main idea behind this strategy is to approximate derivatives with equations of the form:
 
 \begin{equation}
 \frac{d f}{d x} \approx \frac{f(x - h) - f(x + h)}{2h}
 \end{equation}
 for some small $h$, likewise the second derivative of a function is approximated with
 \begin{equation}
-\frac{d^2 f}{d x^2} = \frac{f(x - h) - 2f(x) + f(x + h)}{h^2}
+\frac{d^2 f}{d x^2} \approx \frac{f(x - h) - 2f(x) + f(x + h)}{h^2}
 \end{equation}
-In our simulations, we will use the Crank Nicolson scheme to solve the equations. From now on, we will use the notation that $F(j \Delta x, n \Delta t) = F_j^n$, the key equation for the Crank Nicolson scheme is:
+In our simulations, we will use the Crank Nicolson scheme \cite{Crank1996,Press2007} to solve the equations. From now on, we will use the notation that $F(j \Delta x, n \Delta t) = F_j^n$, the key equation for the Crank Nicolson scheme is:
 \begin{equation}
 \frac{P_j^{n+1} - P_j^n}{\Delta t} = \frac{1}{2}(F_j^{n+1} + F_j^n)
 \end{equation}
@@ -196,9 +202,9 @@ If the potential goes to infinity at the boundaries, then the probability distri
 
 As for the temperature, both Neumann and Dirichlet boundary conditions are realized. In the case of Neumann boundary conditions, the derivative was set to zero at both boundaries. This is a very interesting case to imagine, because the derivative of the temperature physically represents the flow of heat in our system. Therefore the physical interpretation of a vanishing derivative at the boundary is that no heat is flowing through the boundaries, or in other words the system is enclosed in a perfectly insulating box. This system conserves energy, which is convenient when one goes to renormalize the calculated temperature by using the energy of the system.
 
-The second type of boundary condition that can be imposed on the temperature is the Dirichlet type where the value of the temperature is specified at both boundaries. The physical interpretation of this requirement is that the domain is embedded in a much larger system that is at a fixed temperature. The tacit assumption made is that no matter what the system does, it is not able to affect the temperature of the environment. One must take care when using the energy to renormalize when considering Dirichlet boundary conditions, this is because the energy in the system is no longer conserved. To account for this, we calculate the heat flowing through the boundaries at each step and subtracted this from the energy of the system before we renormalized the system.
+The second type of boundary condition that can be imposed on the temperature is the Dirichlet type where the value of the temperature is specified at both boundaries. The physical interpretation of this requirement is that the domain is embedded in a much larger system that is at a fixed temperature. The tacit assumption made is that no matter what the system does, it is not able to affect the temperature of the environment. One must take care when using the energy to renormalize when considering Dirichlet boundary conditions, this is because the energy in the system is no longer conserved. To account for this, we calculate the heat flowing through the boundaries at each step and subtract this from the energy of the system before we renormalized the system.
 
-Implementing these boundary conditions requires that we change our matrices $A$ and $B$, specifically we will need to modify the top and bottom rows. The reason that we can do this is because a matrix represents a system of equations, the first and last rows of the matrices effects the first and last components of the vectors that we are doing finite differences on. For each boundary condition, we need to make sure that the equations represented by our first and last rows reflect our desired boundary conditions.
+Implementing these boundary conditions requires that we change our matrices $A$ and $B$, specifically we will need to modify the top and bottom rows. The reason that we can do this is because a matrix represents a system of equations, the first and last rows of the matrices effect the first and last components of the vectors that we are doing finite differences on. For each boundary condition, we need to make sure that the equations represented by our first and last rows reflect our desired boundary conditions.
 
 \subsubsection{Dirichlet boundary conditions}
 Imagine that we have a $n \times n$ vector $u$ that we want to step forward with finite differences while keeping the first and last components of $u$ fixed. The equation for stepping $u$ forward is given by:
@@ -229,8 +235,7 @@ A =
 	b_J^{n+1}                &                   & \dots           &                   &                         &  c_{J-1}^{n+1} & a_J^{n+1}
 \end{bmatrix}
 \end{equation}
-
-This is equivalent to stretching out the matrix
+This is equivalent to stretching out the matrix in a periodic fashion, we note that the matrix for periodic boundary conditions cannot be written in tridiagonal form. When the matrices involved are tridiagonal, we can inform the compiler of our program so that it can used highly optimized routines for solving the equations. However, in the case of periodic boundary conditions, we simply inform the compiler that the matrices are sparse, this means that we do not get the same speed for periodic boundary conditions as we do for other boundary conditions. 
 
 All of these boundary conditions were implemented in Julia \cite{Bezanson2014}, the user can decide which boundary condition that they want through a keyword argument and then the program will implement finite differences for that boundary type.
 
@@ -255,7 +260,7 @@ Figure \ref{fig:smoluchowskiCompare} shows the a simulation where we began the s
 	\caption{\textbf{Finite differences in the steady state.} The steady state for the system was calculated using equation ~\ref{eqn:analSteadyState}, we start the system off in this state and then simulate the system forward 50,000 steps with $\Delta t = 10^{-4}$ and $\Delta x = 0.02$. (a) shows the analytical steady state with the state after the simulation, (b) shows the absolute difference between these two vectors. Even after 50,000 steps the system has not deviated from the analytical steady state significantly. \label{fig:smoluchowskiCompare}}
 \end{figure}
 
-The heat equation can be solved using a Fourier series technique
+The heat equation can be solved using a Fourier series technique, in the case where there are no sources of heat, we have
 \begin{equation}
 \frac{\partial T}{\partial t} = \beta \frac{\partial^2 T}{\partial x^2}
 \end{equation}
@@ -273,7 +278,16 @@ where
 \begin{equation}
 D_n = \frac{2}{L} \int_0^L f(x) \sin \left(\frac{n \pi x}{L} \right) dx
 \end{equation}
-We can compare these analytical results to the numerical ones obtained through finite differences, this is done in Figures ~\ref{fig:smoluchowskiCompare} and \ref{fig:temperatureCompare}
+Say that we begin with a Gaussian function for the temperature, so that:
+\begin{equation}
+T(x, \, 0) = f(x) =  \exp{\left (-\frac{x^2}{4 \beta} \right)}
+\end{equation}
+
+then as time goes on, the solution will become:
+\begin{equation}
+T(x, \, t) = \frac{1}{\sqrt{t + 1}} \exp{ \left(-\frac{x^2}{4 \beta (t + 1)} \right)}
+\end{equation}
+We can compare these analytical results to the numerical ones obtained through finite differences, this is done in Figures ~\ref{fig:smoluchowskiCompare} and \ref{fig:temperatureCompare}. These figures show that even after many steps, the calculated solution has not deviated from the analytical one.
 
 \begin{figure}
 	\begin{subfigure}{0.49\textwidth}
@@ -286,7 +300,7 @@ We can compare these analytical results to the numerical ones obtained through f
 \end{figure}
 
 \subsection{Convergence tests}
-As the step size goes to zero, the numerical approximation will converge on the correct solution to the underlying equation being approximated. In the previous section we showed that finite differences approximated the solution very closely in some instances where the analytical result could be obtained. In general, we will not have an analytical solution to compare to but we would still like to be able to quantify the performance of our techniques.
+If the finite differences methods that we have implemented are correct, then as the step size goes to zero, the numerical approximation will converge on the correct solution to the underlying equation being approximated. In the previous section we showed that finite differences approximated the solution very closely in some instances where the analytical result could be obtained. In general, we will not have an analytical solution to compare to but we would still like to be able to quantify the performance of our techniques.
 
 Convergence tests involve decreasing the discretization size and checking whether the numerical solutions converge at all. In Figure \ref{fig:Convergence}, the Smoluchowski equation was simulated while keeping the temperature fixed, each time we halve $\Delta t$ and measure the normed difference between the new result and the previous one.
 
@@ -303,7 +317,7 @@ Convergence tests involve decreasing the discretization size and checking whethe
 \label{fig:Convergence}
 \end{figure}
 
-Likewise, we can do convergence tests for the coupled system, for brevity we have only included the results for the evolution of the temperature. All of these plots show that the approximation converges exponentially to the solution.
+Likewise, we can do convergence tests for the coupled system, for brevity we have only included the results for the evolution of the temperature. All of these plots show that the approximation converge exponentially to a particular solution, the convergence tests themselves do not prove that the numerical algorithms properly represent the equations ref{eqn:dimensionlessSmoluchowski} and \ref{eqn:dimensionlessHeat}. However, combined with our analytical tests, they give us confidence that the numerics do agree with the true solution.
 
 \begin{figure}
 	\begin{subfigure}{0.49\textwidth}
@@ -314,4 +328,23 @@ Likewise, we can do convergence tests for the coupled system, for brevity we hav
 	\end{subfigure}
 \caption{\textbf{The convergence of the temperature.} As $\Delta t$ is decreased, the spatial discretization $\Delta x$ is kept constant at 0.006. (a) the coupled equations are simulated forward for 1.0 seconds each line shows the temperature with a different value of the time step $\Delta t$. (b) the normed difference between each of the successive vectors is calculated and the result is plotted on  a log scale.}
 \label{fig:temperatureConvergence}
+\end{figure}
+
+One can also perform convergence tests by increasing the number of points, from this one learns how sensitive the numerics are to the size of the spatial discretization $\Delta x$. This is shown in Figure \ref{fig:spaceConvergence}, here we see that the temperature converges much more rapidly than the probability distribution does, however as $\Delta x$ goes down, both converge exponentially.
+
+\begin{figure}
+	\begin{subfigure}{0.49\textwidth}
+		\includegraphics[width=\columnwidth]{spaceConvergenceInit}
+	\end{subfigure}
+	\begin{subfigure}{0.49\textwidth}
+		\includegraphics[width=\columnwidth]{spaceConvergenceFab}
+	\end{subfigure}
+	
+	\begin{subfigure}{0.49\textwidth}
+		\includegraphics[width=\columnwidth]{densityConvergenceSpace}
+	\end{subfigure}
+	\begin{subfigure}{0.49\textwidth}
+		\includegraphics[width=\columnwidth]{temperatureConvergenceSpace}
+	\end{subfigure}
+\caption{\textbf{Convergence tests for $\Delta x$.} $\Delta t$ is held fixed at $1 \times 10^{-5}$ and $\alpha = 1 \times 10^{-2} m^{-1}$ and $\beta = 0.1 m^2 kg^{-1}$. (a) The initial configuration of the system, both the potential and the initial temperature are chosen to be complicated functions with large derivatives so that we can see how sensitive the numerics are to gradients. (b) The system after 40,000 steps forward in time, here we have not used the filling plot style to show the probability distribution so that one can see the difference between the different lines. (c) For each vector that was found through finite differences, we calculate its difference from the previous one, the $x$ axis shows the length of each of the vectors. The $y$ axis shows the log of these differences (d) Convergence of the temperature with an increasing number of points. \label{fig:spaceConvergence}}
 \end{figure}

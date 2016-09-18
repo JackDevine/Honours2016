@@ -25,6 +25,7 @@
 % \usepackage[parfill]{parskip} % Activate to begin paragraphs with an empty line rather than an indent
 
 %%% PACKAGES
+\usepackage{indentfirst}
 \usepackage{booktabs} % for much better looking tables
 \usepackage{array} % for better arrays (eg matrices) in maths
 \usepackage{paralist} % very flexible & customisable lists (eg. enumerate/itemize, etc.)
@@ -54,7 +55,8 @@
 \lfoot{}\cfoot{\thepage}\rfoot{}
 \usepackage{epigraph}
 \setlength\epigraphwidth{.9\textwidth}
-\setlength\epigraphrule{0pt}
+%\renewcommand{\textflush}{flushright} \renewcommand{\sourceflush}{flushright}
+\setlength\epigraphrule{1pt}
 
 %%% SECTION TITLE APPEARANCE
 \usepackage{sectsty}
@@ -89,7 +91,7 @@
 		\vspace{1cm}
 		\includegraphics[width=0.24\textwidth]{OtagoLogo.eps}\par\vspace{1cm}
 		\vspace{1cm}
-		{\scshape\Large A thesis submitted for Honours in physics at the University of Otago, Dunedin, New Zealand\par}
+		{\scshape\Large A thesis submitted for the partial fulfillment of  BScHons in physics at the University of Otago, Dunedin, New Zealand\par}
 		\vspace{2cm}
 		\vfill
 		supervised by\par

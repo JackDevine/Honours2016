@@ -1,5 +1,6 @@
 using FactCheck
 include("finiteDifferences.jl")
+using FiniteDifferences
 
 # Initialize a particular starting system.
 v_0 = 0.8 # Amplitude of the oscillations in the potential
