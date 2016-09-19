@@ -14,7 +14,7 @@ As we will see, the diffusion of a Brownian particle is increased by increasing 
 
 The majority of the effort expended in this thesis will be in understanding the nature of two coupled partial differential equations, these take on the form:
 \begin{eqnarray}
-J(x, \, t) &=& -\gamma^{-1} \frac{\partial}{\partial x} \left ( \frac{\partial V(x, \, t)}{\partial x} P(x, \, t) + k_B T(x, \, t) \frac{\partial P(x, \, t)}{\partial x} \right )  \\
+J(x, \, t) &=& -\gamma^{-1} \left ( \frac{\partial V(x, \, t)}{\partial x} P(x, \, t) + k_B T(x, \, t) \frac{\partial P(x, \, t)}{\partial x} \right ) \label{eqn:current} \\
 \frac{\partial P(x, \, t)}{\partial t} &=& -\frac{\partial J}{\partial x} \label{eqn:Smoluchowski} \\
 \frac{\partial T(x, \, t)}{\partial t} &=& -\kappa q(x, \, t) + D \frac{\partial^2 T(x, 
 , t)}{\partial x^2} \label{eqn:TemperatureEvolution}
@@ -32,7 +32,13 @@ Where
 \item{$D$ is the thermal diffusivity and has units $m^2 s^{-1}$}
 \end{itemize}
 
-Equation (\ref{eqn:Smoluchowski}) is called the Smoluschowski equation which we noted earlier and equation \ref{eqn:TemperatureEvolution} is the heat equation. These equations make our intuitive notions more precise, we see that the first term on the right hand side of the Smoluchowski equation (equation \ref{eqn:Smoluchowski}) is a drift term that is forced by our potential and that the second term contains a diffusion term that is scaled by our temperature. Likewise, equation (\ref{eqn:TemperatureEvolution}) also appeals to our intuition of how the motor should effect its environment. The first term represents the heat flux being produced by the motor \cite{M.W.Jack2016}, while the second term represents the diffusion of temperature into the environment. This model includes a temperature that depends on $x$ and $t$, which has been explored in the literature \cite{Kramers1940}. Some authors write the current as {\color{red} [citations]}
+Equation \ref{eqn:Smoluchowski} is called the Smoluschowski equation which we noted earlier and equation \ref{eqn:TemperatureEvolution} is the heat equation. These equations make our intuitive notions more precise, we see that the first term on the right hand side of the Smoluchowski equation (equation \ref{eqn:Smoluchowski}) is a drift term that is forced by our potential and that the second term contains a diffusion term that is scaled by our temperature. Likewise, equation \ref{eqn:TemperatureEvolution} also appeals to our intuition of how the Brownian particle should effect its environment. The first term represents the heat flux being produced by the motor \cite{M.W.Jack2016}, while the second term represents the diffusion of temperature into the environment.
+
+One may notice that the system above is a non-linear system of equations, if one looks at the last term of \ref{eqn:current}, then one will find that the second spatial derivative of $P(x, \, t)$ is multiplied by the temperature, which due to equation \ref{eqn:TemperatureEvolution} is a function of $P(x, \, t)$. Therefore equation \ref{eqn:current} is a second order non-linear equation. Likewise if one looks at the first term of equation \ref{eqn:TemperatureEvolution}, then one will find that the temperature is multiplied by the first derivative of the probability distribution (which is a function of temperature), therefore equation \ref{eqn:TemperatureEvolution} is also non-linear. Because we are dealing with non-linear equations, we must take extra care when finding their solutions numerically, in ~\autoref{numerics} we will discuss the techniques used to solve the equations as well as analytical and convergence tests that we used to test the performance of these numerical techniques.
+
+In fluid dynamics equation \ref{eqn:TemperatureEvolution} is called the heat equation, in our case we have neglected the term that represents the flow of the fluid that the Brownian particle is situated in. Including this flow would involve adding $u(x) \frac{\partial T}{\partial x}$ to the left hand side of equation \ref{eqn:TemperatureEvolution}, where $u(x)$ is velocity of the flow of the fluid. The role of fluid dynamics is discussed further in ~\autoref{fluidDynamics}, here we will note that the assumption that the fluid is stationary ($u(x) = 0$) means that the temperature gradients cannot be allowed to become too large because temperature gradients are known to create flows in fluids. Even though these flows may effect the validity of our model in real life we will neglect them for three main reasons. (i) They are not related to the physics that we would like to capture in this project since this is a project on statistical mechanics, not fluid dynamics. (ii) We would not like to depart too far from the explored literature, this is similar to reason (i) however here we would like to stress that our model is just an extension of previous models, extending the extension before understanding the extension could be premature. (iii) Including the flow into our equations of motion would increase the complexity of the system to beyond the scope of an honors project: although simply adding the fluid flow to equation \ref{eqn:TemperatureEvolution} may seem like an innocent operation, calculating the way in which the temperature gradients and the flow of the Brownian particle effect the fluid flow would mean adding a thrid equation to our already non-linear coupled system of equations.
+
+This model includes a temperature that depends on $x$ and $t$, which has been explored in the literature \cite{Kramers1940}. Some authors write the current as \cite{Kramers1940,Kampen1988}
 \begin{equation}
 J(x, \, t) = -\gamma^{-1} \frac{\partial}{\partial x} \left (\frac{\partial V(x, \, t)}{\partial x} P(x, \, t) + k_B \frac{\partial}{\partial x}(T(x, \, t) P(x, \, t)) \right )
 \end{equation}
@@ -43,13 +49,13 @@ Intuitively, the first term in equation \ref{eqn:TemperatureEvolution} will crea
 
 The other restriction that we must make to our model is that there is only a very small number if Brownian particles. This is because the temperature gradients can act as inter-particle interactions, to see this imagine that there are two particles moving about and creating temperature gradients. If one particle moves to a location where the other has created a temperature gradient, then it will be effected by the temperature gradient created by the other particle. Therefore, to model this, one would need to model the probability distributions of each particle separately and make sure that the interactions are accounted for. We stress this point because often people will use the Smoluchowski equation to describe the density of particles in a fluid. Interpreting $P(x, \, t)$ in this way in the presence of self induced temperature gradients would neglect the inter-particle interactions and would not be an accurate description. Therefore, we will be careful to make sure that $P(x, \, t)$ is used to model the probability distribution of a single colloidal particle, not many.  
 
-Temperature gradients that are self induced in Brownian dynamics have been known for some time, a particularly interesting example is the Soret-Dufour effect \cite{Onsager1931,HortLinzLuecke1992,PiazzaGuarino2002,Santamaria-HolekGadomskiRubi2011}. In this effect, the diffusion of the concentration of a species of molecules Reverse Landauer blowtorch We will explore this in ~\autoref{Kramers} where we discuss how our model adds to this 
+Temperature gradients that are self induced in Brownian dynamics have been known for some time, a particularly interesting example is the Soret-Dufour effect \cite{Onsager1931,HortLinzLuecke1992,PiazzaGuarino2002,Santamaria-HolekGadomskiRubi2011}. In this effect, the diffusion of the concentration of a species of molecules causes a measurable temperature effect. Another interesting example is the reverse Landauer blowtorch \cite{DasDasBarikEtAl2015}, where a nett force displacing a Brownian particle ca create a temperature gradient. This is in contrast to the forward Landauer blowtorch where a temperature gradient creates a psuedo-force on the particles. We will explore the reverse Landauer blowtorch in ~\autoref{reverseLandauerBlowtorch} where we discuss how our model adds to previous work.
 
 % THERMODYNAMICS
 \section{System thermodynamics} \label{thermodynamics}
 Equation \ref{eqn:Smoluchowski} and equation \ref{eqn:TemperatureEvolution} define equations of motion for our system, the system may be confined to a region $\Omega$ embedded in a larger environment which interacts with our system through the boundary conditions. In this section, we will show that our equations of motion obey the first and second laws of thermodynamics.
 
-The potential energy of the particle is $U_P = \int_{\Omega} V(x) P(x) dx$ and the thermal energy of the bath is $c_p \int_{\Omega} T(x) dx$, where $c_p$ is the specific heat capacity of the environment, to see that this is the thermal energy consider the units of the quantity $c_p T(x, \, t)$. These are $J K^{-1} K$, so $c_p T(x, \, t) dx$ is the heat content of an infinitesimal element $dx$. With this we have:
+In the over-damped limit, the kinetic energy of the Brownian particle is negligible, therefore the energy of the system is completely described by the potential energy of the particle plus the thermal energy of the bath. The potential energy of the particle is $U_P = \int_{\Omega} V(x) P(x) dx$ and the thermal energy of the bath is $c_p \int_{\Omega} T(x) dx$, where $c_p$ is the specific heat capacity of the environment, to see that this is the thermal energy consider the units of the quantity $c_p T(x, \, t)$. These are $J K^{-1} K$, so $c_p T(x, \, t) dx$ is the heat content of an infinitesimal element $dx$. With this we have:
 \begin{equation}
 E(t) = \int_{\Omega} V(x)P(x, t) dx + c_p \int_{\Omega} T(x, t) dx
 \end{equation}
@@ -93,18 +99,29 @@ c_p D \int_{\Omega} \frac{1}{T} \frac{\partial^2 T}{\partial x^2} dx &=& c_p D \
 \end{eqnarray}
 If we define
 \begin{eqnarray}
-\dot{S}_{gen} &\equiv& \int_{\Omega} \gamma \frac{J^2}{T P} + c_p D \frac{1}{T^2} \left(\frac{\partial T}{\partial x} \right)^2 dx \\
+\dot{S}_{gen} &\equiv& \int_{\Omega} \gamma \frac{J^2}{T P} + c_p D \frac{1}{T^2} \left(\frac{\partial T}{\partial x} \right)^2 dx \label{eqn:entropyGen} \\
 \text{and} \nonumber \\
 B(t) &\equiv& k_B \left( [J \log P]_{\partial \Omega} + \left[\frac{\partial J}{\partial x}\right]_{\partial \Omega} \right) + c_p D\left[\frac{1}{T} \frac{\partial T}{\partial x} \right]_{\partial \Omega}
 \end{eqnarray}
-Then we notice that the change in entropy is equal to a positive number $\dot{S}_{gen}$ plus the entropy flowing through the boundaries, this is precisely the second law of thermodynamics. Furthermore, the generated entropy can be split into two terms, the first term is to be interpreted as the entropy generated by the Brownian particle; since the motion of the particle is random, as the Brownian particle diffuses we will become less certain of its position. The second term is the entropy generated by the diffusion of temperature gradients; if one studies the solutions to the heat equation, then one will find that any spikes in the temperature will flatten out and eventually the temperature will be uniform. This flattening out of the temperature is naturally associated with an increase in entropy.
+so the change in entropy can be written as:
+\begin{equation}
+\frac{d S}{d t} = \dot{S}_{gen} + B(t)
+\end{equation}
+We notice that the change in entropy is equal to a positive number $\dot{S}_{gen}$ plus the entropy flowing through the boundaries, this is precisely the second law of thermodynamics. Furthermore, the generated entropy can be split into two terms, the first term is to be interpreted as the entropy generated by the Brownian particle; since the motion of the particle is random, as the Brownian particle diffuses we will become less certain of its position. The second term is the entropy generated by the diffusion of temperature gradients; if one studies the solutions to the heat equation, then one will find that any spikes in the temperature will flatten out and eventually the temperature will be uniform. This flattening out of the temperature is irreversible and is therefore associated with an increase in entropy. When one discusses heat engines implemented on the molecular scale, one finds that the Carnot efficiency can only be attained when the entropy generation is zero. Simply by reading equation \ref{eqn:entropyGen}, we can see that this occurs when the current is zero and the temperature is flat. In ~\autoref{SteadyState} we will show that this is not possible for a Brownian particle in a tilted potential. 
 
-As mentioned earlier, some authors write the current as $J = - \gamma^{-1} (P \frac{\partial V}{\partial x} + k_B \frac{\partial (T P)}{\partial x})$ \cite{Gardiner2009,Kramers1940}, however if we use this definition of $J$, then $\dot{S}_{gen}$ is not necessarily positive, our version of the current is supported by Streater \cite{Streater1997, Streater1997a,Streater2000,Streater1997b} and will reduce to the other version in the case of constant temperature.
+As mentioned earlier, some authors write the current as $J = - \gamma^{-1} (P \frac{\partial V}{\partial x} + k_B \frac{\partial (T P)}{\partial x})$ \cite{Gardiner2009,Kramers1940}, however if we use this definition of $J$, then $\dot{S}_{gen}$ is not necessarily positive, in fact with this term in the equation $\dot{S}_{gen}$ becomes:
+\begin{equation}
+\dot{S}_{gen} \equiv \int_{\Omega} \gamma \left(\frac{J^2}{T P} - \frac{J}{T} \frac{\partial T}{\partial x} \right) + c_p D \frac{1}{T^2} \left(\frac{\partial T}{\partial x} \right)^2 dx 
+\end{equation}
+With this version of the current, we can get local decreases in entropy, therefore we do not use this version of the current.
+
+Our version of the current is supported by Streater \cite{Streater1997, Streater1997a,Streater2000,Streater1997b} and will reduce to the other version in the case of constant temperature.
+
 % DIMENSIONLESS
 \section{Making the equations dimensionless}  \label{dimensionless}
 
 Upon viewing equations \ref{eqn:Smoluchowski} and \ref{eqn:TemperatureEvolution}, we see that there is a large number of constants that are set by the properties of the Brownian particle that we are modeling. We would like to reduce the number of variables for two reasons (i) by reducing the number of variables we will hopefully gain a more concise physical description of the system (ii) having a small number of free variables is very convenient for creating a program to approximate the equations numerically, dimensionless equations tend to be less prone to numerical error because they avoid cases where small numbers are compared to large ones in a floating point system.
-Here we will non-dimensionalize the equations, to do this, introduce $\bar{x} = \frac{x}{L}$, then the Smoluchowski equation becomes
+Here we will non-dimensionalize the equations, to do this, introduce $\bar{x} = \frac{x}{L}$, where $L$ is the length scale of the system, the Smoluchowski equation now becomes
 
 \begin{equation}
 \frac{\partial P}{\partial t} = \gamma^{-1}\frac{1}{L^2} \frac{\partial}{\partial \bar{x}} \left (P \frac{\partial V}{\partial \bar{x}} + k_B T \frac{\partial P}{\partial \bar{x}} \right )
@@ -114,7 +131,7 @@ Now let $E_0$ be the characteristic energy of the system, for a chemical reactio
 \begin{equation}
 \frac{\partial P}{\partial t} = \frac{E_0}{\gamma L^2} \frac{\partial}{\partial \bar{x}} \left (P \frac{\partial \hat{V}}{\partial \bar{x}} + \hat{T} \frac{\partial P}{\partial \bar{x}} \right )
 \end{equation}
-Let $\tau = \frac{E_0}{\gamma L^2}$ and $\hat{P} = L P $, with this we have:
+Let $\tau = \frac{E_0}{\gamma L^2} t$ and $\hat{P} = L P $, with this we have:
 
 \begin{equation}
 \frac{\partial \hat{P}}{\partial \tau} = \frac{\partial}{\partial \bar{x}} \left (\hat{P} \frac{\partial \hat{V}}{\partial \bar{x}} + \hat{T}  \frac{\partial \hat{P}}{\partial \bar{x}} \right ) \label{eqn:dimensionlessSmoluchowski}
@@ -142,8 +159,7 @@ Let $\hat{E}(t) = \frac{E(t)}{E_0}$, we have:
               & = & \int \hat{P} \hat{V} d \bar{x} + \frac{1}{\alpha} \int \hat{T} d\bar{x}
 \end{eqnarray}
 
-
-So our system depends on the parameters $\alpha$ and $\beta$ as well as the shape of the potential. Physically, $\alpha$ represents how much the particle interacts with the environment thermally and $\beta$ represents how quickly the temperature diffuses. $\alpha$ has units $m^{-1}$ and $\beta$ has units $m^2 kg^{-1}$. As the length scale of the system increases, $\alpha$ will decrease, therefore the temperature gradients are negligible for large systems. We interpret this as meaning that the temperature gradients are much smaller than the system and can diffuse away quickly. As the characteristic energy of the system increases, $\beta$ will decrease meaning that the diffusion of temperature will be negligible. We interpret this as meaning that for high energy systems, temperature gradients are created much faster than they can be diffused away. 
+So our system depends on the parameters $\alpha$ and $\beta$ as well as the shape of the potential. Physically, $\alpha$ represents how much the particle interacts with the environment thermally and $\beta$ represents how quickly the temperature gradients diffuse. $\alpha$ has units $m^{-1}$ and $\beta$ has units $m^2 kg^{-1}$. As the length scale of the system increases, $\alpha$ will decrease, therefore the temperature gradients are negligible for large systems. We interpret this as meaning that the temperature gradients are much smaller than the system and can diffuse away quickly. As the characteristic energy of the system increases, $\beta$ will decrease meaning that the diffusion of temperature will be negligible. We interpret this as meaning that for high energy systems, temperature gradients are created much faster than they can be diffused away. 
 
 
 %In order to neglect the first term of \ref{eqn:dimensionlessHeat}, we need to have $\alpha \hat{J} \hat{V} \ll \frac{\partial \hat{T}}{\partial \tau}$, this means that  we must have:
@@ -191,6 +207,18 @@ So our system depends on the parameters $\alpha$ and $\beta$ as well as the shap
 %\end{itemize}
 %we also note that as per usual the Boltzmann constant is given by $k_B = 1.381 \times 10^{-23} J K^{-1}$. Typical chemical reactions that occur in biological molecular motors have energy on the order of $k_B T \approx 3.451 \times 10^{-22} J$ {\color{red} [citations]}. The upper bound for our energy is $E_{\text{upper}} \sim \frac{k_B}{c_p D} \approx \frac{1.381 \times 10^{-23}}{4186 \times 1.43 \times 10^{-5}} \approx 2.31 \time 10^{-22} J$. This means that molecular motors operate at the energy scale where equation \ref{eqn:dimensionlessHeat} is important, as for length scale 
 
+\section{Model assumptions}
+We are now in a position that we may discuss the physics of the equations of motion in some detail. In particular we would like to discuss the assumptions that have to be made in order for the equations to be valid. These assumptions have been explained sporadically throughout the text and we would like to compile them into a short that list that the reader should keep in mind throughout the remainder of the thesis.
+\begin{enumerate}
+\item{The degrees of freedom of the bath operate at a time scale much faster than that of the Brownian particle itself}
+\item{The kinetic energy of the particle is negligible (over-damped limit)}
+\item{There is only one Brownian particle in our model}
+\item{Heat produced by chemical reactions in the power stroke of the motor is negligible}
+\item{The fluid that the particle is in is incompressible}
+\item{The fluid that the particle is in is steady}
+\item{The temperature gradients are small enough that they do not induce a phase change}
+\end{enumerate}
+These assumptions have been discussed in the text, we can take any of these phenomena into account by making changes to our equations of motion, however these small changes to the equation of motion can cause the system to become very complex. Having said that, some of the assumptions made turn out to be more reasonable than one may have thought on first sight. Assumptions 1 and 2 are assumptions that are made when deriving the Smoluchowski equation from the Langevin equation, these assumptions have been discussed at length and turn out to be very reasonable \cite{Reimann2001,Gardiner2009,Einstein1905,KellerBustamante2000,Kramers1940}. Meanwhile, assumption 3 means that we cannot talk about the very interesting cooperative effects that occur in motors such as myosin, however this assumption is fine for motors such as kinesin or for colloidal particles in a potential. Assumption 4 {\color{red} talk to Michael Jack}. Assumption 5 is perfectly fine in water which is the fluid of choice for all biological molecular motors. Assumption 6 is fine as long as we do not have significantly large temperature gradients, finally assumption 7 just puts a restriction on the parameters that we choose in our simulations. As far as we are aware, there are no experimentally realized examples of Brownian particles creating a phase change in the fluid that they are suspended in.
 
 
 

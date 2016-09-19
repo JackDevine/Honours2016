@@ -1,6 +1,6 @@
-%\epigraph{He who refuses to do arithmetic is doomed to talk nonsense.}{\textbf{John McCarthy \\ -- Progress and it's sustainability (1995)}}
-\setlength\epigraphwidth{.6\textwidth}
-\epigraph{People either write code that works, or they don't.}{\textbf{Colin Fox -- 2016}}
+\epigraph{He who refuses to do arithmetic is doomed to talk nonsense.}{\textbf{John McCarthy \\ -- Progress and it's sustainability (1995)}}
+%\setlength\epigraphwidth{.6\textwidth}
+%\epigraph{People either write code that works, or they don't.}{\textbf{Colin Fox -- 2016}}
 Now that we have determined that our system is physical and we have made insights into the qualitative nature of our system, we must build techniques for solving the system so that we can gain quantitative insights. We will begin in ~\autoref{SteadyState} by using analytical techniques to find stationary solutions to our equations of motion.
 \section{Steady state solution} \label{SteadyState}
 In order to see how the equations of motion behave with time, we have to resort to numerical methods (see section \ref{numerics}). However we note that for a given potential there will be a stationary solution that we will refer to as the ``steady state'', given periodic boundary conditions, we will derive an analytical form for this steady state.
@@ -11,21 +11,19 @@ In the steady state, we have:
 \frac{\partial P(x, t)}{\partial t} &=&  0 \ = \ \frac{\partial J}{\partial x} \label{eqn:SmoluchowskiSteady} \\
 \frac{\partial T(x, t)}{\partial t} &=& 0 \ = \ -\kappa q(x,t) + \frac{\partial}{\partial x} \left ( D \frac{\partial T(x, t)}{\partial x} \right ) \label{eqn:TemperatureSteady}
 \end{eqnarray}
-
 Suppose that we have the following boundary conditions:
 \begin{align}
 P(x = 0) & = P(x = L) \\
 J(x = 0) & = J(x = L) \\
 \left. \frac{\partial T}{\partial x} \right \rvert_{x = 0} & = 0 = \left. \frac{\partial T}{\partial x} \right \rvert_{x = L} \label{eqn:temperatureBoundary}
 \end{align}
-where $L$ is the length scale of the domain. Physically, these conditions say that the nett current flowing out of the boundaries is zero and that no heat escapes from the system, thus the energy of the sytem is conserved. Section 5.2 of \cite{Gardiner2009} gives the steady state current as:
+where $L$ is the length of the domain. Physically, these conditions say that the nett current flowing out of the boundaries is zero and that no heat escapes from the system, thus the energy of the sytem is conserved. Section 5.2 of \cite{Gardiner2009} gives the steady state current as:
 
 \begin{equation}
 J_s = \left [\frac{2 k_B T(L)}{\psi(L)} - \frac{2 k_B T(0)}{\psi(0)}  \right] P_s(0) \left [\int_0^L dx'/\psi(x') \right]^{-1}
 \label{eqn:SteadyCurrent}
 \end{equation}
-
-with $\psi(x) \equiv \exp[-\int_0^x dx' \frac{\partial_x V(x')}{2 k_B T(x')}]$. Meanwhile, the density is:
+with $\psi(x) \equiv \exp[-\int_0^x dx' \frac{\partial_x V(x')}{2 k_B T(x')}]$. Meanwhile, the probability density is:
 
 \begin{equation}
 P_s(x) = P_s(0) \left [\frac{\int_0^x \frac{dx'}{\psi(x')} \frac{T(L)}{\psi(L)} + \int_x^L \frac{dx'}{\psi(x')} \frac{T(0)}{\psi(0)} }{\frac{T(x)}{\psi(x)} \int_0^L \frac{dx'}{\psi(x')} } \right]
@@ -36,7 +34,7 @@ In this case, $J_s$ is a constant and $P_s(0)$ is also a constant. Assuming that
 \begin{equation}
 \frac{\partial T}{\partial t} = 0 = -\kappa J_s \partial_x V + D \frac{\partial^2 T}{\partial x^2} \label{eqn:steadyTemperatureODE}
 \end{equation}
-In one dimension, \ref{eqn:steadyTemperatureODE} can be written as an ordinary differential equation of the form
+In one dimension, equation \ref{eqn:steadyTemperatureODE} can be written as an ordinary differential equation of the form
 \begin{equation}
 T''(x) = \frac{\kappa J_s}{D} V'(x)
 \end{equation}
@@ -71,12 +69,24 @@ It would seem that one should be able to calculate the steady state current and 
 obj(J_s, P_s(0)) = \left (J_s - \left [\frac{2 k_B T(L)}{\psi(L)} - \frac{2 k_B T(0)}{\psi(0)}  \right] P_s(0) \left [\int_0^L dx'/\psi(x') \right]^{-1} \right)^2  \label{eqn:Objective}
 \end{equation}
 
-And we minimize this objective function with respect to $J_s$ and $P_s(0)$ under the constraint $\int_0^L P(x) dx = 1$. Another way to do this is to guess a steady state density and temperature and use finite differencing to simulate forward in time until the transients die out. As well as this, one can write down the system as an ordinary differential equation in one dimension, this coupled set of ODEs can be solved numerically using Runge Kutte algorithms. 
+And we minimize this objective function with respect to $J_s$ and $P_s(0)$ under the constraint $\int_0^L P(x) dx = 1$. Another way to do this is to guess a steady state density and temperature and use finite differencing to simulate forward in time until the transients die out. As well as this, one can write down the system as an ordinary differential equation in one dimension, this coupled set of ODEs can be solved numerically using the Runge Kutte technique. An example plot of the steady state is shown in Figure \ref{fig:steadyODE}, here we see that in the steady state the temperature has become a straight line.
+\begin{figure}
+	\begin{subfigure}{0.75\textwidth}
+		\includegraphics[width=\columnwidth]{steadyODE}
+	\end{subfigure}
+	\begin{subfigure}{0.23\textwidth}
+		\includegraphics[width=\columnwidth]{landauersBlowtorchLegend}
+	\end{subfigure}
+	\caption{\textbf{A solution of the system in the steady state} \label{fig:steadyODE}}
+\end{figure}
+{\color{red} do you think that we should show some plots of the steady state? I have a few that I calculated by solving the ODE so it might be worthwhile includign them} 
 
 %----------------------------------------------------------------------------------------
 %	NUMERICS
 %----------------------------------------------------------------------------------------
 \section{Finite differences}  \label{numerics}
+
+{\color{red} do you think that I should include some figures showing examples of the finite differences so that the reader is introduced to the idea of the dynamics before the exploration section?}
 Our one dimensional equations can be solved on a discrete grid by using the finite differences method, the main idea behind this strategy is to approximate derivatives with equations of the form:
 
 \begin{equation}
@@ -181,7 +191,7 @@ Each time that we step forward using this equation we will be out by a factor, t
 Likewise, we can apply the Crank Nicolson scheme to the heat equation, (eq \ref{eqn:dimensionlessHeat}), by looking at the right hand side of this equation, we find that
 
 \begin{equation}
-F_j^i = -\alpha \left (P_j^i (\partial_x V_j^i)^2 + \frac{T_{j+1}^i - T_{j-1}^i }{2 \Delta x}\partial_x V_j^i  \right) + \beta \frac{T_{j+1}^i - T_j^i + T_{j-1}^i}{\Delta x^2}
+F_j^i = -\alpha \left (P_j^i (\partial_x V_j^i)^2 + T_j^i \frac{P_{j+1}^i - P_{j-1}^i }{2 \Delta x}\partial_x V_j^i  \right) + \beta \frac{T_{j+1}^i - 2T_j^i + T_{j-1}^i}{\Delta x^2}
 \end{equation}
 
 Just like the discretized Smoluchowski equation, these equations can be written in matrix form. The temperature is normalized by assuming that the energy remains fixed, this will be true as long as no heat or current flows through the boundaries, i.e. $J(x=a) = 0 = J(x = b)$ and $\frac{\partial T}{\partial x} \rvert_a = 0 = \frac{\partial T}{\partial x} \rvert_b$. In this case, the energy is constant and is given by $E = \int P(x) V(x) dx + c_p \int T(x) dx$, so each time that we step the temperature forward, we have to calculate the potential and thermal energy and then scale the temperature so that the total energy remains fixed.
@@ -282,8 +292,7 @@ Say that we begin with a Gaussian function for the temperature, so that:
 \begin{equation}
 T(x, \, 0) = f(x) =  \exp{\left (-\frac{x^2}{4 \beta} \right)}
 \end{equation}
-
-then as time goes on, the solution will become:
+then as time goes on, the solution will be given by:
 \begin{equation}
 T(x, \, t) = \frac{1}{\sqrt{t + 1}} \exp{ \left(-\frac{x^2}{4 \beta (t + 1)} \right)}
 \end{equation}
@@ -300,7 +309,7 @@ We can compare these analytical results to the numerical ones obtained through f
 \end{figure}
 
 \subsection{Convergence tests}
-If the finite differences methods that we have implemented are correct, then as the step size goes to zero, the numerical approximation will converge on the correct solution to the underlying equation being approximated. In the previous section we showed that finite differences approximated the solution very closely in some instances where the analytical result could be obtained. In general, we will not have an analytical solution to compare to but we would still like to be able to quantify the performance of our techniques.
+If the finite differences methods that we have implemented are correct, then as the discretization size goes to zero, the numerical approximation will converge on the correct solution to the underlying equation being approximated. In the previous section we showed that finite differences approximated the solution very closely in some instances where the analytical result could be obtained. In general, we will not have an analytical solution to compare to but we would still like to be able to quantify the performance of our techniques.
 
 Convergence tests involve decreasing the discretization size and checking whether the numerical solutions converge at all. In Figure \ref{fig:Convergence}, the Smoluchowski equation was simulated while keeping the temperature fixed, each time we halve $\Delta t$ and measure the normed difference between the new result and the previous one.
 
@@ -333,18 +342,29 @@ Likewise, we can do convergence tests for the coupled system, for brevity we hav
 One can also perform convergence tests by increasing the number of points, from this one learns how sensitive the numerics are to the size of the spatial discretization $\Delta x$. This is shown in Figure \ref{fig:spaceConvergence}, here we see that the temperature converges much more rapidly than the probability distribution does, however as $\Delta x$ goes down, both converge exponentially.
 
 \begin{figure}
-	\begin{subfigure}{0.49\textwidth}
+	\center{
+	\begin{subfigure}{0.5\textwidth}
 		\includegraphics[width=\columnwidth]{spaceConvergenceInit}
+		\caption{}
+	\end{subfigure}
+	}
+
+	\begin{subfigure}{0.49\textwidth}
+		\includegraphics[width=\columnwidth]{spaceConvergenceDensity}
+		\caption{}
 	\end{subfigure}
 	\begin{subfigure}{0.49\textwidth}
-		\includegraphics[width=\columnwidth]{spaceConvergenceFab}
+		\includegraphics[width=\columnwidth]{spaceConvergenceTemperature}
+		\caption{}
 	\end{subfigure}
-	
+
 	\begin{subfigure}{0.49\textwidth}
 		\includegraphics[width=\columnwidth]{densityConvergenceSpace}
+		\caption{}
 	\end{subfigure}
 	\begin{subfigure}{0.49\textwidth}
 		\includegraphics[width=\columnwidth]{temperatureConvergenceSpace}
+		\caption{}
 	\end{subfigure}
-\caption{\textbf{Convergence tests for $\Delta x$.} $\Delta t$ is held fixed at $1 \times 10^{-5}$ and $\alpha = 1 \times 10^{-2} m^{-1}$ and $\beta = 0.1 m^2 kg^{-1}$. (a) The initial configuration of the system, both the potential and the initial temperature are chosen to be complicated functions with large derivatives so that we can see how sensitive the numerics are to gradients. (b) The system after 40,000 steps forward in time, here we have not used the filling plot style to show the probability distribution so that one can see the difference between the different lines. (c) For each vector that was found through finite differences, we calculate its difference from the previous one, the $x$ axis shows the length of each of the vectors. The $y$ axis shows the log of these differences (d) Convergence of the temperature with an increasing number of points. \label{fig:spaceConvergence}}
+\caption{\textbf{Convergence tests for $\Delta x$.} $\Delta t$ is held fixed at $1 \times 10^{-5}$ and $\alpha = 1 \times 10^{-2} m^{-1}$ and $\beta = 0.1 m^2 kg^{-1}$. (a) The initial configuration of the system, both the potential and the initial temperature are chosen to be complicated functions with large derivatives so that we can see how sensitive the numerics are to gradients. (b, c) The system after 40,000 steps forward in time, here we have not used the filling plot style to show the probability distribution so that one can see the difference between the different lines. (d) For each vector that was found through finite differences, we calculate its difference from the previous one, the $x$ axis shows the length of each of the vectors. The $y$ axis shows the log of these differences (e) Convergence of the temperature with an increasing number of points. \label{fig:spaceConvergence}}
 \end{figure}
