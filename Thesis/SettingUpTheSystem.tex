@@ -16,23 +16,23 @@ The majority of the effort expended in this thesis will be in understanding the 
 \begin{eqnarray}
 J(x, \, t) &=& -\gamma^{-1} \left ( \frac{\partial V(x, \, t)}{\partial x} P(x, \, t) + k_B T(x, \, t) \frac{\partial P(x, \, t)}{\partial x} \right ) \label{eqn:current} \\
 \frac{\partial P(x, \, t)}{\partial t} &=& -\frac{\partial J}{\partial x} \label{eqn:Smoluchowski} \\
-\frac{\partial T(x, \, t)}{\partial t} &=& -\kappa q(x, \, t) + D \frac{\partial^2 T(x, 
+\frac{\partial T(x, \, t)}{\partial t} &=& -\kappa \dot{q}(x, \, t) + D \frac{\partial^2 T(x, 
 , t)}{\partial x^2} \label{eqn:TemperatureEvolution}
 \end{eqnarray}
 
 Where
 \begin{itemize}
-\item{$P(x, t)$ is the probability density as a function of  reaction coordinate $x$ and time $t$}
-\item{$J(x, t)$ is called the current}
+\item{$P(x, \, t)$ is the probability density as a function of  reaction coordinate $x$ and time $t$}
+\item{$J(x, \, t)$ is called the current}
 \item{$\gamma$ is the friction coefficient and has units $m^2 s^{-1}$}
-\item{$V(x, t)$ is the potential for the motor}
+\item{$V(x, \, t)$ is the potential for the motor}
 \item{$k_B$ is the Boltzmann constant, units $J K^{-1}$}
-\item{$q(x, t) = \partial_x V(x, t) J(x, t)$ is the heat from the motor \cite{M.W.Jack2016}}
+\item{$\dot{q}(x, \, t) = \partial_x V(x, \, t) J(x, \, t)$ is the heat from the motor \cite{M.W.Jack2016}}
 \item{$\kappa$ is dictates how much the motor effects the environment, in ~\autoref{thermodynamics} we will show that $\kappa$ is one over the specific heat of the environment}
 \item{$D$ is the thermal diffusivity and has units $m^2 s^{-1}$}
 \end{itemize}
 
-Equation \ref{eqn:Smoluchowski} is called the Smoluschowski equation which we noted earlier and equation \ref{eqn:TemperatureEvolution} is the heat equation. These equations make our intuitive notions more precise, we see that the first term on the right hand side of the Smoluchowski equation (equation \ref{eqn:Smoluchowski}) is a drift term that is forced by our potential and that the second term contains a diffusion term that is scaled by our temperature. Likewise, equation \ref{eqn:TemperatureEvolution} also appeals to our intuition of how the Brownian particle should effect its environment. The first term represents the heat flux being produced by the motor \cite{M.W.Jack2016}, while the second term represents the diffusion of temperature into the environment.
+Equation \ref{eqn:Smoluchowski} is called the Smoluschowski equation which we noted earlier and equation \ref{eqn:TemperatureEvolution} is the heat equation. These equations make our intuitive notions more precise, we see that the first term on the right hand side of the Smoluchowski equation (equation \ref{eqn:Smoluchowski}) is a drift term that is forced by our potential and that the second term contains a diffusion term that is scaled by our temperature. To see that $\dot{q}(x, \, t)$Likewise, equation \ref{eqn:TemperatureEvolution} also appeals to our intuition of how the Brownian particle should effect its environment. The first term represents the heat flux being produced by the motor \cite{M.W.Jack2016}, while the second term represents the diffusion of temperature into the environment.
 
 One may notice that the system above is a non-linear system of equations, if one looks at the last term of \ref{eqn:current}, then one will find that the second spatial derivative of $P(x, \, t)$ is multiplied by the temperature, which due to equation \ref{eqn:TemperatureEvolution} is a function of $P(x, \, t)$. Therefore equation \ref{eqn:current} is a second order non-linear equation. Likewise if one looks at the first term of equation \ref{eqn:TemperatureEvolution}, then one will find that the temperature is multiplied by the first derivative of the probability distribution (which is a function of temperature), therefore equation \ref{eqn:TemperatureEvolution} is also non-linear. Because we are dealing with non-linear equations, we must take extra care when finding their solutions numerically, in ~\autoref{numerics} we will discuss the techniques used to solve the equations as well as analytical and convergence tests that we used to test the performance of these numerical techniques.
 
