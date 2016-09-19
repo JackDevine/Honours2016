@@ -31,8 +31,16 @@ Where
 \item{$\kappa$ is dictates how much the motor effects the environment, in ~\autoref{thermodynamics} we will show that $\kappa$ is one over the specific heat of the environment}
 \item{$D$ is the thermal diffusivity and has units $m^2 s^{-1}$}
 \end{itemize}
+Equation \ref{eqn:Smoluchowski} is called the Smoluschowski equation which we noted earlier and equation \ref{eqn:TemperatureEvolution} is the heat equation. These equations make our intuitive notions more precise, we see that the first term on the right hand side of the Smoluchowski equation (equation \ref{eqn:Smoluchowski}) is a drift term that is forced by our potential and that the second term contains a diffusion term that is scaled by our temperature. The authors in \cite{M.W.Jack2016} showed that $\dot{q}(x, \, t)$ is the heat produced by the motor, we will reiterate their proof here since it is very important. 
 
-Equation \ref{eqn:Smoluchowski} is called the Smoluschowski equation which we noted earlier and equation \ref{eqn:TemperatureEvolution} is the heat equation. These equations make our intuitive notions more precise, we see that the first term on the right hand side of the Smoluchowski equation (equation \ref{eqn:Smoluchowski}) is a drift term that is forced by our potential and that the second term contains a diffusion term that is scaled by our temperature. To see that $\dot{q}(x, \, t)$Likewise, equation \ref{eqn:TemperatureEvolution} also appeals to our intuition of how the Brownian particle should effect its environment. The first term represents the heat flux being produced by the motor \cite{M.W.Jack2016}, while the second term represents the diffusion of temperature into the environment.
+Notice that the potential energy of the motor is given by $U = \int P(x, \, t) V(x) dx$. Differentiating with respect to time, we get
+\begin{eqnarray}
+\frac{d U}{d t} &=& -\int \frac{\partial J(x, \, t)}{\partial x} V(x) dx \\
+		        &=& -[J(x) V(x)] + \int J(x, \, t) \partial_x V(x, \, t) dx
+\end{eqnarray}
+The first term represents the work done on the particle and the integrand in the second term is the heat produced by the particle.
+
+Therefore equation \ref{eqn:TemperatureEvolution} appeals to our intuition of how the Brownian particle should effect its environment. The first term represents the heat flux being produced by the motor, while the second term represents the diffusion of temperature into the environment.
 
 One may notice that the system above is a non-linear system of equations, if one looks at the last term of \ref{eqn:current}, then one will find that the second spatial derivative of $P(x, \, t)$ is multiplied by the temperature, which due to equation \ref{eqn:TemperatureEvolution} is a function of $P(x, \, t)$. Therefore equation \ref{eqn:current} is a second order non-linear equation. Likewise if one looks at the first term of equation \ref{eqn:TemperatureEvolution}, then one will find that the temperature is multiplied by the first derivative of the probability distribution (which is a function of temperature), therefore equation \ref{eqn:TemperatureEvolution} is also non-linear. Because we are dealing with non-linear equations, we must take extra care when finding their solutions numerically, in ~\autoref{numerics} we will discuss the techniques used to solve the equations as well as analytical and convergence tests that we used to test the performance of these numerical techniques.
 
