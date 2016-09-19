@@ -5,7 +5,6 @@
 % See "book", "report", "letter" for other types of document.
 
 \documentclass[12pt]{book} % University guidelines recommend 12pt.
-
 \usepackage[utf8]{inputenc} % set input encoding (not needed with XeLaTeX)
 
 %%% Examples of Article customizations
@@ -55,7 +54,7 @@
 \lfoot{}\cfoot{\thepage}\rfoot{}
 \usepackage{epigraph}
 \setlength\epigraphwidth{.9\textwidth}
-%\renewcommand{\textflush}{flushright} \renewcommand{\sourceflush}{flushright}
+%\newcommand{\epigraphflush}{flushright}
 \setlength\epigraphrule{1pt}
 
 %%% SECTION TITLE APPEARANCE
@@ -115,6 +114,10 @@
 
 \clearpage
 
+\section*{Acknowledgments}
+
+\clearpage
+
 \null\vfill
 {
 \centering{
@@ -127,8 +130,6 @@
 \vfill\vfill
 
 \clearpage
-
-%Brownian motors are capable of converting chemical energy directly into work and are crucial for many biological processes. The purpose of this project is to consider the motors thermal interaction with  the environment, we want to know whether these thermal interactions will change the properties of the Brownian motors as compared to calculations made without considering coupling to the environment.
 
 %----------------------------------------------------------------------------------------
 
@@ -172,7 +173,7 @@
 %----------------------------------------------------------------------------------------
 %	OUTLOOK
 %----------------------------------------------------------------------------------------
-\chapter{Outlook}
+\chapter{Outlook} \label{outlook}
 
 \input{Outlook}
 
@@ -191,12 +192,14 @@
 %	APPENDIX
 %----------------------------------------------------------------------------------------
 
+\makeatletter\@openrightfalse
 \begin{appendices}
 %
 \input{Appendix}
 
 
 \end{appendices}
+\@openrighttrue\makeatletter
 %------------------------------------------------
 
 %------------------------------------------------

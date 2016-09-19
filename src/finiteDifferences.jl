@@ -264,7 +264,8 @@ function stepT(temperature::AbstractArray, dt::Number,
     # The diagonals of the matrix.
     diag_minus1 = rr*(-0.5*alpha*density[1:end-3].*dpotential[2:end-2]*dx
                         + beta)
-    diag0 = -2*beta*rr*ones(xAxis)
+    diag0 = -2*beta*rr*ones(xAxis) - 0.5dx*alpha*(density[3:end] -
+                                        density[1:end-2])
     diag1 = rr*(0.5*alpha*density[4:end].*dpotential[3:end-1]*dx + beta)
     # Add the inhomogeneity to the diagonals.
     diag_minus1 += in_homo[2:end]
