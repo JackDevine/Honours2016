@@ -49,6 +49,7 @@ Here we will discuss different classes of Brownian motors and their relationship
 
 \subsection{Feynman ratchet and pawl}
 \begin{figure}
+	\center
 	\includegraphics[width=0.6\columnwidth]{g_ratchet}
 	\caption{\textbf{The Feynmann ratchet and pawl \cite{Feynman1963}.} The ratchet is located in a bath at temperature $T_1$ and the vanes are in a bath at temperature $T_2$.  (Figure taken from http://pof.tnw.utwente.nl/research/granular/ratchet) \label{fig:feynmannRatchet}}
 \end{figure}
@@ -83,6 +84,13 @@ The Landauer blowtorch scheme involves a temperature that varies in space \cite{
 
 \subsection{Tilted periodic potentials}
 The tilted periodic potential (Figure \ref{fig:Schematic}) is of particular interest for this project because it can be used to model biological motors \cite{Leibler1993,Magnasco1994}. In this model, the potential can be a very complicated function of space despite the fact that temperature is held fixed. One way to model Brownian motors of this class is to think of a reaction coordinate $x$ that describes the conformation of a molecule in a chemical reaction. An example of this is the reaction ATP $\rightleftharpoons$ ADP + P, where ATP is adenosine tri-phosphate, ADP is adenosine di-phosphate and P is a lone phosphate molecule. This reaction coordinate is then coupled to a mechanical coordinate $y$ so that each time that a reaction takes place, the motor will move in some way. Since this is a chemical reaction, the free energy will be decreased as time moves forwards. So a system that has a potential that is periodic in $x$ is not sufficient to describe this situation, we will need to ``tilt" the potential by adding a forcing $f$. The value of $f$ will depend on the $\Delta G$ of the reaction (i.e. how far out of equilibrium the reaction is). It is shown in \cite{Magnasco1994} that this can be modeled by the two dimensional Smoluchowski equation. In this project we will only be modeling the one dimensional Smoluchowski equation, so we will have to consider the case where $x$ and $y$ are tightly coupled. An example of tight coupling is the kinesin motor \cite{Leibler1993} that is used in cells to transport molecules. The kinesin motor is strongly bound to a track that it ``walks" along, on each step the motor will hydrolyze an ATP molecule using the reaction shown above. This reaction liberates about $12 k_B T$ Joules of energy that the motor uses to move forward. Kinesin motors are able to take many steps forward while taking few steps backwards all while falling off their track very infrequently \cite{BlockSM1990}.
+\section{Aims}
+The aims of this project are as follows:
+\begin{itemize}
+\item{Determine a consistent physical description of Brownian motion involving self-induced temperature gradients, this description must be consistent with the laws of thermodynamics and should be consistent with previous models in limiting cases}
+\item{Develop analytical and numerical methods for solving the system}
+\item{Explore the behavior of this system and determine the effect of self-induced temperature gradients on Brownian dynamics}
+\end{itemize}
 \section{Student contributions}
 The work of this honors project is as follows:
 the code for the project can be found at \href{url}{https://github.com/JackDevine/Honours2016}, as well as the code we have included a script for testing the numerics to make sure that they are working as well as some Jupyter notebooks to help explain how the code works and how to use it.

@@ -258,7 +258,7 @@ All of these boundary conditions were implemented in Julia \cite{Bezanson2014}, 
 	\begin{subfigure}{0.49\textwidth}
 		\includegraphics[width=\textwidth]{PeriodicFinal}
 	\end{subfigure}
-	\caption{\textbf{An example of a periodic system visualized in one dimension.} We have $\alpha = 1 \cdot 10^{-2} \, m^{-1}$ and $\beta = 1 \cdot 10^{-3}  \, m^2 s^{-1}$ \label{fig:periodicSimulation}}
+	\caption{\textbf{An example of a periodic system visualized in one dimension.} A simulation of equations \ref{eqn:dimensionlessSmoluchowski} and \ref{eqn:dimensionlessHeat} using finite differences, $\Delta t = 1 \times 10^{-4}$ and the number of points on the x-axis is 1000, all quantities are dimensionless, this simulation involved 30,000 steps. We have $\alpha = 5 \cdot 10^{-3}$ and $\beta = 1 \cdot 10^{-2}$ we are imposing periodic boundary conditions on both the temperature and the probability distribution. \label{fig:periodicSimulation}}
 \end{figure}
 
 \section{Testing the numerics}
@@ -311,10 +311,11 @@ T(x, \, t) = \frac{1}{\sqrt{t + 1}} \exp{ \left(-\frac{x^2}{4 \beta (t + 1)} \ri
 We can compare these analytical results to the numerical ones obtained through finite differences, this is done in Figures ~\ref{fig:smoluchowskiCompare} and \ref{fig:temperatureCompare}. These figures show that even after many steps, the calculated solution has not deviated from the analytical one.
 
 \begin{figure}
-	\begin{subfigure}{0.49\textwidth}
+	\center
+	\begin{subfigure}{0.45\textwidth}
 	\includegraphics[width=\columnwidth]{temperatureAnalytic}
 	\end{subfigure}
-	\begin{subfigure}{0.49\textwidth}
+	\begin{subfigure}{0.45\textwidth}
 	\includegraphics[width=\columnwidth]{temperatureAbsDiff}
 	\end{subfigure}
 	\caption{\textbf{Finite differences on the heat equation.} We simulate a situation where there are no sources for the heat equation and use equation \ref{eqn:analTemperature} to obtain the analytical result we then compare this to the result of finite differences with $\Delta t = 10^{-2}$ and $\Delta x = 0.02$. \label{fig:temperatureCompare}}
@@ -345,9 +346,9 @@ Likewise, we can do convergence tests for the coupled system, for brevity we hav
 		\includegraphics[width=\columnwidth]{temperatureConvergence}
 	\end{subfigure}
 	\begin{subfigure}{0.49\textwidth}
-		\includegraphics[width=\columnwidth]{temperatureNormDiff}
+		\includegraphics[width=\columnwidth]{temperatureConvergenceRate}
 	\end{subfigure}
-\caption{\textbf{The convergence of the temperature.} As $\Delta t$ is decreased, the spatial discretization $\Delta x$ is kept constant at 0.006. (a) the coupled equations are simulated forward for 1.0 seconds each line shows the temperature with a different value of the time step $\Delta t$. (b) the normed difference between each of the successive vectors is calculated and the result is plotted on  a log scale.}
+\caption{\textbf{The convergence of the temperature.} As $\Delta t$ is decreased, the spatial discretization the number of points are kept constant at 2500. (a) the coupled equations are simulated forward for 2.0 seconds, each line shows the temperature with a different value of the time step $\Delta t$. (b) the normed difference between each of the successive vectors is calculated and the result is plotted on  a log scale.}
 \label{fig:temperatureConvergence}
 \end{figure}
 
@@ -378,5 +379,5 @@ One can also perform convergence tests by increasing the number of points, from 
 		\includegraphics[width=\columnwidth]{temperatureConvergenceSpace}
 		\caption{}
 	\end{subfigure}
-\caption{\textbf{Convergence tests for $\Delta x$.} $\Delta t$ is held fixed at $1 \times 10^{-5}$ and $\alpha = 5 \times 10^{-4} m^{-1}$ and $\beta = 1 \times 10^{-2} m^2 kg^{-1}$. (a) The initial configuration of the system, both the potential and the initial temperature are chosen to be complicated functions with large derivatives so that we can see how sensitive the numerics are to gradients. (b, c) The system after 40,000 steps forward in time, here we have not used the filling plot style to show the probability distribution so that one can see the difference between the different lines. (d) For each vector that was found through finite differences, we calculate its difference from the previous one, the $x$ axis shows the length of each of the vectors. The $y$ axis shows the log of these differences (e) Convergence of the temperature with an increasing number of points. \label{fig:spaceConvergence}}
+\caption{\textbf{Convergence tests for $\Delta x$.} $\Delta t$ is held fixed at $1 \times 10^{-5}$ and $\alpha = 5 \times 10^{-4}$ and $\beta = 1 \times 10^{-2}$. (a) The initial configuration of the system, both the potential and the initial temperature are chosen to be complicated functions with large derivatives so that we can see how sensitive the numerics are to gradients. (b, c) The system after 40,000 steps forward in time, here we have not used the filling plot style to show the probability distribution so that one can see the difference between the different lines. (d) For each vector that was found through finite differences, we calculate its difference from the previous one, the $x$ axis shows the length of each of the vectors. The $y$ axis shows the log of these differences (e) Convergence of the temperature with an increasing number of points. \label{fig:spaceConvergence}}
 \end{figure}
