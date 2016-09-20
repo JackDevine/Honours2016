@@ -3,7 +3,7 @@
 %\epigraph{People either write code that works, or they don't.}{\textbf{Colin Fox -- 2016}}
 Now that we have determined that our system is physical and we have made insights into the qualitative nature of our system, we must build techniques for solving the system so that we can gain quantitative insights. We will begin in ~\autoref{SteadyState} by using analytical techniques to find stationary solutions to our equations of motion.
 \section{Steady state solution} \label{SteadyState}
-In order to see how the equations of motion behave with time, we have to resort to numerical methods (see section \ref{numerics}). However we note that for a given potential there will be a stationary solution that we will refer to as the ``steady state'', given periodic boundary conditions, we will derive an analytical form for this steady state.
+In order to see how the equations of motion behave with time, we have to resort to numerical methods (see section \ref{numerics}). However we note that for a given potential there will be a stationary solution that we will refer to as the ``steady state'', for periodic boundary conditions, we can derive an analytical form for this steady state.
 
 In the steady state, we have:
 
@@ -54,7 +54,8 @@ On the other hand, if we have $V(0) = V(L)$, then we can solve for $\xi$ to give
 \begin{equation}
 \xi = - \frac{\kappa J_s}{D} V(0)
 \end{equation}
-Later, we will see that it is possible to have a steady state in higher dimensions where the flow of heat from the environment can dissipate the heat produced by the Brownian particle. By recalling that $E = \int_0^L P(x') V(x') dx' + c_p \int_0^L T(x') dx'$ we are able to find an expression for $d$. First, we will integrate the temperature from $0$ to $L$
+%Later, we will see that it is possible to have a steady state in higher dimensions where the flow of heat from the environment can dissipate the heat produced by the Brownian particle.
+By recalling that $E = \int_0^L P(x') V(x') dx' + c_p \int_0^L T(x') dx'$ we are able to find an expression for $d$. First, we will integrate the temperature from $0$ to $L$
 \begin{equation}
 \int_0^L T(x') dx' = \frac{\kappa J_s}{D} \int_0^L dx' \int_0^{x'} V(x'') dx'' + \xi \frac{L^2}{2} + L d
 \end{equation}
@@ -69,8 +70,9 @@ It would seem that one should be able to calculate the steady state current and 
 obj(J_s, P_s(0)) = \left (J_s - \left [\frac{2 k_B T(L)}{\psi(L)} - \frac{2 k_B T(0)}{\psi(0)}  \right] P_s(0) \left [\int_0^L dx'/\psi(x') \right]^{-1} \right)^2  \label{eqn:Objective}
 \end{equation}
 
-And we minimize this objective function with respect to $J_s$ and $P_s(0)$ under the constraint $\int_0^L P(x) dx = 1$. Another way to do this is to guess a steady state density and temperature and use finite differencing to simulate forward in time until the transients die out. As well as this, one can write down the system as an ordinary differential equation in one dimension, this coupled set of ODEs can be solved numerically using the Runge Kutte technique. An example plot of the steady state is shown in Figure \ref{fig:steadyODE}, here we see that in the steady state the temperature has become a straight line.
+And we minimize this objective function with respect to $J_s$ and $P_s(0)$ under the constraint $\int_0^L P(x) dx = 1$. Another way to do this is to guess a steady state density and temperature and use finite differencing to simulate forward in time until the transients die out. As well as this, one can write down equations \ref{eqn:Smoluchowski} and \ref{eqn:TemperatureEvolution} as an ordinary differential equation in one dimension, this coupled set of ODEs can be solved numerically using the Runge Kutte technique. An example plot of the steady state is shown in Figure \ref{fig:steadyODE}, here we see that in the steady state the temperature has become a straight line.
 \begin{figure}
+	\center
 	\begin{subfigure}{0.75\textwidth}
 		\includegraphics[width=\columnwidth]{steadyODE}
 	\end{subfigure}
@@ -210,9 +212,9 @@ Each type of boundary conditions comes along with its own physical interpretatio
 
 If the potential goes to infinity at the boundaries, then the probability distribution must vanish at the boundaries before applying boundary conditions at all, therefore no boundary conditions need to be applied. There are some potentials that are periodic where the value of the potential is the same finite number at both sides, in this case it can be interesting to apply periodic boundary conditions to the probability distribution. Physically, this corresponds to a system where a particle passing through the left side will appear at the right side and vice-versa. One can picture this by imagining a particle constrained to a circular domain.
 
-As for the temperature, both Neumann and Dirichlet boundary conditions are realized. In the case of Neumann boundary conditions, the derivative was set to zero at both boundaries. This is a very interesting case to imagine, because the derivative of the temperature physically represents the flow of heat in our system. Therefore the physical interpretation of a vanishing derivative at the boundary is that no heat is flowing through the boundaries, or in other words the system is enclosed in a perfectly insulating box. This system conserves energy, which is convenient when one goes to renormalize the calculated temperature by using the energy of the system.
+As for the temperature, both Neumann and Dirichlet boundary conditions are realized. In the case of Neumann boundary conditions, the derivative is set to zero at both boundaries. This is a very interesting case to imagine, because the derivative of the temperature physically represents the flow of heat in our system. Therefore the physical interpretation of a vanishing derivative at the boundary is that no heat is flowing through the boundaries, or in other words the system is enclosed in a perfectly insulating box. This system conserves energy, which is convenient when one goes to normalize the calculated temperature by using the energy of the system.
 
-The second type of boundary condition that can be imposed on the temperature is the Dirichlet type where the value of the temperature is specified at both boundaries. The physical interpretation of this requirement is that the domain is embedded in a much larger system that is at a fixed temperature. The tacit assumption made is that no matter what the system does, it is not able to affect the temperature of the environment. One must take care when using the energy to renormalize when considering Dirichlet boundary conditions, this is because the energy in the system is no longer conserved. To account for this, we calculate the heat flowing through the boundaries at each step and subtract this from the energy of the system before we renormalized the system.
+The second type of boundary condition that can be imposed on the temperature is the Dirichlet type where the same value of the temperature is specified at both boundaries. The physical interpretation of this requirement is that the domain is embedded in a much larger system that is at a fixed temperature. The tacit assumption made is that no matter what the system does, it is not able to affect the temperature of the environment. One must take care when using the energy to normalize when considering Dirichlet boundary conditions, this is because the energy in the system is no longer conserved. To account for this, we calculate the heat flowing through the boundaries at each step and subtract this from the energy of the system before we normalized the system.
 
 Implementing these boundary conditions requires that we change our matrices $A$ and $B$, specifically we will need to modify the top and bottom rows. The reason that we can do this is because a matrix represents a system of equations, the first and last rows of the matrices effect the first and last components of the vectors that we are doing finite differences on. For each boundary condition, we need to make sure that the equations represented by our first and last rows reflect our desired boundary conditions.
 
@@ -247,7 +249,7 @@ A =
 \end{equation}
 This is equivalent to stretching out the matrix in a periodic fashion, we note that the matrix for periodic boundary conditions cannot be written in tridiagonal form. When the matrices involved are tridiagonal, we can inform the compiler of our program so that it can used highly optimized routines for solving the equations. However, in the case of periodic boundary conditions, we simply inform the compiler that the matrices are sparse, this means that we do not get the same speed for periodic boundary conditions as we do for other boundary conditions.
 
-All of these boundary conditions were implemented in Julia \cite{Bezanson2014}, the user can decide which boundary condition that they want through a keyword argument and then the program will implement finite differences for that boundary type. An example of finite differencing is shown in Figure \ref{fig:periodicSimulation}
+All of these boundary conditions were implemented in Julia which is a high level language for scientific computing \cite{Bezanson2014}. A function was made so that the user can decide which boundary condition that they want through a keyword argument and then the program will implement finite differences for that boundary type. An example of finite differencing is shown in Figure \ref{fig:periodicSimulation}
 \begin{figure}
 %	\center
 %	\textbf{Periodic boundary conditions}
@@ -339,7 +341,7 @@ Convergence tests involve decreasing the discretization size and checking whethe
 \label{fig:Convergence}
 \end{figure}
 
-Likewise, we can do convergence tests for the coupled system, for brevity we have only included the results for the evolution of the temperature. All of these plots show that the approximation converge exponentially to a particular solution, the convergence tests themselves do not prove that the numerical algorithms properly represent the equations ref{eqn:dimensionlessSmoluchowski} and \ref{eqn:dimensionlessHeat}. However, combined with our analytical tests, they give us confidence that the numerics do agree with the true solution.
+Likewise, we can do convergence tests for the coupled system, for brevity we have only included the results for the evolution of the temperature. All of these plots show that the numerical solution converges exponentially, the convergence tests themselves do not prove that the numerical algorithms properly represent the equations \ref{eqn:dimensionlessSmoluchowski} and \ref{eqn:dimensionlessHeat}. However, combined with our analytical tests, they give us confidence that the numerics do agree with the true solution.
 
 \begin{figure}
 	\begin{subfigure}{0.49\textwidth}
