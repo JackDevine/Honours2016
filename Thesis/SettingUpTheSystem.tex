@@ -2,8 +2,17 @@
 
 
 \section{The Smoluchowski equation} \label{Smoluchowski}
+Here we would like to explain our model for Brownian dynamics with self-induced temperature gradients, if we know the temperature as a function of space and time, then we would use the Smoluchowski equation (equation \ref{eqn:smoluchowskiIntro}) to model the motion. One can interpret the relation between equation \ref{eqn:smoluchowskiIntro} and Figures \ref{fig:Schematic}, \ref{fig:landauersBlowtorch} as follows: Brownian particles are subject to a given potential and are agitated by thermal noise, these agitations can give the particles the energy to move over barriers created by the potential. As one could imagine, these thermal interactions draw energy from the environment as noted in Figure \ref{fig:brownianMotion}, one may imagine that these interactions could cause temperature of the environment to change. Normally two simplifying (not always explicit) assumptions are made at this point \cite{Reimann2001}, (i) that the temperature gradient created by the motor are very small compared to the thermal energy of the surrounding environment which is assumed to be effectively infinite, (ii) that when these temperature fluctuations occur, they diffuse away so rapidly that they do not need to be accounted for. In this project, we will question the second assumption and explore the consequences of not making this assumption.
 
-As we will see, the diffusion of a Brownian particle is increased by increasing the temperature, while the derivative of the potential describes the external force on the particle. In some cases such as the Landauer blowtorch, the environment has a non uniform temperature held fixed by an external heat source. With this in mind, we interpret Figures \ref{fig:Schematic} and \ref{fig:landauersBlowtorch} as follows: Brownian particles are subject to a given potential and are agitated by thermal noise, these agitations can give the particles the energy to move over barriers created by the potential. As one could imagine, these thermal interactions draw energy from the environment as noted in Figure \ref{fig:brownianMotion}, one may imagine that these interactions could cause temperature of the environment to change. Normally two simplifying (not always explicit) assumptions are made at this point \cite{Reimann2001}, (i) that the temperature gradient created by the motor are very small compared to the thermal energy of the surrounding environment which is assumed to be effectively infinite, (ii) that when these temperature fluctuations occur, they diffuse away so rapidly that they do not need to be accounted for. In this project, we will question the second assumption and explore the consequences of not making this assumption.
+First, we should derive the heat produced by the Brownian particle as it diffuse; this is done in Ref \cite{M.W.Jack2016}, here we will reproduce the derivation because it is very important. Notice that the potential energy of the motor is given by $U = \int P(x, \, t) V(x) dx$. Differentiating with respect to time, we get
+\begin{eqnarray}
+\frac{d U}{d t} &=& -\int \frac{\partial J(x, \, t)}{\partial x} V(x) dx \\
+		        &=& -[J(x) V(x)] + \int J(x, \, t) \partial_x V(x, \, t) dx
+\end{eqnarray}
+The first term represents the work done on the particle and the integrand in the second term is the heat produced by the particle which we will denote with $\dot{q}(x, \, t)$. Now that we know the heat being produced by the particle, we are ready to quantify the self-induced temperature gradients. First of all, note that if there are no sources of heat, then the temperature will evolve according to the equation:
+\begin{equation}
+\frac{\partial T(x, \, t)}{\partial t} = 
+\end{equation} 
 
 %Assumption (ii) has also been questioned previously by Streater in the context of Brownian motion \cite{Streater1997, Streater1997a}. In these articles, Streater investigates Brownian motion from a microscopic view and then comes up with a mathematical model to describe Brownian particles that are thermally coupled to the environment, he then goes on to prove that the model is thermostatistically consistent in the sense that energy is conserved and that entropy increases. We will explore a similar set of equations in the context of Brownian motors and we will try to determine the length scales at which the thermal interaction is important.
 
@@ -26,14 +35,7 @@ Where
 \item{$\kappa$ is dictates how much the motor effects the environment, in ~\autoref{thermodynamics} we will show that $\kappa$ is one over the specific heat of the environment}
 \item{$D$ is the thermal diffusivity and has units $m^2 s^{-1}$}
 \end{itemize}
-Equation \ref{eqn:Smoluchowski} is called the Smoluschowski equation which we noted earlier and equation \ref{eqn:TemperatureEvolution} is the heat equation. These equations make our intuitive notions more precise, we see that the first term on the right hand side of the Smoluchowski equation (equation \ref{eqn:Smoluchowski}) is a drift term that is forced by our potential and that the second term contains a diffusion term that is scaled by our temperature. The authors in \cite{M.W.Jack2016} showed that $\dot{q}(x, \, t)$ is the heat produced by the motor, we will reiterate their proof here since it is very important. 
-
-Notice that the potential energy of the motor is given by $U = \int P(x, \, t) V(x) dx$. Differentiating with respect to time, we get
-\begin{eqnarray}
-\frac{d U}{d t} &=& -\int \frac{\partial J(x, \, t)}{\partial x} V(x) dx \\
-		        &=& -[J(x) V(x)] + \int J(x, \, t) \partial_x V(x, \, t) dx
-\end{eqnarray}
-The first term represents the work done on the particle and the integrand in the second term is the heat produced by the particle.
+Equation \ref{eqn:Smoluchowski} is called the Smoluschowski equation which we noted earlier and equation \ref{eqn:TemperatureEvolution} is the heat equation. These equations make our intuitive notions more precise, we see that the first term on the right hand side of the Smoluchowski equation (equation \ref{eqn:Smoluchowski}) is a drift term that is forced by our potential and that the second term contains a diffusion term that is scaled by our temperature.
 
 Therefore equation \ref{eqn:TemperatureEvolution} appeals to our intuition of how the Brownian particle should effect its environment. The first term represents the heat flux being produced by the motor, while the second term represents the diffusion of temperature into the environment.
 
