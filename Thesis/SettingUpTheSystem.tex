@@ -21,7 +21,7 @@ The majority of the effort expended in this thesis will be in understanding the 
 J(x, \, t) &=& -\gamma^{-1} \left ( \frac{\partial V(x)}{\partial x} P(x, \, t) + k_B T(x, \, t) \frac{\partial P(x, \, t)}{\partial x} \right ), \label{eqn:current} \\
 \frac{\partial P(x, \, t)}{\partial t} &=& -\frac{\partial J}{\partial x}, \label{eqn:Smoluchowski} \\
 \frac{\partial T(x, \, t)}{\partial t} &=& -\kappa \dot{q}(x, \, t) + D \frac{\partial^2 T(x, 
-, t)}{\partial x^2}, \label{eqn:TemperatureEvolution}
+\, t)}{\partial x^2}, \label{eqn:TemperatureEvolution}
 \end{eqnarray}
 
 where
@@ -41,7 +41,7 @@ Therefore equation \ref{eqn:TemperatureEvolution} appeals to our intuition of ho
 
 One may notice that the system above is a non-linear system of equations, if one looks at the last term of \ref{eqn:current}, then one will find that the second spatial derivative of $P(x, \, t)$ is multiplied by the temperature, which due to equation \ref{eqn:TemperatureEvolution} is a function of $P(x, \, t)$. Therefore equation \ref{eqn:current} is a second order non-linear equation. Likewise if one looks at the first term of equation \ref{eqn:TemperatureEvolution}, then one will find that the temperature is multiplied by the first derivative of the probability distribution (which is a function of temperature), therefore equation \ref{eqn:TemperatureEvolution} is also non-linear. Because we are dealing with non-linear equations, we must take extra care when finding their solutions numerically, in ~\autoref{numerics} we will discuss the techniques used to solve the equations as well as analytical and convergence tests that we used to test the performance of these numerical techniques.
 
-In fluid dynamics equation \ref{eqn:TemperatureEvolution} is called the heat equation, in our case we have neglected the term that represents the flow of the fluid that the Brownian particle is situated in. Including this flow would involve adding $u(x) \frac{\partial T}{\partial x}$ to the left hand side of equation \ref{eqn:TemperatureEvolution}, where $u(x)$ is velocity of the flow of the fluid. The role of fluid dynamics is discussed further in ~\autoref{fluidDynamics}, here we will note that the assumption that the fluid is stationary ($u(x) = 0$) means that the temperature gradients cannot be allowed to become too large because temperature gradients are known to create flows in fluids. Even though these flows may effect the validity of our model in real life we will neglect them for three main reasons. (i) They are not related to the physics that we would like to capture in this project since this is a project on statistical mechanics, not fluid dynamics. (ii) We would not like to depart too far from the explored literature, this is similar to reason (i) however here we would like to stress that our model is just an extension of previous models, extending the extension before understanding the extension could be premature. (iii) Including the flow into our equations of motion would increase the complexity of the system to beyond the scope of an honors project: although simply adding the fluid flow to equation \ref{eqn:TemperatureEvolution} may seem like an innocent operation, calculating the way in which the temperature gradients and the flow of the Brownian particle effect the fluid flow would mean adding a thrid equation to our already non-linear coupled system of equations.
+In fluid dynamics equation \ref{eqn:TemperatureEvolution} is called the heat equation, in our case we have neglected the term that represents the flow of the fluid that the Brownian particle is situated in. Including this flow would involve adding $u(x) \frac{\partial T}{\partial x}$ to the left hand side of equation \ref{eqn:TemperatureEvolution}, where $u(x)$ is velocity of the flow of the fluid. The role of fluid dynamics is discussed further in ~\autoref{fluidDynamics}, here we will note that the assumption that the fluid is stationary ($u(x) = 0$) means that the temperature gradients cannot be allowed to become too large because temperature gradients are known to create flows in fluids. Even though these flows may effect the validity of our model in real life we will neglect them for three main reasons. (i) They are not related to the physics that we would like to capture in this project since this is a project on statistical mechanics, not fluid dynamics. (ii) We would not like to depart too far from the explored literature, this is similar to reason (i) however here we would like to stress that our model is just an extension of previous models, extending the extension before understanding the extension could be premature. (iii) Including the flow into our equations of motion would increase the complexity of the system to beyond the scope of an honors project: although simply adding the fluid flow to equation \ref{eqn:TemperatureEvolution} may seem like an innocent operation, calculating the way in which the temperature gradients and the flow of the Brownian particle effect the fluid flow would mean adding a third equation to our already non-linear coupled system of equations.
 
 This model includes a temperature that depends on $x$ and $t$, which has been explored in the literature \cite{Kramers1940}. Some authors write the current as \cite{Kramers1940,Kampen1988}
 \begin{equation}
@@ -149,7 +149,6 @@ Now let
 \begin{equation}
 \alpha = \frac{\kappa k_B}{L} \quad \text{or} \quad \alpha = \frac{k_B}{c_p L} \\
 \end{equation}
-and
 \begin{equation}
 \beta = \frac{D \gamma}{E_0},
 \end{equation}
@@ -158,7 +157,7 @@ then we have
 \frac{\partial \hat{T}}{\partial \tau} = -\alpha \hat{J}(\hat{x}) \frac{\partial \hat{V}}{\partial \hat{x}} + \beta \frac{\partial^2 \hat{T}}{\partial \hat{x}^2}. \label{eqn:dimensionlessHeat}
 \end{equation}
 
-As for the energy of the system, the dimensioned version is
+As for the energy of the system, the dimensioned equation is
 
 \begin{equation}
 E(t) = \int P(x) V(x) dx + \frac{1}{\kappa} \int T(x) dx
