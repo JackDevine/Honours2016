@@ -3,74 +3,103 @@
 %\epigraph{People either write code that works, or they don't.}{\textbf{Colin Fox -- 2016}}
 Now that we have determined that our system is physical and we have made insights into the qualitative nature of our system, we must build techniques for solving the system so that we can gain quantitative insights. We will begin in ~\autoref{SteadyState} by using analytical techniques to find stationary solutions to our equations of motion.
 \section{Steady state solution} \label{SteadyState}
-In order to see how the equations of motion behave with time, we have to resort to numerical methods (see section \ref{numerics}). However we note that for a given potential there will be a stationary solution that we will refer to as the ``steady state'', for periodic boundary conditions, we can derive an analytical form for this steady state.
-
-In the steady state, we have:
-
-\begin{eqnarray}
-\frac{\partial P(x, t)}{\partial t} &=&  0 \ = \ \frac{\partial J}{\partial x} \label{eqn:SmoluchowskiSteady} \\
-\frac{\partial T(x, t)}{\partial t} &=& 0 \ = \ -\kappa q(x,t) + \frac{\partial}{\partial x} \left ( D \frac{\partial T(x, t)}{\partial x} \right ) \label{eqn:TemperatureSteady}
-\end{eqnarray}
-Suppose that we have the following boundary conditions:
-\begin{align}
-P(x = 0) & = P(x = L) \\
-J(x = 0) & = J(x = L) \\
-\left. \frac{\partial T}{\partial x} \right \rvert_{x = 0} & = 0 = \left. \frac{\partial T}{\partial x} \right \rvert_{x = L} \label{eqn:temperatureBoundary}
-\end{align}
-where $L$ is the length of the domain. Physically, these conditions say that the net current flowing out of the boundaries is zero and that no heat escapes from the system, thus the energy of the sytem is conserved. Section 5.2 of \cite{Gardiner2009} gives the steady state current as:
-
+In order to see how the equations of motion behave with time, we have to resort to numerical methods (see section \ref{numerics}). However we note that for a given potential there will be a stationary solution that we will refer to as the ``steady state''. In the case of a confined potential, this steady state is given by the Boltzmann distribution
 \begin{equation}
-J_s = \left [\frac{2 k_B T(L)}{\psi(L)} - \frac{2 k_B T(0)}{\psi(0)}  \right] P_s(0) \left [\int_0^L dx'/\psi(x') \right]^{-1}
-\label{eqn:SteadyCurrent}
+P(x) = N \exp(\frac{V(x)}{k_B T}).
 \end{equation}
-with $\psi(x) \equiv \exp[-\int_0^x dx' \frac{\partial_x V(x')}{2 k_B T(x')}]$. Meanwhile, the probability density is:
-
+For a given potential and temperature, one can see that
 \begin{equation}
-P_s(x) = P_s(0) \left [\frac{\int_0^x \frac{dx'}{\psi(x')} \frac{T(L)}{\psi(L)} + \int_x^L \frac{dx'}{\psi(x')} \frac{T(0)}{\psi(0)} }{\frac{T(x)}{\psi(x)} \int_0^L \frac{dx'}{\psi(x')} } \right]
-\label{eqn:SteadyDensity}
+P_{ss}(x) = N \exp{\left(-\int_a^x \frac{V'(x')}{T(x')} dx' \right)},
 \end{equation}
-In this case, $J_s$ is a constant and $P_s(0)$ is also a constant. Assuming that we know these constants it is now possible to find the steady state temperature. We have:
-
+will also cause the current in equation \ref{eqn:Smoluchowski} to become zero. In our case the steady state requires that the current is a constant which we will write as $J_s$ and that
 \begin{equation}
-\frac{\partial T}{\partial t} = 0 = -\kappa J_s \partial_x V + D \frac{\partial^2 T}{\partial x^2} \label{eqn:steadyTemperatureODE}
+\frac{\partial T(x, \, t)}{\partial t} = 0 = -\kappa J_s \partial_x V(x, \, t) + D \frac{\partial^2 T(x, \, t)}{\partial x^2}. \label{eqn:steadyTemp}
 \end{equation}
-In one dimension, equation \ref{eqn:steadyTemperatureODE} can be written as an ordinary differential equation of the form
+In one dimension, equation \ref{eqn:steadyTemp} can be written as an ordinary differential equation of the form
 \begin{equation}
 T''(x) = \frac{\kappa J_s}{D} V'(x)
 \end{equation}
-We can solve this equation by integrating both sides twice to give:
-
+We can solve this equation by integrating both sides twice to give
 \begin{equation}
-T(x) = \frac{\kappa J_s}{D} \int_0^x V(x') dx' + \xi x + d \label{eqn:steadyTemperature}
+T(x) = \frac{\kappa J_s}{D} \int_0^x V(x') dx' + \xi x + d, \label{eqn:steadyTemperature}
 \end{equation}
-for unknown constants $\xi$ and $d$. By applying the boundary condition \ref{eqn:temperatureBoundary}, we find that
-\begin{align}
-T'(0) & = 0 = \frac{\kappa J_s}{D} V(0) + \xi \\
-T'(L) & = 0 = \frac{\kappa J_s}{D} V(L) + \xi
-\end{align}
-This implies that either or $V(0) = V(L)$ or $J_s$ is a function of $x$, so in the tilted case, we find that the steady state current is a function of $x$. In the case of a tilted periodic potential it is not sensible to think of a steady state solution because there will always be a flow of the probability distribution. This will be associated with  a flow of energy through the boundaries meaning that energy is no longer conserved.
-
-On the other hand, if we have $V(0) = V(L)$, then we can solve for $\xi$ to give:
+for unknown constants $\xi$ and $d$. If we apply periodic boundary conditions so that $T(x = 0) = T(x = L)$ for some $T_0$ then,
+\begin{eqnarray}
+T(x = 0) &=& 0 + 0 + d \\
+T(x = L) &=& \frac{-\kappa J_s}{D} \int_0^L V(x') dx' + \xi L + d,
+\end{eqnarray}
+this implies that $d = T_0$ and that
 \begin{equation}
-\xi = - \frac{\kappa J_s}{D} V(0)
+\xi = \frac{-\kappa J_s}{D L} \int_0^L V(x') dx'.
 \end{equation}
-%Later, we will see that it is possible to have a steady state in higher dimensions where the flow of heat from the environment can dissipate the heat produced by the Brownian particle.
-By recalling that $E = \int_0^L P(x') V(x') dx' + c_p \int_0^L T(x') dx'$ we are able to find an expression for $d$. First, we will integrate the temperature from $0$ to $L$
-\begin{equation}
-\int_0^L T(x') dx' = \frac{\kappa J_s}{D} \int_0^L dx' \int_0^{x'} V(x'') dx'' + \xi \frac{L^2}{2} + L d
-\end{equation}
-Therefore,
-\begin{equation}
-	d = \frac{1}{L} \left(c_p E - c_p \int_0^L P(x') V(x') dx' - \frac{\kappa J_s}{D} \int_0^L dx' \int_0^{x'} V(x'') d x'' + \xi \frac{L^2}{2} \right)
-\end{equation}
+Putting this all together we find that the temperature in the steady state is simply s straight line, this should be expected because straight lines are steady-state solutions to the heat equation without sources. Interestingly, we find that tilted potentials do not admit steady state solutions when the Smoluchowski equation is coupled to the heat equation. To see why not, consider a probability distribution that is flowing down a tilted potential, the energy of the system is given by equation \ref{eqn:energy}, this energy must be conserved. Normally, the steady-state in the tilted case is defined by the case where the current is constant. If this is the case, then as the probability distribution flows down the potential, the potential energy will decrease which must be compensated by an increase in thermal energy. This increase in thermal energy corresponds to a rise in the temperature, therefore $\frac{\partial T(x, \, t)}{\partial t} \ne 0$. 
 
-It would seem that one should be able to calculate the steady state current and density directly from the equations shown above. However, we notice that the constants $J_s$ and $P_s(0)$ have to satisfy equations (\ref{eqn:SteadyCurrent}), (\ref{eqn:SteadyDensity}) and (\ref{eqn:steadyTemperature}) while also satisfying the normalization condition $\int_0^L P(x) dx = 1$. To do this we define an objective function given by
-
-\begin{equation}
-\mathrm{obj}(J_s, P_s(0)) = \left (J_s - \left [\frac{2 k_B T(L)}{\psi(L)} - \frac{2 k_B T(0)}{\psi(0)}  \right] P_s(0) \left [\int_0^L dx'/\psi(x') \right]^{-1} \right)^2  \label{eqn:Objective}
-\end{equation}
-
-And we minimize this objective function with respect to $J_s$ and $P_s(0)$ under the constraint $\int_0^L P(x) dx = 1$. Another way to do this is to guess a steady state density and temperature and use finite differencing to simulate forward in time until the transients die out. As well as this, one can write down equations \ref{eqn:Smoluchowski} and \ref{eqn:TemperatureEvolution} as an ordinary differential equation in one dimension, this coupled set of ODEs can be solved numerically using the Runge-Kutta technique. An example plot of the steady state is shown in Figure \ref{fig:steadyODE}, here we see that in the steady state the temperature has become a straight line.
+%In the steady state, we have:
+%
+%\begin{eqnarray}
+%\frac{\partial P(x, t)}{\partial t} &=&  0 \ = \ \frac{\partial J}{\partial x} \label{eqn:SmoluchowskiSteady} \\
+%\frac{\partial T(x, t)}{\partial t} &=& 0 \ = \ -\kappa q(x,t) + \frac{\partial}{\partial x} \left ( D \frac{\partial T(x, t)}{\partial x} \right ) \label{eqn:TemperatureSteady}
+%\end{eqnarray}
+%Suppose that we have the following boundary conditions:
+%\begin{align}
+%P(x = 0) & = P(x = L) \\
+%J(x = 0) & = J(x = L) \\
+%\left. \frac{\partial T}{\partial x} \right \rvert_{x = 0} & = 0 = \left. \frac{\partial T}{\partial x} \right \rvert_{x = L} \label{eqn:temperatureBoundary}
+%\end{align}
+%where $L$ is the length of the domain. Physically, these conditions say that the net current flowing out of the boundaries is zero and that no heat escapes from the system, thus the energy of the sytem is conserved. Section 5.2 of \cite{Gardiner2009} gives the steady state current as:
+%
+%\begin{equation}
+%J_s = \left [\frac{2 k_B T(L)}{\psi(L)} - \frac{2 k_B T(0)}{\psi(0)}  \right] P_s(0) \left [\int_0^L dx'/\psi(x') \right]^{-1}
+%\label{eqn:SteadyCurrent}
+%\end{equation}
+%with $\psi(x) \equiv \exp[-\int_0^x dx' \frac{\partial_x V(x')}{2 k_B T(x')}]$. Meanwhile, the probability density is:
+%
+%\begin{equation}
+%P_s(x) = P_s(0) \left [\frac{\int_0^x \frac{dx'}{\psi(x')} \frac{T(L)}{\psi(L)} + \int_x^L \frac{dx'}{\psi(x')} \frac{T(0)}{\psi(0)} }{\frac{T(x)}{\psi(x)} \int_0^L \frac{dx'}{\psi(x')} } \right]
+%\label{eqn:SteadyDensity}
+%\end{equation}
+%In this case, $J_s$ is a constant and $P_s(0)$ is also a constant. Assuming that we know these constants it is now possible to find the steady state temperature. We have:
+%
+%\begin{equation}
+%\frac{\partial T}{\partial t} = 0 = -\kappa J_s \partial_x V + D \frac{\partial^2 T}{\partial x^2} \label{eqn:steadyTemperatureODE}
+%\end{equation}
+%In one dimension, equation \ref{eqn:steadyTemperatureODE} can be written as an ordinary differential equation of the form
+%\begin{equation}
+%T''(x) = \frac{\kappa J_s}{D} V'(x)
+%\end{equation}
+%We can solve this equation by integrating both sides twice to give:
+%
+%\begin{equation}
+%T(x) = \frac{\kappa J_s}{D} \int_0^x V(x') dx' + \xi x + d \label{eqn:steadyTemperature}
+%\end{equation}
+%for unknown constants $\xi$ and $d$. By applying the boundary condition \ref{eqn:temperatureBoundary}, we find that
+%\begin{align}
+%T'(0) & = 0 = \frac{\kappa J_s}{D} V(0) + \xi \\
+%T'(L) & = 0 = \frac{\kappa J_s}{D} V(L) + \xi
+%\end{align}
+%This implies that either or $V(0) = V(L)$ or $J_s$ is a function of $x$, so in the tilted case, we find that the steady state current is a function of $x$. In the case of a tilted periodic potential it is not sensible to think of a steady state solution because there will always be a flow of the probability distribution. This will be associated with  a flow of energy through the boundaries meaning that energy is no longer conserved.
+%
+%On the other hand, if we have $V(0) = V(L)$, then we can solve for $\xi$ to give:
+%\begin{equation}
+%\xi = - \frac{\kappa J_s}{D} V(0)
+%\end{equation}
+%%Later, we will see that it is possible to have a steady state in higher dimensions where the flow of heat from the environment can dissipate the heat produced by the Brownian particle.
+%By recalling that $E = \int_0^L P(x') V(x') dx' + c_p \int_0^L T(x') dx'$ we are able to find an expression for $d$. First, we will integrate the temperature from $0$ to $L$
+%\begin{equation}
+%\int_0^L T(x') dx' = \frac{\kappa J_s}{D} \int_0^L dx' \int_0^{x'} V(x'') dx'' + \xi \frac{L^2}{2} + L d
+%\end{equation}
+%Therefore,
+%\begin{equation}
+%	d = \frac{1}{L} \left(c_p E - c_p \int_0^L P(x') V(x') dx' - \frac{\kappa J_s}{D} \int_0^L dx' \int_0^{x'} V(x'') d x'' + \xi \frac{L^2}{2} \right)
+%\end{equation}
+%
+%It would seem that one should be able to calculate the steady state current and density directly from the equations shown above. However, we notice that the constants $J_s$ and $P_s(0)$ have to satisfy equations (\ref{eqn:SteadyCurrent}), (\ref{eqn:SteadyDensity}) and (\ref{eqn:steadyTemperature}) while also satisfying the normalization condition $\int_0^L P(x) dx = 1$. To do this we define an objective function given by
+%
+%\begin{equation}
+%\mathrm{obj}(J_s, P_s(0)) = \left (J_s - \left [\frac{2 k_B T(L)}{\psi(L)} - \frac{2 k_B T(0)}{\psi(0)}  \right] P_s(0) \left [\int_0^L dx'/\psi(x') \right]^{-1} \right)^2  \label{eqn:Objective}
+%\end{equation}
+%
+%And we minimize this objective function with respect to $J_s$ and $P_s(0)$ under the constraint $\int_0^L P(x) dx = 1$. Another way to do this is to guess a steady state density and temperature and use finite differencing to simulate forward in time until the transients die out. As well as this, one can write down equations \ref{eqn:Smoluchowski} and \ref{eqn:TemperatureEvolution} as an ordinary differential equation in one dimension, this coupled set of ODEs can be solved numerically using the Runge-Kutta technique. An example plot of the steady state is shown in Figure \ref{fig:steadyODE}, here we see that in the steady state the temperature has become a straight line.
 \begin{figure}
 	\center
 	\begin{subfigure}{0.75\textwidth}
@@ -79,14 +108,14 @@ And we minimize this objective function with respect to $J_s$ and $P_s(0)$ under
 	\begin{subfigure}{0.23\textwidth}
 		\includegraphics[width=\columnwidth]{landauersBlowtorchLegend}
 	\end{subfigure}
-	\caption{\textbf{A solution of the system in the steady state} \label{fig:steadyODE}}
+	\caption{\textbf{A solution of the system in the steady state with a confining potential.} \label{fig:steadyODE}}
 \end{figure}
 
 %----------------------------------------------------------------------------------------
 %	NUMERICS
 %----------------------------------------------------------------------------------------
 \section{Finite differences}  \label{numerics}
-Our one dimensional equations can be solved on a discrete grid by using the finite differences method, the main idea behind this strategy is to approximate derivatives with equations of the form:
+In order to explore the dynamics of equations \ref{eqn:Smoluchowski} and \ref{eqn:TemperatureEvolution} we will need to resort to numerical techniques. The one dimensional equations can be solved on a discrete grid by using the finite differences method, the main idea behind this strategy is to approximate derivatives with equations of the form:
 
 \begin{equation}
 \frac{d f}{d x} \approx \frac{f(x - h) - f(x + h)}{2h}
@@ -197,22 +226,6 @@ Just like the discretized Smoluchowski equation, these equations can be written 
 
 Fortunately the matrices that we are dealing with are very sparse, so the program used to solve these equations can save on memory by calling sparse matrix libraries.
 
-\subsection{Boundary conditions}
-So far we have discussed how to solve the equations inside the domain of interest $\Omega$, however our equations of motion will require that we prescribe boundary conditions that the system must satisfy. The boundary conditions that have been implemented for this project are as follows:
-
-\begin{itemize}
-\item{Dirichlet: The value of the solution is specified at the boundaries}
-\item{Neumann: The value of the first derivative of the solution is specified at the boundaries}
-\item{Periodic: The value at the boundaries is not specified, but the left and right boundaries must take on the same value}
-\end{itemize}
-Each type of boundary conditions comes along with its own physical interpretation, first we will deal with the boundary conditions imposed on the probability distribution.
-
-If the potential goes to infinity at the boundaries, then the probability distribution must vanish at the boundaries before applying boundary conditions at all, therefore no boundary conditions need to be applied. There are some potentials that are periodic where the value of the potential is the same finite number at both sides, in this case it can be interesting to apply periodic boundary conditions to the probability distribution. Physically, this corresponds to a system where a particle passing through the left side will appear at the right side and vice-versa. One can picture this by imagining a particle constrained to a circular domain.
-
-As for the temperature, both Neumann and Dirichlet boundary conditions are realized. In the case of Neumann boundary conditions, the derivative is set to zero at both boundaries. This is a very interesting case to imagine, because the derivative of the temperature physically represents the flow of heat in our system. Therefore the physical interpretation of a vanishing derivative at the boundary is that no heat is flowing through the boundaries, or in other words the system is enclosed in a perfectly insulating box. This system conserves energy, which is convenient when one goes to normalize the calculated temperature by using the energy of the system.
-
-The second type of boundary condition that can be imposed on the temperature is the Dirichlet type where the same value of the temperature is specified at both boundaries. The physical interpretation of this requirement is that the domain is embedded in a much larger system that is at a fixed temperature. The tacit assumption made is that no matter what the system does, it is not able to affect the temperature of the environment. One must take care when using the energy to normalize when considering Dirichlet boundary conditions, this is because the energy in the system is no longer conserved. To account for this, we calculate the heat flowing through the boundaries at each step and subtract this from the energy of the system before we normalized the system.
-
 Implementing these boundary conditions requires that we change our matrices $A$ and $B$, specifically we will need to modify the top and bottom rows. The reason that we can do this is because a matrix represents a system of equations, the first and last rows of the matrices effect the first and last components of the vectors that we are doing finite differences on. For each boundary condition, we need to make sure that the equations represented by our first and last rows reflect our desired boundary conditions.
 
 \subsubsection{Dirichlet boundary conditions}
@@ -222,7 +235,7 @@ Imagine that we have a $n \times n$ vector $u$ that we want to step forward with
 u^{n+1} = \frac{\mathbb{1} + \frac{\Delta t}{2} B}{\mathbb{1} - \frac{\Delta t}{2} A} u^n
 \end{equation}
 
-This equation will certainly affect the first and last components of $u$, in order to avoid this, we need to make sure that the first and last rows of $(\mathbb{1} + \frac{\Delta t}{2} B)$ and $(\mathbb{1} - \frac{\Delta t}{2} A)$ are the same as the first and last rows of the identity matrix.
+This equation will certainly affect the first and last components of $u$, in order to avoid this, we need to make sure that the first and last rows of $(\mathbb{1} + \frac{\Delta t}{2} B)$ and $(\mathbb{1} - \frac{\Delta t}{2} A)$ are the same as the first and last rows of the identity matrix.  One must take care when using the energy to normalize when considering Dirichlet boundary conditions, this is because the energy in the system is no longer conserved. To account for this, we calculate the heat flowing through the boundaries at each step and subtract this from the energy of the system before we normalized the system.
 
 \subsubsection{Neumann boundary conditions}
 The derivative at the boundaries can be made to be zero at the boundaries by making sure that the first and last rows of our matrices represent the equations $u_J - u_{J-1} = 0$ and $u_0 - u_1 = 0$ respectively. This can be done by replacing the first row with $\{ 1, \, -1, \, 0, \, \dots \, , \, 0 \}$ and the last row with $\{0, \, 0, \, \dots, \, 0, \, -1, \, 1 \}$.

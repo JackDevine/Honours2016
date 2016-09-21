@@ -9,14 +9,18 @@ First, we should derive the heat produced by the Brownian particle as it diffuse
 \frac{d U}{d t} &=& -\int \frac{\partial J(x, \, t)}{\partial x} V(x) dx \\
 		        &=& -[J(x) V(x)] + \int J(x, \, t) \partial_x V(x, \, t) dx
 \end{eqnarray}
-The first term represents the work done on the particle and the integrand in the second term is the heat produced by the particle which we will denote with $\dot{q}(x, \, t)$. Now that we know the heat being produced by the particle, we are ready to quantify the self-induced temperature gradients. First of all, note that if there are no sources of heat, then the temperature will evolve according to the equation:
+The first term represents the work done on the particle and the integrand in the second term is the heat produced by the particle which we will denote with $\dot{q}(x, \, t)$. Now that we know the heat being produced by the particle, we are ready to quantify the self-induced temperature gradients. First of all, note that if there are no sources of heat, then the temperature will evolve according to the equation
 \begin{equation}
-\frac{\partial T(x, \, t)}{\partial t} = 
+\frac{\partial T(x, \, t)}{\partial t} = D\frac{\partial^2 T(x, \, t)}{\partial x^2}, \label{eqn:heatNoSource}
 \end{equation} 
+which is the heat equation for an incompressible stationary fluid. $D$ is the thermal diffusivity of the environment and throughout this project we will consider $D$ to be constant. In reality $D$ can depend on space and time as well as the temperature itself. Equation \ref{eqn:heatNoSource} will cause any temperature gradients to diffuse with time. As we have mentioned the movement of the Brownian particle acts as a source of heat, by adding this heat to equation \ref{eqn:heatNoSource} we get
+\begin{equation}
+\frac{\partial T(x, \, t)}{\partial t} = -\kappa \dot{q}(x, \, t) + D \frac{\partial^2 T(x, \, t)}{\partial x^2}
+\end{equation}
 
 %Assumption (ii) has also been questioned previously by Streater in the context of Brownian motion \cite{Streater1997, Streater1997a}. In these articles, Streater investigates Brownian motion from a microscopic view and then comes up with a mathematical model to describe Brownian particles that are thermally coupled to the environment, he then goes on to prove that the model is thermostatistically consistent in the sense that energy is conserved and that entropy increases. We will explore a similar set of equations in the context of Brownian motors and we will try to determine the length scales at which the thermal interaction is important.
 
-The majority of the effort expended in this thesis will be in understanding the nature of two coupled partial differential equations, these take on the form:
+The majority of the effort expended in this thesis will be in understanding the nature of two coupled partial differential equations, we have already mentioned these, but we will reiterate them here so that they the system can be understood in full and so that they can be referred to later. The system is written as
 \begin{eqnarray}
 J(x, \, t) &=& -\gamma^{-1} \left ( \frac{\partial V(x)}{\partial x} P(x, \, t) + k_B T(x, \, t) \frac{\partial P(x, \, t)}{\partial x} \right ), \label{eqn:current} \\
 \frac{\partial P(x, \, t)}{\partial t} &=& -\frac{\partial J}{\partial x}, \label{eqn:Smoluchowski} \\
@@ -31,7 +35,7 @@ where
 \item{$\gamma$ is the friction coefficient}
 \item{$V(x)$ is the potential for the motor}
 \item{$k_B$ is the Boltzmann constant, units $J K^{-1}$}
-\item{$\dot{q}(x, \, t) = \partial_x V(x, \, t) J(x, \, t)$ is the heat from the motor \cite{M.W.Jack2016}}
+\item{$\dot{q}(x, \, t) = \partial_x V(x, \, t) J(x, \, t)$ is the heat from the motor}
 \item{$\kappa$ is dictates how much the motor effects the environment, in ~\autoref{thermodynamics} we will show that $\kappa$ is one over the specific heat of the environment}
 \item{$D$ is the thermal diffusivity and has units $m^2 s^{-1}$}
 \end{itemize}
@@ -56,13 +60,28 @@ The other restriction that we must enforce on our model is that there is only a 
 
 Temperature gradients that are self induced in Brownian dynamics have been known for some time, a particularly interesting example is the Soret-Dufour effect \cite{Onsager1931,HortLinzLuecke1992,PiazzaGuarino2002,Santamaria-HolekGadomskiRubi2011}. In this effect, the diffusion of the concentration of a species of molecules causes a measurable temperature effect. Another interesting example is the reverse Landauer blowtorch \cite{DasDasBarikEtAl2015}, where a nett force displacing a Brownian particle ca create a temperature gradient. This however, is in contrast to the forward Landauer blowtorch where a temperature gradient creates a psuedo-force on the particles. We will explore the reverse Landauer blowtorch in \autoref{reverseLandauerBlowtorch} where we discuss how our model adds to previous work.
 
+\section{Boundary conditions}
+Equations \ref{eqn:Smoluchowski} and \ref{eqn:TemperatureEvolution} model a system that is embedded in a much larger environment. In order to talk about solutions to these equations one must define how the system interacts with the environment at the boundaries. In this project, we will discuss the following types of boundary conditions.
+
+\begin{itemize}
+\item{Dirichlet: The value of the solution is specified at the boundaries}
+\item{Neumann: The value of the first derivative of the solution is specified at the boundaries}
+\item{Periodic: The value at the boundaries is not specified, but the left and right boundaries must take on the same value}
+\end{itemize}
+Each type of boundary conditions comes along with its own physical interpretation, first we will deal with the boundary conditions imposed on the probability distribution.
+
+If the potential goes to infinity at the boundaries, then the probability distribution must vanish at the boundaries before applying boundary conditions at all, therefore no boundary conditions need to be applied. There are some potentials that are periodic where the value of the potential is the same finite number at both sides, in this case it can be interesting to apply periodic boundary conditions to the probability distribution. Physically, this corresponds to a system where a particle passing through the left side will appear at the right side and vice-versa. One can picture this by imagining a particle constrained to a circular domain. The other type of boundary condition that we impose on the probability density is that the value of the density is zero at the boundaries. Mathematically, this is a special case of Dirichlet boundary conditions, physically this corresponds to so called reflecting boundary conditions \cite{Gardiner2009}. Reflecting boundary conditions correspond to the physical situation where a particle is strongly constrained to a region, this could occur if a barrier that the particle cannot pass through is placed at the boundaries on either side of the domain. One can also achieve reflecting boundary conditions by making the potential go to infinity at the boundaries.
+
+As for the temperature, both Neumann and Dirichlet boundary conditions are realized. In the case of Neumann boundary conditions, the derivative is set to zero at both boundaries. This is a very interesting case to imagine, because the derivative of the temperature physically represents the flow of heat in our system. Therefore the physical interpretation of a vanishing derivative at the boundary is that no heat is flowing through the boundaries, or in other words the system is enclosed in a perfectly insulating box. Since energy is conserved and no heat is flowing through the boundaries, Neumann boundary conditions correspond to a closed system that is completely unaffected by the rest of the universe. This makes Neumann boundary conditions useful when one wants to consider the system by itself in order to elucidate particular physical behaviors.
+
+The second type of boundary condition that can be imposed on the temperature is the Dirichlet type where the held fixed at both boundaries. The physical interpretation of this requirement is that the domain is embedded in a much larger system that is at a fixed temperature. The tacit assumption made is that no matter what the system does, it is not able to affect the temperature of the environment. Since heat is flowing through the boundaries, the local energy of the system is not conserved, in \autoref{thermodynamics} we will quantify the energy flowing through the boundaries and show that the first law of thermodynamics is upheld.
 % THERMODYNAMICS
 \section{System thermodynamics} \label{thermodynamics}
 Equation \ref{eqn:Smoluchowski} and equation \ref{eqn:TemperatureEvolution} define equations of motion for our system, the system may be confined to a region $\Omega$ embedded in a larger environment which interacts with our system through the boundary conditions. In this section, we will show that our equations of motion obey the first and second laws of thermodynamics under certain conditions.
 
 In the over-damped limit, the kinetic energy of the Brownian particle is negligible, therefore the energy of the system is completely described by the potential energy of the particle plus the thermal energy of the bath. The potential energy of the particle is $U_P = \int_{\Omega} V(x) P(x) dx$ and if the fluid that we are in is incompressible, then the thermal energy of the bath is $c_p \int_{\Omega} T(x) dx$, where $c_p$ is the specific heat capacity of the environment. To see that this is the thermal energy consider the units of the quantity $c_p T(x, \, t)$. These are $J K^{-1} K$, so $c_p T(x, \, t) dx$ is the heat content of an infinitesimal element $dx$. With this we have
 \begin{equation}
-E(t) = \int_{\Omega} V(x)P(x, t) dx + c_p \int_{\Omega} T(x, t) dx.
+E(t) = \int_{\Omega} V(x)P(x, t) dx + c_p \int_{\Omega} T(x, t) dx. \label{eqn:energy}
 \end{equation}
 By using the Smoluchowski equation and the heat equation, we can differentiate with respect to time to get
 \begin{align}
@@ -70,13 +89,13 @@ By using the Smoluchowski equation and the heat equation, we can differentiate w
  & = -\int_{\Omega} V(x) \frac{\partial J}{\partial x} + c_p \int_{\Omega} -\kappa J(x) \frac{\partial V}{\partial x} + D \frac{\partial^2 T}{\partial x^2} dx \\
  & = [V(x)J(x)]_{\partial \Omega}+ \int_{\Omega} \frac{\partial V}{\partial x} J(x) dx - \kappa c_p \int_{\Omega} \frac{\partial V}{\partial x} J(x) dx + c_p D \left [\frac{\partial T}{\partial x} \right]_{\partial \Omega}.
 \end{align}
-Notice that if the middle two terms cancel, then the change in energy is equal to the flow of energy through the boundaries. Thus, the first law of thermodynamics requires that $\kappa = \frac{1}{c_p}$, physically we can understand this by looking at the first term of equation \ref{eqn:TemperatureEvolution}. When the heat capacity is small, $\kappa$ becomes large and in this case, even a small amount of heat being produced by the Brownian particle will have a large effect on the evolution of the temperature. Conversely, if the heat capacity is large, then the heat produced by the Brownian particle will have a very small effect on the temperature. We therefore expect that equation \ref{eqn:TemperatureEvolution} can be neglected in the case where the environment has a very large heat capacity compared to the heat being produced by the Brownian particle.
+Notice that if the middle two terms cancel, then the change in energy is equal to the flow of energy through the boundaries. Therefore, the first law of thermodynamics requires that $\kappa = \frac{1}{c_p}$, physically we can understand this by looking at the first term of equation \ref{eqn:TemperatureEvolution}. When the heat capacity is small, $\kappa$ becomes large and in this case, even a small amount of heat being produced by the Brownian particle will have a large effect on the evolution of the temperature. Conversely, if the heat capacity is large, then the heat produced by the Brownian particle will have a very small effect on the temperature. We therefore expect that equation \ref{eqn:TemperatureEvolution} can be neglected in the case where the environment has a very large heat capacity compared to the heat being produced by the Brownian particle.
 
 As for the entropy, we have \cite{Streater1997a}
 \begin{equation}
 S(t) = -k_B \int_{\Omega} P(x, t) \log(P(x, \, t)) dx + c_p \int_{\Omega} \log(T(x, \, t)) dx.
 \end{equation}
-The first term is the Gibbs entropy in the continuous case \cite{Jaynes1965} and the second term is the entropy of an incompressible fluid \cite{CengelBoles1994}. Using the entropy of an incompressible fluid restricts the sytems that can be modelled by our equations of motion, in particular we will not be able to treat Brownian particles suspended in a gas since a gas is compressible by defintion. The courageous reader may want to use our model in the case of a compressible fluid, however in this case we can no longer guarantee that entropy will increase. The goal of this project is not to create a system that models many different situations in nature, but rather to create a system that is self-consistent.
+The first term is the Gibbs entropy in the continuous case \cite{Jaynes1965} and the second term is the entropy of an incompressible fluid \cite{CengelBoles1994}. Using the entropy of an incompressible fluid restricts the sytems that can be modelled by our equations of motion, in particular we will not be able to treat Brownian particles suspended in a gas since a gas is compressible by defintion. The goal of this project is not to create a system that models many different situations in nature, but rather to create a system that is self-consistent.
 
 Differentiating the entropy with respect to time, we get
 
