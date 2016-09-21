@@ -81,14 +81,11 @@ And we minimize this objective function with respect to $J_s$ and $P_s(0)$ under
 	\end{subfigure}
 	\caption{\textbf{A solution of the system in the steady state} \label{fig:steadyODE}}
 \end{figure}
-{\color{red} do you think that we should show some plots of the steady state? I have a few that I calculated by solving the ODE so it might be worthwhile includign them} 
 
 %----------------------------------------------------------------------------------------
 %	NUMERICS
 %----------------------------------------------------------------------------------------
 \section{Finite differences}  \label{numerics}
-
-{\color{red} do you think that I should include some figures showing examples of the finite differences so that the reader is introduced to the idea of the dynamics before the exploration section?}
 Our one dimensional equations can be solved on a discrete grid by using the finite differences method, the main idea behind this strategy is to approximate derivatives with equations of the form:
 
 \begin{equation}
@@ -249,7 +246,7 @@ A =
 \end{equation}
 This is equivalent to stretching out the matrix in a periodic fashion, we note that the matrix for periodic boundary conditions cannot be written in tridiagonal form. When the matrices involved are tridiagonal, we can inform the compiler of our program so that it can used highly optimized routines for solving the equations. However, in the case of periodic boundary conditions, we simply inform the compiler that the matrices are sparse, this means that we do not get the same speed for periodic boundary conditions as we do for other boundary conditions.
 
-All of these boundary conditions were implemented in Julia which is a high level language for scientific computing \cite{Bezanson2014}. A function was made so that the user can decide which boundary condition that they want through a keyword argument and then the program will implement finite differences for that boundary type. An example of finite differencing is shown in Figure \ref{fig:periodicSimulation}
+All of these boundary conditions were implemented in Julia which is a high level language for scientific computing \cite{Bezanson2014}. A function was made so that the user can decide which boundary condition that they want through a keyword argument and then the program will implement finite differences for that boundary type. An example of finite differencing with periodic boundary conditions is shown in Figure \ref{fig:periodicSimulation}
 \begin{figure}
 %	\center
 %	\textbf{Periodic boundary conditions}
