@@ -37,13 +37,15 @@ T \rvert_{\partial \Omega} = T_0.
 \end{equation}
 In either case, $\xi = 0$ which implies that the temperature is constant. In this case equation \ref{eqn:steadyTemperature} becomes the Boltzmann distribution
 \begin{equation}
-P(x) = N \exp{-\left (\frac{V(x)}{k_B T(x)} \right)}.
+P(x) = N \exp{\left (-\frac{V(x)}{k_B T(x)} \right)}.
 \end{equation}
-Tilted periodic potentials can be written as $V(x) = -f x + v_0(x)$ for some constant $f$ and a periodic function $v_0(x)$. In this case, equation \ref{eqn:steadyTemperature} becomes
+An example of the Boltzmann distribution is shown in Figure \ref{fig:steadyODE}, in this figure we have a confining potential causing the probability density to go to zero for large $x$. It is interesting to note that in the steady state, the temperature gradients become flat. This is because after enough time the diffusion term in equation \ref{eqn:TemperatureEvolution} causes temperature gradients to flatten out.
+
+Meanwhile, a tilted periodic potentials can be written as $V(x) = -f x + v_0(x)$ for some constant $f$ and a periodic function $v_0(x)$. In this case, equation \ref{eqn:steadyTemperature} becomes
 \begin{equation}
 T(x) = \frac{\kappa J_s}{D} \int_0^x -f x' dx' + \frac{\kappa J_s}{D} \int_0^x v_0(x') dx' + \xi x + d.
 \end{equation}
-The first term on the right hand side of this equation will grow like $x^2$ as $x$ gets bigger. The reason that the temperature is growing is because as the Brownian particle moves down the potential, it loses potential energy. This potential energy is converted into thermal energy, explaining why the temperature increases with $x$. We therefore conclude that the tilted periodic potential does not have a meaningful steady state.
+The first term on the right hand side of this equation will grow like $x^2$. The reason that the temperature is growing is because as the Brownian particle moves down the potential, it loses potential energy. This potential energy is converted into thermal energy, explaining why the temperature increases with $x$. We therefore conclude that the tilted periodic potential does not have a meaningful steady state.
 %In the case of a confined potential, this steady state is given by the Boltzmann distribution
 %\begin{equation}
 %P(x) = N \exp(\frac{V(x)}{k_B T}).
