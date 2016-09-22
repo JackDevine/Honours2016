@@ -3,15 +3,11 @@
 %\epigraph{People either write code that works, or they don't.}{\textbf{Colin Fox -- 2016}}
 Now that we have determined that our system is physical and we have made insights into the qualitative nature of our system, we must build techniques for solving the system so that we can gain quantitative insights. We will begin in ~\autoref{SteadyState} by using analytical techniques to find stationary solutions to our equations of motion.
 \section{Steady state solution} \label{SteadyState}
-In order to see how the equations of motion behave with time, we have to resort to numerical methods (see \autoref{numerics}). However we note that for a given potential there will be a stationary solution that we will refer to as the ``steady state''. In the case of a confined potential, this steady state is given by the Boltzmann distribution
+In order to see how the equations of motion behave with time, we have to resort to numerical methods (see \autoref{numerics}). However we note that for a given potential there will be a stationary solution that we will refer to as the ``steady state''. In the steady state we have
 \begin{equation}
-P(x) = N \exp(\frac{V(x)}{k_B T}).
+\frac{\partial P(x, \, t)}{\partial t} = 0 = \frac{\partial J(x, \, t)}{\partial t},
 \end{equation}
-For a given potential and temperature, one can see that
-\begin{equation}
-P_{ss}(x) = N \exp{\left(-\int_a^x \frac{V'(x')}{T(x')} dx' \right)},
-\end{equation}
-will also cause the current in equation \ref{eqn:Smoluchowski} to become zero. In our case the steady state requires that the current is a constant which we will write as $J_s$ and that
+this implies that the current in the steady state is constant, we will denote this with $J_s$. In the steady state, the temperature is not changing so
 \begin{equation}
 \frac{\partial T(x, \, t)}{\partial t} = 0 = -\kappa J_s \partial_x V(x, \, t) + D \frac{\partial^2 T(x, \, t)}{\partial x^2}. \label{eqn:steadyTemp}
 \end{equation}
@@ -23,16 +19,61 @@ We can solve this equation by integrating both sides twice to give
 \begin{equation}
 T(x) = \frac{\kappa J_s}{D} \int_0^x V(x') dx' + \xi x + d, \label{eqn:steadyTemperature}
 \end{equation}
-for unknown constants $\xi$ and $d$. If we apply periodic boundary conditions so that $T(x = 0) = T(x = L)$ for some $T_0$ then,
-\begin{eqnarray}
-T(x = 0) &=& 0 + 0 + d \\
-T(x = L) &=& \frac{-\kappa J_s}{D} \int_0^L V(x') dx' + \xi L + d,
-\end{eqnarray}
-this implies that $d = T_0$ and that
+for unknown constants $\xi$ and $d$. If $J_s = 0$ then the steady state for the probability density is given by
 \begin{equation}
-\xi = \frac{-\kappa J_s}{D L} \int_0^L V(x') dx'.
+P_{ss}(x) = N \exp{\left(-\int_a^x \frac{V'(x')}{k_B T(x')} dx' \right)}
 \end{equation}
-Putting this all together we find that the temperature in the steady state is simply s straight line, this should be expected because straight lines are steady-state solutions to the heat equation without sources. Interestingly, we find that tilted potentials do not admit steady state solutions when the Smoluchowski equation is coupled to the heat equation. To see why not, consider a probability distribution that is flowing down a tilted potential, the energy of the system is given by equation \ref{eqn:energy}, this energy must be conserved. Normally, the steady-state in the tilted case is defined by the case where the current is constant. If this is the case, then as the probability distribution flows down the potential, the potential energy will decrease which must be compensated by an increase in thermal energy. This increase in thermal energy corresponds to a rise in the temperature, therefore $\frac{\partial T(x, \, t)}{\partial t} \ne 0$. 
+and
+\begin{equation}
+T(x) = \xi x + d.
+\end{equation}
+We can now apply boundary conditions to the temperature, these can be either Dirichlet
+\begin{eqnarray}
+\left.\frac{\partial T}{\partial x}\right\rvert_{\partial \Omega} = 0,
+\end{eqnarray}
+or Neumann,
+\begin{equation}
+T \rvert_{\partial \Omega} = T_0.
+\end{equation}
+In either case, $\xi = 0$ which implies that the temperature is constant. In this case equation \ref{eqn:steadyTemperature} becomes the Boltzmann distribution
+\begin{equation}
+P(x) = N \exp{-\left (\frac{V(x)}{k_B T(x)} \right)}.
+\end{equation}
+Tilted periodic potentials can be written as $V(x) = -f x + v_0(x)$ for some constant $f$ and a periodic function $v_0(x)$. In this case, equation \ref{eqn:steadyTemperature} becomes
+\begin{equation}
+T(x) = \frac{\kappa J_s}{D} \int_0^x -f x' dx' + \frac{\kappa J_s}{D} \int_0^x v_0(x') dx' + \xi x + d.
+\end{equation}
+The first term on the right hand side of this equation will grow like $x^2$ as $x$ gets bigger. The reason that the temperature is growing is because as the Brownian particle moves down the potential, it loses potential energy. This potential energy is converted into thermal energy, explaining why the temperature increases with $x$. We therefore conclude that the tilted periodic potential does not have a meaningful steady state.
+%In the case of a confined potential, this steady state is given by the Boltzmann distribution
+%\begin{equation}
+%P(x) = N \exp(\frac{V(x)}{k_B T}).
+%\end{equation}
+%For a given potential and temperature, one can see that
+%\begin{equation}
+%P_{ss}(x) = N \exp{\left(-\int_a^x \frac{V'(x')}{T(x')} dx' \right)},
+%\end{equation}
+%will also cause the current in equation \ref{eqn:Smoluchowski} to become zero. In our case the steady state requires that the current is a constant which we will write as $J_s$ and that
+%\begin{equation}
+%\frac{\partial T(x, \, t)}{\partial t} = 0 = -\kappa J_s \partial_x V(x, \, t) + D \frac{\partial^2 T(x, \, t)}{\partial x^2}. \label{eqn:steadyTemp}
+%\end{equation}
+%In one dimension, equation \ref{eqn:steadyTemp} can be written as an ordinary differential equation of the form
+%\begin{equation}
+%T''(x) = \frac{\kappa J_s}{D} V'(x)
+%\end{equation}
+%We can solve this equation by integrating both sides twice to give
+%\begin{equation}
+%T(x) = \frac{\kappa J_s}{D} \int_0^x V(x') dx' + \xi x + d, \label{eqn:steadyTemperature}
+%\end{equation}
+%for unknown constants $\xi$ and $d$. If we apply periodic boundary conditions so that $T(x = 0) = T(x = L)$ for some $T_0$ then,
+%\begin{eqnarray}
+%T(x = 0) &=& 0 + 0 + d \\
+%T(x = L) &=& \frac{-\kappa J_s}{D} \int_0^L V(x') dx' + \xi L + d,
+%\end{eqnarray}
+%this implies that $d = T_0$ and that
+%\begin{equation}
+%\xi = \frac{-\kappa J_s}{D L} \int_0^L V(x') dx'.
+%\end{equation}
+%Putting this all together we find that the temperature in the steady state is simply s straight line, this should be expected because straight lines are steady-state solutions to the heat equation without sources. Interestingly, we find that tilted potentials do not admit steady state solutions when the Smoluchowski equation is coupled to the heat equation. To see why not, consider a probability distribution that is flowing down a tilted potential, the energy of the system is given by equation \ref{eqn:energy}, this energy must be conserved. Normally, the steady-state in the tilted case is defined by the case where the current is constant. If this is the case, then as the probability distribution flows down the potential, the potential energy will decrease which must be compensated by an increase in thermal energy. This increase in thermal energy corresponds to a rise in the temperature, therefore $\frac{\partial T(x, \, t)}{\partial t} \ne 0$. 
 
 %In the steady state, we have:
 %
@@ -277,11 +318,6 @@ All of these boundary conditions were implemented in Julia which is a high level
 The idea behind finite differences is that as the discretization size goes to zero, the numerical approximation should converge on the correct analytical solution. Here we will compare our numerics with some known analytical results as well as performing convergence tests.
 \subsection{A comparison with analytical results}
 
-The Smoluchowski equation has a steady state probability density that takes on the form
-\begin{equation}
-P_{ss}(x) = N \exp{\left(-\int_a^x \frac{V'(x')}{T(x')} dx' \right)}. \label{eqn:analSteadyState}
-\end{equation}
-Figure \ref{fig:smoluchowskiCompare} shows the a simulation where we began the system in the analytically calculated steady state, we then used finite differences to step forward 50,000 steps with $\Delta t = 1 \times 10^{-4}$. After this simulation, we only found a minimal divergence from the steady state.
 \begin{figure}
 	\begin{subfigure}{0.49\textwidth}
 	\includegraphics[width=\columnwidth]{smoluchowskiAnalytic}
@@ -289,10 +325,13 @@ Figure \ref{fig:smoluchowskiCompare} shows the a simulation where we began the s
 	\begin{subfigure}{0.49\textwidth}
 	\includegraphics[width=\columnwidth]{smoluchowskiAnalyticNormDiff}
 	\end{subfigure}
-	\caption{\textbf{Finite differences in the steady state.} The steady state for the system was calculated using equation ~\ref{eqn:analSteadyState}, we start the system off in this state and then simulate the system forward 50,000 steps with $\Delta t = 10^{-4}$ and $\Delta x = 2 \times 10^{-2}$. (a) The analytical steady state with the state after the simulation. (b) The absolute difference between these two vectors. Even after 50,000 steps the system has not deviated from the analytical steady state significantly. \label{fig:smoluchowskiCompare}}
+	\caption{\textbf{Finite differences in the steady state.} The steady state for the system is given by the Boltzmann distribution, we start the system off in this state and then simulate the system forward 50,000 steps with $\Delta t = 10^{-4}$ and $\Delta x = 2 \times 10^{-2}$. (a) The analytical steady state with the state after the simulation. (b) The absolute difference between these two vectors. Even after 50,000 steps the system has not deviated from the analytical steady state significantly. \label{fig:smoluchowskiCompare}}
 \end{figure}
 
-The heat equation can be solved using a Fourier series technique. In the case where there are no sources of heat, we have
+For a confining potential and with $\alpha = 0$, the Smoluchowski equation (equation \ref{eqn:dimensionlessSmoluchowski}) has a steady state probability density given by the Boltzmann distribution
+Figure \ref{fig:smoluchowskiCompare} shows the a simulation where we began the system in the analytically calculated steady state, we then used finite differences to step forward 50,000 steps with $\Delta t = 1 \times 10^{-4}$. After this simulation, we only found a minimal divergence from the steady state.
+
+The heat equation (equation \ref{eqn:dimensionlessHeat}) can be solved using a Fourier series technique. In the case where there are no sources of heat, we have
 \begin{equation}
 \frac{\partial T}{\partial t} = \beta \frac{\partial^2 T}{\partial x^2}.
 \end{equation}
@@ -300,8 +339,7 @@ The initial condition for the temperature will be denoted by,
 \begin{equation}
 T(x, 0) = f(x).
 \end{equation}
-%Lets say that the boundaries are at $x = \pm \infty$ and that the derivative of the temperature is zeros at the boudaries. The solution to the heat equation is given by:
-With boundaries $x=\pm \infty$ with vanishing $\frac{\partial T(x, \, t)}{\partial x}$, the time-dependent solution of the heat equation can be given as:
+Given boundaries at $x=\pm \infty$ with vanishing $\frac{\partial T(x, \, t)}{\partial x}$, the time-dependent solution of the heat equation can be given as:
 
 \begin{equation}
 T(x, t) = \sum_{n=1}^\infty D_n \sin \left(\frac{n \pi x}{L} \right) \exp\left(\frac{-n^2 \pi^2 \beta t}{L^2}\right), \label{eqn:analTemperature}
@@ -319,7 +357,6 @@ then as time goes on, the solution will be given by
 T(x, \, t) = \frac{1}{\sqrt{t + 1}} \exp{ \left(-\frac{x^2}{4 \beta (t + 1)} \right)}.
 \end{equation}
 We can compare these analytical results to the numerical ones obtained through finite differences, this is done in Figures ~\ref{fig:smoluchowskiCompare} and \ref{fig:temperatureCompare}. These figures show that even after many steps, the calculated solution has not deviated from the analytical one.
-
 \begin{figure}
 	\center
 	\begin{subfigure}{0.45\textwidth}
@@ -330,12 +367,9 @@ We can compare these analytical results to the numerical ones obtained through f
 	\end{subfigure}
 	\caption{\textbf{Finite differences on the heat equation.} We simulate a situation where there are no sources for the heat equation and use equation \ref{eqn:analTemperature} to obtain the analytical result we then compare this to the result of finite differences with $\Delta t = 1 \times 10^{-2}$ and $\Delta x = 2 \times 10^{-2}$. \label{fig:temperatureCompare}}
 \end{figure}
+%Lets say that the boundaries are at $x = \pm \infty$ and that the derivative of the temperature is zeros at the boudaries. The solution to the heat equation is given by:
 
 \subsection{Convergence tests}
-If the finite differences methods that we have implemented are correct, then as the discretization size goes to zero, the numerical approximation will converge on the correct solution to the underlying equation being approximated. In the previous section we showed that finite differences approximated the solution very closely in some instances where the analytical result could be obtained. In general, we will not have an analytical solution to compare to but we would still like to be able to quantify the performance of our techniques.
-
-Convergence tests involve decreasing the discretization size and checking whether the numerical solutions converge at all. In Figure \ref{fig:Convergence}, the Smoluchowski equation was simulated while keeping the temperature fixed, each time we halve $\Delta t$ and measure the normed difference between the new result and the previous one.
-
 %Here we will decrease the step size and see whether or not the numerical scheme converges on a particular result
 
 \begin{figure}
@@ -348,6 +382,10 @@ Convergence tests involve decreasing the discretization size and checking whethe
 \caption{\textbf{The convergence of the probability distribution.} As $\Delta t$ is decreased, the spatial discretization $\Delta x$ is kept constant at $6 \times 10^{-3}$. (a) The Smoluchoski equation is simulated forward for 1.0 seconds each line shows the result with a different value of the time step $\Delta t$. (b) The normed difference between each of the successive vectors is calculated and the result is plotted on  a log scale, the slope of this graph is called the convergence rate.}
 \label{fig:Convergence}
 \end{figure}
+
+If the finite differences methods that we have implemented are correct, then as the discretization size goes to zero, the numerical approximation will converge on the correct solution to the underlying equation being approximated. In the previous section we showed that finite differences approximated the solution very closely in some instances where the analytical result could be obtained. In general, we will not have an analytical solution to compare to but we would still like to be able to quantify the performance of our techniques.
+
+Convergence tests involve decreasing the discretization size and checking whether the numerical solutions converge at all. In Figure \ref{fig:Convergence}, the Smoluchowski equation was simulated while keeping the temperature fixed, each time we halve $\Delta t$ and measure the normed difference between the new result and the previous one.
 
 Likewise, we can do convergence tests for the coupled system, for brevity we have only included the results for the evolution of the temperature. All of these plots show that the numerical solution converges exponentially. The convergence tests themselves do not prove that the numerical algorithms properly represent the equations \ref{eqn:dimensionlessSmoluchowski} and \ref{eqn:dimensionlessHeat}, however, combined with our analytical tests, they give us confidence that the numerics do agree with the true solution.
 
