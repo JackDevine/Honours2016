@@ -1,36 +1,35 @@
 \setlength\epigraphwidth{.9\textwidth}
 \epigraph{In that Empire, the Art of Cartography attained such Perfection that the map of a single Province occupied the entirety of a City, and the map of the Empire, the entirety of a Province. In time, those Unconscionable Maps no longer satisfied, and the Cartographers Guilds struck a Map of the Empire whose size was that of the Empire, and which coincided point for point with it. The following Generations, who were not so fond of the Study of Cartography as their Forebears had been, saw that that vast map was Useless, and not without some Pitilessness was it, that they delivered it up to the Inclemencies of Sun and Winters. In the Deserts of the West, still today, there are Tattered Ruins of that Map, inhabited by Animals and Beggars; in all the Land there is no other Relic of the Disciplines of Geography.}{\textbf{Jorge Luis Borges (translated by Andrew Hurley) \\ -- ``On Exactitude in Science''}}
 
-Now that we have set up the framework for our system, we are able to discuss particular phenomena and their relation to nature. Here we will discuss some prototypical problems in stochastic systems and their behavior when considered in the light of equations \ref{eqn:Smoluchowski} and \ref{eqn:TemperatureEvolution}. The point of this chapter is not to explain a particular experiment or the nature of a particular molecular motor in great detail. Nor is our aim to make a general model that may be easily adapted to any situation that the reader might fancy, but instead we aim to extract the physics that is at the essence of equations \ref{eqn:Smoluchowski} and \ref{eqn:TemperatureEvolution}. We will find that our system differs from those previously explored, however the previous behavior may always be recovered by taking the limit of either high specific heat capacity or fast thermal diffusivity as discussed in ~\autoref{dimensionless}.
+Now that we have set up the framework for our system, we are able to discuss particular phenomena and their relation to nature. Here we will discuss some prototypical problems in stochastic systems and their behavior when considered in the light of equations \ref{eqn:Smoluchowski} and \ref{eqn:TemperatureEvolution}. The point of this chapter is not to explain a particular experiment or the nature of a particular molecular motor in great detail. Nor is our aim to make a general model that may be easily adapted to any situation that the reader might fancy. Instead we aim to extract the physics that is at the essence of equations \ref{eqn:Smoluchowski} and \ref{eqn:TemperatureEvolution}. We will find that our system differs from those previously explored, however, the previous behavior may always be recovered by taking the limit of either high specific heat capacity or fast thermal diffusivity as discussed in ~\autoref{dimensionless}.
 
 \section{Bistable potentials} \label{Kramers}
 
 \begin{figure}[tb]
 \includegraphics[width=\columnwidth]{bistablePotential}
-\caption{\textbf{Bistable potential.} In this plot we show the potential used to explore the Kramers rate and the reverse Landauer blowtorch, the potential has local minima at $a$ and $c$ and a maximum at $b$. If we begin with a probability distribution in the upper well, then the distribution will decay into the ground state of the upper well and then begin to decay into the lower well. The rate of flow from the upper well to the lower one will be denoted by $\kappa_+$ and the rate of flow from the lower well into the upper one will be denoted by $\kappa_-$. In order for a Brownian particle to go from $a$ to $c$, it will need to acquire thermal energy $E_B^+$, likewise to go from $c$ to $a$, it will need energy $E_B^-$.}
+\caption{\textbf{Bistable potential.} In this plot we show the potential used to explore the Kramers' rate and the reverse Landauer blowtorch. The potential has local minima at $a$ and $c$ and a maximum at $b$. If we begin with a probability distribution in the upper well, then the distribution will decay into the ground state of the upper well and then begin to decay into the lower well. The rate of flow from the upper well to the lower one will be denoted by $\kappa_+$ and the rate of flow from the lower well into the upper one will be denoted by $\kappa_-$. In order for a Brownian particle to go from $a$ to $c$, it will need to acquire thermal energy $E_B^+$, likewise to go from $c$ to $a$, it will need energy $E_B^-$.}
 \label{fig:bistablePotential}
 \end{figure}
 
 A bistable potential has two stable minima and an intermediate unstable maximum as depicted schematically in Figure \ref{fig:bistablePotential}, these potentials occur in a wide range of applications including digital logic \cite{MyersCelebranoKrishnan2015,Landauer1961}, protein folding \cite{BryngelsonWolynes1989} and chemical reactions \cite{BernePecora1976}. The bistable potential well is one of the simplest ways to approach the Kramers' rate and many other important properties of a stochastic system \cite{MyersCelebranoKrishnan2015,Barcilon1996,SantamariaHolekGadomskiRubi2011}. In the context of Brownian motion, understanding the nature of bistable potentials can help one to understand more complicated potentials comprised of multiple deep wells.
 
-\subsection{Kramer's rate} \label{kramersRate}
+\subsection{Kramers' rate} \label{kramersRate}
 Consider the potential shown in Figure \ref{fig:bistablePotential}, if we begin in a state where we are certain that the particle is in the upper well, then as time passes, we should expect the probability distribution to move from point $a$ over the barrier at $b$ and into the well at point $c$. We will consider the regime where $E^+_B = V(x_b) - V(x_a) \gg k_B T$, where $T$ is constant, in this regime the rate at which the particles flow from $a$ to $c$ is given by the Eyring-Kramers' law \cite{Eyring1935, Kramers1940}.
 
-We will now derive the Kramers' rate analytically for a constant temperature, an example of this derivation involving a slightly different Fokker-Planck equation is shown in Ref \cite{Gardiner2009}. Say that the particle begins at $a$, we are interested in knowing how long it will take to reach a point $x$. This function is denoted by $\tau(x)$ and is called the first passage time \cite{Gardiner2009} the first passage time is associated with a density $f(x, \, t)$. In particular, $f(x, \, t)$ denotes the probability that the particle has not passed the point $x$ after a time $t$, given that the particle started at $c$. We would like to obtain the mean first passage time $\langle \tau(x) \rangle \equiv \int_0^{\infty} t \, f(x, \, t) \, dt$, to do this we consider the dimensionless form of the Smoluchowski equation: 
+We will now derive the Kramers' rate analytically for a constant temperature, an example of this derivation involving a slightly different Fokker-Planck equation is shown in Ref \cite{Gardiner2009}. Say that the particle begins at $a$, we are interested in knowing how long it will take to reach a point $x$. This function is denoted by $\tau(x)$ and is called the first passage time \cite{Gardiner2009} the first passage time is associated with a probability density $f(x, \, t)$. In particular, $f(x, \, t)$ denotes the probability that the particle has not passed the point $x$ after a time $t$, given that the particle started at $c$. We would like to obtain the mean first passage time $\langle \tau(x) \rangle \equiv \int_0^{\infty} t \, f(x, \, t) \, dt$, to do this we consider the dimensionless form of the Smoluchowski equation with constant temperature
 
 \begin{equation}
-\frac{\partial P(x, \, t)}{\partial t} = \frac{\partial}{\partial x} \left(P(x, \, t) \partial_x V + T \partial_x P(x, \, t) \right)
+\frac{\partial P(x, \, t)}{\partial t} = \frac{\partial}{\partial x} \left(P(x, \, t) \partial_x V + T \partial_x P(x, \, t) \right).
 \end{equation}
-we see that $f(x, \, t)$ obeys the same equation of motion as $P(x, \, t)$. Integrating both sides yields:
+We see that $f(x, \, t)$ obeys the same equation of motion as $P(x, \, t)$. Integrating both sides yields
 
 \begin{equation}
-\int_0^{\infty} dt \partial_t f(x, \, t) = \int_0^{\infty} dt \frac{\partial}{\partial x} \left ( f(x, \, t) \partial_x V + T \partial_x f(x, \, t) \right)
+\int_0^{\infty} dt \partial_t f(x, \, t) = \int_0^{\infty} dt \frac{\partial}{\partial x} \left ( f(x, \, t) \partial_x V + T \partial_x f(x, \, t) \right),
 \end{equation}
-
-using the fact that $f(x, \, \infty) = 0$ and $f(x, \, 0) = 1$, we find that:
+using the fact that $f(x, \, \infty) = 0$ and $f(x, \, 0) = 1$, we find that
 
 \begin{equation}
--1 = \frac{\partial}{\partial x} \left (-\langle \tau(x) \rangle \partial_x V + T \frac{ \partial \langle \tau(x) \rangle}{\partial x} \right)
+-1 = \frac{\partial}{\partial x} \left (-\langle \tau(x) \rangle \partial_x V + T \frac{ \partial \langle \tau(x) \rangle}{\partial x} \right).
 \end{equation}
 
 Since time dependence has been removed and we are only in one dimension, this is an ordinary differential equation for $\langle \tau(x) \rangle$. We notice that,
@@ -38,50 +37,46 @@ Since time dependence has been removed and we are only in one dimension, this is
 \begin{equation}
 \frac{d}{dx} \left [\exp \left (-\frac{V(x)}{T} \right) \frac{d}{dx} \langle \tau(x) \rangle \right] = \frac{1}{T} \exp \left (\frac{-V(x)}{T} \right ) \left (- V'(x) \frac{d}{dx} \langle \tau(x) \rangle + \frac{d^2}{dx^2} \langle \tau(x) \rangle \right)
 \end{equation}
-
-meaning that
+therefore
 
 \begin{equation}
-\frac{d}{dx} \left [\exp \left (-\frac{V(x)}{T} \right) \frac{d}{dx} \langle \tau(x) \rangle \right] = -\frac{1}{T} \exp \left(-\frac{V(x)}{T} \right)
+\frac{d}{dx} \left [\exp \left (-\frac{V(x)}{T} \right) \frac{d}{dx} \langle \tau(x) \rangle \right] = -\frac{1}{T} \exp \left(-\frac{V(x)}{T} \right).
 \end{equation}
 Integrating from $-\infty$ to $x$ we have:
 
 \begin{equation}
-\exp \left (-\frac{V(x)}{T} \right) \frac{d}{dx} \langle \tau(x) \rangle = -\frac{1}{T} \int_{-\infty}^x dz \exp \left(-\frac{V(z)}{T} \right)
+\exp \left (-\frac{V(x)}{T} \right) \frac{d}{dx} \langle \tau(x) \rangle = -\frac{1}{T} \int_{-\infty}^x dz \exp \left(-\frac{V(z)}{T} \right).
 \end{equation}
-
-Finally, integrating from $a$ to $x$ and using the fact that $\langle \tau(a) \rangle = 0$, we get:
+Finally, integrating from $a$ to $x$ and using the fact that $\langle \tau(a) \rangle = 0$, we get
 
 \begin{equation}
-\langle \tau(x) \rangle = - \frac{1}{T} \int_a^{x} dy \exp \left(\frac{V(y)}{T} \right) \int_{-\infty}^y dz \exp \left(-\frac{V(z)}{T} \right)
+\langle \tau(x) \rangle = \frac{1}{T} \int_a^{x} dy \exp \left(\frac{V(y)}{T} \right) \int_{-\infty}^y dz \exp \left(-\frac{V(z)}{T} \right).
 \end{equation}
+Because of the shape of the potential, the value of both integrands will decay exponentially as we go out to infinity, therefore we can take the upper and lower limits of both integrals to be $\pm \infty$ respectively. This means that we can carry out the integrals using standard results for Gaussian integrals.
 
-If the particle starts at $a$, then the potential in the first integrand can be approximated by the second order Taylor expansion around $b$ and the second integrand will be approximated by an expansion around $a$, more explicitly:
+If the particle starts at $a$, then the potential in the first integrand can be approximated by the second order Taylor expansion around $b$ and the second integrand will be approximated by an expansion around $a$, more explicitly
 
 \begin{eqnarray}
-V(y) &\approx& V(b) + \frac{V''(b)}{2}(x - b)^2 \\
-V(z) &\approx& V(a) + \frac{V''(a)}{2}(x - a)^2 
+V(y) &\approx& V(b) + \frac{V''(b)}{2}(x - b)^2, \\
+V(z) &\approx& V(a) + \frac{V''(a)}{2}(x - a)^2.
 \end{eqnarray}
 So for the mean first passage time of particles going from $a$ to $c$ we find,
 
 \begin{equation}
-\langle \tau_{a \to c} \rangle = \frac{2 \pi}{\sqrt{-V''(b) V''(a)}} \exp{\left (\frac{V(b) - V(a)}{T} \right)}  \label{eqn:kramersRate}
+\langle \tau_{a \to c} \rangle = \frac{2 \pi}{\sqrt{-V''(b) V''(a)}} \exp{\left (\frac{V(b) - V(a)}{T} \right)}.  \label{eqn:kramersRate}
 \end{equation}
 
 
-The Kramer's rate is given by one over the mean first passage time, we will denote the rate of particles moving from $a$ to $c$ as $\kappa_+$, which is given by:
+The Kramers' rate is given by one over the mean first passage time, we will denote the rate of particles moving from $a$ to $c$ as $\kappa_+$, which is given by
 
 \begin{equation}
-\kappa_+ = \frac{\sqrt{|V''(b) V''(a) |}}{2 \pi} e^\frac{-E_B}{T}
+\kappa_+ = \frac{\sqrt{|V''(b) V''(a) |}}{2 \pi} e^\frac{-E_B}{T}.
 \end{equation}
-
-
 Likewise, there will be a current flowing from $c$ to $a$, we will denote this by $\kappa_-$, once we have calculated both of these rates, the population in the upper well will be given by the differential equation
 
 \begin{equation}
-\frac{d P_+}{dt} = -\kappa_+ P_+(t) + \kappa_- P_-(t)
+\frac{d P_+}{dt} = -\kappa_+ P_+(t) + \kappa_- P_-(t).
 \end{equation}
-
 If we start with the population situated entirely in the upper well, then we get:
 
 \begin{equation}
@@ -94,9 +89,9 @@ P_+(t) = \exp{(-(\kappa_+ - \kappa_- )t)}.
 	\caption{\textbf{The probability of being to the right of the barrier.} Here we see that the system decays into the ground state of the upper well and then begins to decay exponentially into the lower well. At the end of this, the probability of finding the particle on the upper well is almost zero. We can fit an exponential to this decay in order to estimate the Kramers' rate. \label{fig:kramersLinear}}
 \end{figure}
 
-We can also achieve this result numerically by starting the system off in the upper well and simulating forward while calculating the probability that the particle is in the upper well at each step. We then fit an exponential to this data and the fitted rate will be our numerically estimated Kramers rate. To assist with measuring the Kramer's rate, we used Hermite interpolation to create a sixth order polynomial with the desired bistable shape. Specifically, we would allow $V(x)$ to be a general 6th order polynomial and then we would specify the value of the polynomial at the locations $a$, $b$ and $c$, we would also enforce that the first derivative vanished at these locations. This would yield 6 equations which we would solve to give us the coefficients of $V(x)$, an example of such a polynomial is shown in Figure \ref{fig:bistablePotential}. Using these interpolating polynomials, we could keep the locations of the wells fixed while controlling the barrier height $E_B^+$. Once we had a potential, we would place the probability distribution in the upper well and then measure the probability that the particle is in the upper well with time and use this information to obtain the Kramer's rate, as shown in Figure \ref{fig:kramersLinear}.
+We can also achieve this result numerically by starting the system off in the upper well and simulating forward in time while calculating the probability that the particle is in the upper well at each step. We then fit an exponential to this data and the fitted rate will be our numerically estimated Kramers' rate. To assist with measuring the Kramers' rate, we used Hermite interpolation to create a sixth order polynomial with the desired bistable shape. Specifically, we would allow $V(x)$ to be a general 6th order polynomial and then we would specify the value of the polynomial at the locations $a$, $b$ and $c$, we would also enforce that the first derivative vanished at these locations. This would yield 6 equations which we would solve to give us the coefficients of $V(x)$, this procedure has been automated to facilitate rapid exploration of many bi-stable potentials, an example of such a polynomial is shown in Figure \ref{fig:bistablePotential}. Using these interpolating polynomials, we could keep the locations of the wells fixed while controlling the barrier height $E_B^+$. Once we had a potential, we would place the probability distribution in the upper well and then measure the probability that the particle is in the upper well with time and use this information to obtain the Kramers' rate, as shown in Figure \ref{fig:kramersLinear}.
 
-This technique was used to calculate the Kramer's rate for multiple barrier height and potentials and it was found to be in excellent agreement with equation \ref{eqn:kramersRate}. The same technique can be used to obtain the Kramer's rate when the temperature is not held fixed. In this case, the Kramer's rate is sensitive to the boundary conditions imposed on the temperature and on the precise values of $\alpha$ and $\beta$ as shown in Figure \ref{fig:kramersAlphaBeta}.
+This technique was used to calculate the Kramers' rate for multiple barrier height and potentials and it was found to be in excellent agreement with equation \ref{eqn:kramersRate}. The same technique can be used to obtain the Kramers' rate when the temperature is not held fixed. In this case, the Kramers' rate is sensitive to the boundary conditions imposed on the temperature and on the precise values of $\alpha$ and $\beta$ as shown in Figure \ref{fig:kramersAlphaBeta}.
 
 \begin{figure}
 	\center
@@ -104,7 +99,7 @@ This technique was used to calculate the Kramer's rate for multiple barrier heig
 	\caption{\textbf{Kramers' rate} Here we vary $\alpha$ and $\beta$ and perform the same measurements as in Figure \ref{fig:kramersLinear}, the results show that the Kramers' rate varies with $\alpha$ and $\beta$. \label{fig:kramersAlphaBeta}}
 \end{figure}
 
-We therefore conclude that the Kramer's rate is dependent on the heat capacity and thermal diffusivity of the system.
+We therefore conclude that the Kramers' rate is dependent on the heat capacity and thermal diffusivity of the system.
 
 \subsection{The reverse Landauer blowtorch} \label{reverseLandauerBlowtorch}
 
@@ -115,9 +110,9 @@ We therefore conclude that the Kramer's rate is dependent on the heat capacity a
 	\begin{subfigure}{0.49\textwidth}
 		\includegraphics[width=\textwidth]{reverseBlowtorchFinal}
 	\end{subfigure}
-	\caption{\textbf{Reverse Landauer blowtorch effect.} (a) The system starts off in the upper well of a bistable potential with a uniform temperature, we have $\alpha = 8 \cdot 10^{-2}$ and $\beta = 1.5$. (b) As the system decays into the lower well, the bath loses thermal energy in the form of heat, thus we see Brownian cooling as a consequence of the forcing of the potential. In these simulations, Dirichlet boundary conditions were imposed, meaning that the temperature at the ends was held fixed. This means that there was heat flowing through the boundaries, this heat was calculated at each time step and used to update the energy at each time step. This is necessary because the numerics use the energy to normalize the temperature as mentioned in ~\autoref{numerics}. \label{fig:reverseBlowtorch}}
+	\caption{\textbf{Reverse Landauer blowtorch effect.} (a) The system starts off in the upper well of a bistable potential with a uniform temperature, we have $\alpha = 8 \cdot 10^{-2}$ and $\beta = 1.5$. (b) As the system decays into the lower well, the bath loses thermal energy in the form of heat, thus we see Brownian cooling as a consequence of the forcing of the potential. In these simulations Dirichlet boundary conditions were imposed, meaning that the temperature at the ends was held fixed. This means that there was heat flowing through the boundaries. This heat was calculated at each time step and used to update the energy at each time step. This is necessary because the numerics use the energy to normalize the temperature as mentioned in ~\autoref{numerics}. \label{fig:reverseBlowtorch}}
 \end{figure}
-As noted in ~\autoref{landauersBlowtorch}, the relative occupancy of wells depends on the spatial distribution of the temperature, meaning that the temperature can act as a pseudo-force. However, it has been noted that when the movement of the particle has an effect on the environment, the opposite can occur \cite{DasDasBarikEtAl2015}. Concretely, the the reverse Landauer blowtorch effect says that if there is a force applied to a Brownian particle, then the force will cause the particle to induce a temperature gradient in the environment. This is shown in Figure \ref{fig:reverseBlowtorch}, in this figure, the temperature is held fixed at the boundaries, which we interpret physically as meaning that the domain is embedded in a much larger system that is held at a fixed temperature. Another example of a stochastic process that has an effect on the temperature of the environment is the Soret-Dufour effect which has been observed experimentally \cite{Onsager1931,HortLinzLuecke1992,PiazzaGuarino2002}, in the Soret effect or the Dufour effect, a non-equilibrium concentration of molecules is capable of producing a temperature gradient. Ref \cite{Santamaria-HolekGadomskiRubi2011} showed that thermal gradients due to the Soret effect have to be taken into account to explain measurements performed on protein crystal growth. Despite the knowledge of these self-induced temperature gradients, to our knowledge, Figure \ref{fig:reverseBlowtorch} is the first concrete demonstration of Brownian cooling as described by a self consistent theoretical model.
+As noted in ~\autoref{landauersBlowtorch}, the relative occupancy of wells depends on the spatial distribution of the temperature, meaning that the temperature can act as a pseudo-force. However, it has been noted that when the movement of the particle has an effect on the environment, the opposite can occur \cite{DasDasBarikEtAl2015}. Concretely, the the reverse Landauer blowtorch effect says that if there is a force applied to a Brownian particle, then the force will cause the particle to induce a temperature gradient in the environment. This is shown in Figure \ref{fig:reverseBlowtorch}, in this figure, the temperature is held fixed at the boundaries, which we interpret physically as meaning that the domain is embedded in a much larger system that is held at a fixed temperature. Another example of a stochastic process that has an effect on the temperature of the environment is the Soret-Dufour effect, which has been observed experimentally \cite{Onsager1931,HortLinzLuecke1992,PiazzaGuarino2002}. In the Soret effect or the Dufour effect, a non-equilibrium concentration of molecules is capable of producing a temperature gradient. Ref \cite{Santamaria-HolekGadomskiRubi2011} showed that thermal gradients due to the Soret effect have to be taken into account to explain measurements performed on protein crystal growth. Despite the knowledge of these self-induced temperature gradients, to our knowledge, Figure \ref{fig:reverseBlowtorch} is the first concrete demonstration of Brownian cooling as described by a self consistent theoretical model.
 
 %they have moved into the lower well they will cause the upper well to become colder in a process called Brownian cooling, a simulation of this process is shown in Figure \ref{fig:reverseBlowtorch}. In this paper, the authors treat the system stochastically and are not able to model the diffusion of temperature. This is the same as our model with $\beta$ in equation \ref{eqn:dimensionlessHeat} set to zero. 
 
@@ -136,7 +131,7 @@ Despite not being able to easily calculate the steady state for titled periodic 
 	\caption{\textbf{Tilted periodic potential with shallow wells.} Imposing Dirichlet boundary conditions maintaining that the temperature is equal to 0.8 at the boundaries (temperature is dimensionless), we have $\alpha = 1 \cdot 10^{-4}$ and $\beta = 1 \cdot 10^{-2}$. (a) The system begins with a uniform temperature with a Gaussian probability distribution located near the top of the potential. (b) after some time, the particle has moved down the potential, removing heat from the environment as it overcomes the periodic barriers provided by the potential. We notice that unlike Figure \ref{fig:Schematic}, the probability distribution does not decay into Gaussian distributions in the wells, instead the temperature gradients cause the probability distribution to take on a very complicated form. \label{fig:tiltedPeriodic}}
 \end{figure}
 
-In order to quantify the effect of $\alpha$ and $\beta$ on titled periodic wells we will turn to potentials that have deep wells, in these potentials the probability distribution will be very strongly localized at the bottom of the wells and will be hopping from well to well as explained in ~\autoref{kramersRate}. As the particle hops between wells, it will reduce the temperature in the well that it is currently situated in. If $\alpha$ is made large enough, then the Landauer blowtorch effect may cause the particle to hop back into the well that it came from. This is shown in Figure \ref{fig:tiltedPeriodicQuant} and Figure \ref{fig:alphaCritical}, here we see that there is a critical value of $\alpha$.
+In order to quantify the effect of $\alpha$ and $\beta$ on titled periodic wells we will turn to potentials that have deep wells. In these potentials the probability distribution will be very strongly localized at the bottom of the wells and will be hopping from well to well as explained in ~\autoref{kramersRate}. As the particle hops between wells, it will reduce the temperature in the well that it is currently situated in. If $\alpha$ is made large enough, then the Landauer blowtorch effect may cause the particle to hop back into the well that it came from. This is shown in Figures \ref{fig:tiltedPeriodicQuant} and \ref{fig:alphaCritical}, here we see that there is a critical value of $\alpha$.
 \begin{figure}
 	\begin{subfigure}{0.49\textwidth}
 		\includegraphics[width=\textwidth]{tiltedPeriodicQuantInit}
@@ -154,9 +149,9 @@ In order to quantify the effect of $\alpha$ and $\beta$ on titled periodic wells
 		\includegraphics[width=\textwidth]{tiltedPeriodicQuantWellProbs}
 		\caption{}
 	\end{subfigure}
-	\caption{\textbf{Stalling in the tilted periodic potential} $\alpha = 8.3 \times 10^{-5}$ and $\beta = 1 \times 10^{-2}$ (a) The initial configuration, we have a tilted periodic potential with deep wells and a constant temperature. (b) Even after a long time the probability density is not able to completely leak out of it's initial well, this is because the particle has cooled down the initial well therefore making this state more favorable due to the Landauer blowtorch effect. (c) Population of the wells, for clarity we have only included the initial well and the wells adjacent to it. The particle begins entirely located in the upper well and begins to leak into the adjacent wells, at about 15 dimensionless time units, the temperature of the initial well is so low that the particle actually moves against the potential gradient. (d) Temperature of the wells, we simply calculated the mean temperature of each well. \label{fig:tiltedPeriodicQuant}}
+	\caption{\textbf{Stalling in the tilted periodic potential} $\alpha = 8.3 \times 10^{-5}$ and $\beta = 1 \times 10^{-2}$ (a) The initial configuration. We have a tilted periodic potential with deep wells and a constant temperature. (b) Even after a long time the probability density is not able to completely leak out of it's initial well, this is because the particle has cooled down the initial well therefore making this state more favorable due to the Landauer blowtorch effect. (c) Population of the wells, for clarity we have only included the initial well and the wells adjacent to it. The particle begins entirely located in the upper well and begins to leak into the adjacent wells, at about 15 dimensionless time units, the temperature of the initial well is so low that the particle actually moves against the potential gradient. (d) Temperature of the wells, we simply calculated the mean temperature of each well. \label{fig:tiltedPeriodicQuant}}
 \end{figure}
-Below this critical value, the self-induced temperature gradient will not be substantial so the particle will hop out of the higher well and drift down the potential. However, if $\alpha$ is above the critical value, then the self-induced temperature gradient caused by the movement of the particle will cause the particle to actually move back into the well that it came from, at the same time causing the temperature of that well to decrease. Eventually the particle reaches a steady state where the temperature gradient causing the particle to move against the potential is exactly canceled by the force of the potential itself. When one is at the critical value of $\alpha$, the probability distribution does not fully leak out of the initial well or hop back into it and instead will be constantly balancing between these two limits. This critical value is highly sensitive to $\alpha$, the probability may remain flat for quite some time only to either hop down to the lower well or hop back up into the higher well. In the context of molecular motors, values of $\alpha$ greater than the critical value would correspond to a stall.
+Below this critical value, the self-induced temperature gradient will not be substantial so the particle will hop out of the higher well and drift down the potential. If $\alpha$ is above the critical value, however, then the self-induced temperature gradient caused by the movement of the particle will cause the particle to actually move back into the well that it came from, at the same time causing the temperature of that well to decrease. Eventually the particle reaches a steady state where the temperature gradient causing the particle to move against the potential is exactly canceled by the force of the potential itself. When one is at the critical value of $\alpha$, the probability distribution does not fully leak out of the initial well or hop back into it and instead will be constantly balancing between these two limits. This critical value is highly sensitive to $\alpha$, the probability may remain flat for quite some time only to either hop down to the lower well or hop back up into the higher well. In the context of molecular motors, values of $\alpha$ greater than the critical value would correspond to a stall.
 
 \begin{figure}
 	\begin{minipage}{0.49\textwidth}

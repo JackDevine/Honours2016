@@ -115,43 +115,43 @@ Putting this all together we find that the temperature in the steady state is si
 %	NUMERICS
 %----------------------------------------------------------------------------------------
 \section{Finite differences}  \label{numerics}
-In order to explore the dynamics of equations \ref{eqn:Smoluchowski} and \ref{eqn:TemperatureEvolution} we will need to resort to numerical techniques. The one dimensional equations can be solved on a discrete grid by using the finite differences method, the main idea behind this strategy is to approximate derivatives with equations of the form:
+In order to explore the dynamics of equations \ref{eqn:Smoluchowski} and \ref{eqn:TemperatureEvolution} we will need to resort to numerical techniques. The one dimensional equations can be solved on a discrete grid by using the finite differences method. The main idea behind this strategy is to approximate derivatives with equations of the form
 
 \begin{equation}
-\frac{d f}{d x} \approx \frac{f(x - h) - f(x + h)}{2h}
+\frac{d f}{d x} \approx \frac{f(x - h) - f(x + h)}{2h},
 \end{equation}
 for some small $h$, likewise the second derivative of a function is approximated with
 \begin{equation}
-\frac{d^2 f}{d x^2} \approx \frac{f(x - h) - 2f(x) + f(x + h)}{h^2}
+\frac{d^2 f}{d x^2} \approx \frac{f(x - h) - 2f(x) + f(x + h)}{h^2},
 \end{equation}
-In our simulations, we will use the Crank-Nicolson scheme \cite{Crank1996,Press2007} to solve the equations. From now on, we will use the notation that $F(j \Delta x, n \Delta t) = F_j^n$, the key equation for the Crank-Nicolson scheme is:
+In our simulations, we will use the Crank-Nicolson scheme \cite{Crank1996,Press2007} to solve the equations. From now on, we will use the notation that $F(j \Delta x, n \Delta t) = F_j^n$, the key equation for the Crank-Nicolson scheme is
 \begin{equation}
-\frac{P_j^{n+1} - P_j^n}{\Delta t} = \frac{1}{2}(F_j^{n+1} + F_j^n)
+\frac{P_j^{n+1} - P_j^n}{\Delta t} = \frac{1}{2}(F_j^{n+1} + F_j^n),  \label{eqn:crankNicolson}
 \end{equation}
-where $F$ represents the right-hand side of the equation that we are doing finite differences on. This is an implicit set of equations that we will need to solve, in particular one may notice that $F$ needs to be estimated at the future time in order for the equation to make sense. We will linearize the problem by assuming that the quantities of interest do not change by much in one time step.
+where $F$ represents the right-hand side of the equation that we are doing finite differences on. Equation \ref{eqn:crankNicolson} represents the average of taking one Euler step forwards and on Euler step backwards. This is an implicit set of equations that we will need to solve. In particular, one may notice that $F$ needs to be estimated at the future time in order for the equation to make sense. We will linearize the problem by assuming that the quantities of interest do not change by much in one time step.
 
 By applying finite differences to the dimensionless Smoluchowski equation (equation \ref{eqn:dimensionlessSmoluchowski}), we find that:
 \begin{multline}
 F_j^{i} = \frac{P^i_{j+1} \partial V^i_{j+1} - P^i_{j-1} \partial V^i_{j-1}}{2 \Delta x} + \frac{T^i_{j+1} - T^i_{j-1}}{2 \Delta x} \frac{P^i_{j+1} - P^i_{j-1}}{2 \Delta x} \\
- + T^i_j \frac{}{} \frac{P^i_{j+1}- 2P^i_j + P^i_{j-1}}{\Delta x^2} 
+ + T^i_j \frac{}{} \frac{P^i_{j+1}- 2P^i_j + P^i_{j-1}}{\Delta x^2},
 \end{multline}
 where we omitted the hats for notational convenience.
 We make the following definitions:
 \begin{align*}
-a_j^{n+1} &= \frac{-2 T^{n+1}_j}{\Delta x^2} \\
-b_j^{n+1} &=  \frac{\partial_x V^{n+1}_{j+1}}{2\Delta x} + \frac{T^{n+1}_{j+1} - T^{n+1}_{j-1}}{4 \Delta x^2} \\
-c_j^{n+1} &= -\frac{\partial_x V^{n+1}_{j-1}}{2\Delta x}  - \frac{T^{n+1}_{j+1} - T^{n+1}_{j-1}}{4 \Delta x^2} \\ 
-a_j^{n} &= \frac{-2 T^{n}_j}{\Delta x^2} \\
-b_j^{n} &=  \frac{\partial_x V^{n}_{j+1}}{2\Delta x} + \frac{T^{n}_{j+1} - T^{n}_{j-1}}{4 \Delta x^2} \\
-c_j^{n} &= -\frac{\partial_x V^{n}_{j-1}}{2\Delta x}  - \frac{T^{n}_{j+1} - T^{n}_{j-1}}{4 \Delta x^2} \numberthis
+a_j^{n+1} &= \frac{-2 T^{n+1}_j}{\Delta x^2}, \\
+b_j^{n+1} &=  \frac{\partial_x V^{n+1}_{j+1}}{2\Delta x} + \frac{T^{n+1}_{j+1} - T^{n+1}_{j-1}}{4 \Delta x^2}, \\
+c_j^{n+1} &= -\frac{\partial_x V^{n+1}_{j-1}}{2\Delta x}  - \frac{T^{n+1}_{j+1} - T^{n+1}_{j-1}}{4 \Delta x^2}, \\ 
+a_j^{n} &= \frac{-2 T^{n}_j}{\Delta x^2}, \\
+b_j^{n} &=  \frac{\partial_x V^{n}_{j+1}}{2\Delta x} + \frac{T^{n}_{j+1} - T^{n}_{j-1}}{4 \Delta x^2}, \\
+c_j^{n} &= -\frac{\partial_x V^{n}_{j-1}}{2\Delta x}  - \frac{T^{n}_{j+1} - T^{n}_{j-1}}{4 \Delta x^2}, \numberthis
 \end{align*}
 With these definitions, the Crank-Nicolson scheme can be written down as follows:
 \begin{multline}
  -\frac{\Delta t}{2}a_j^{n+1}P_{j-1}^{n+1} + \left (1 - \frac{\Delta t}{2}b_j^{n+1} \right) P_j^{n+1} - \frac{\Delta t}{2} c_j^{n+1} P_{j+1}^{n+1} \\
  = a_j^n P_{j-1}^{n}
-+ \left (1 + \frac{\Delta t}{2}b_j^n \right) P_j^{n}  + \frac{\Delta t}{2} c_j^n P_{j+1}^{n}
++ \left (1 + \frac{\Delta t}{2}b_j^n \right) P_j^{n}  + \frac{\Delta t}{2} c_j^n P_{j+1}^{n}.
 \end{multline}
-This equation can be written in matrix form by defining the following matrices:
+This equation can be written in matrix form by defining the following matrices
 \begin{equation}
 A =
 \begin{bmatrix}
@@ -208,34 +208,33 @@ P_J^{n}
 \end{equation}
 With these matrices, the equation now becomes,
 \begin{equation}
-\left (\mathbb{1} - \frac{\Delta t}{2}A \right) \cdot P^{n+1} = \left (\mathbb{1} + \frac{\Delta t}{2}B \right) \cdot P^n
+\left (\mathbb{1} - \frac{\Delta t}{2}A \right) \cdot P^{n+1} = \left (\mathbb{1} + \frac{\Delta t}{2}B \right) \cdot P^n,
 \end{equation}
 we interpret this equation as saying that half of a backwards Euler step acting on $P^{n+1}$ is equal to half of a forward Euler step acting on $P^n$. We write the equation to step $P$ forward one time step as
 \begin{equation}
-P^{n+1} = \frac{\mathbb{1} + \frac{\Delta t}{2}B}{\mathbb{1} - \frac{\Delta t}{2}A} P^n
+P^{n+1} = \frac{\mathbb{1} + \frac{\Delta t}{2}B}{\mathbb{1} - \frac{\Delta t}{2}A} P^n.
 \end{equation}
 Each time that we step forward using this equation we will be out by a factor, this means that at each step we will need to renormalize using the equation $\int P(x) dx = 1$. If we do not apply this normalization, then the norm of our vector will change dramatically during a simulation. In order to estimate the integrals involved, we used Simpson's rule of integration.
 
 Likewise, we can apply the Crank-Nicolson scheme to the heat equation, (eq \ref{eqn:dimensionlessHeat}), by looking at the right-hand side of this equation, we find that
 
 \begin{equation}
-F_j^i = -\alpha \left (P_j^i (\partial_x V_j^i)^2 + T_j^i \frac{P_{j+1}^i - P_{j-1}^i }{2 \Delta x}\partial_x V_j^i  \right) + \beta \frac{T_{j+1}^i - 2T_j^i + T_{j-1}^i}{\Delta x^2}
+F_j^i = -\alpha \left (P_j^i (\partial_x V_j^i)^2 + T_j^i \frac{P_{j+1}^i - P_{j-1}^i }{2 \Delta x}\partial_x V_j^i  \right) + \beta \frac{T_{j+1}^i - 2T_j^i + T_{j-1}^i}{\Delta x^2}.
 \end{equation}
 
 Just like the discretized Smoluchowski equation, these equations can be written in matrix form. The temperature is normalized by assuming that the energy remains fixed, this will be true as long as no heat or current flows through the boundaries, i.e. $J(x=a) = 0 = J(x = b)$ and $\frac{\partial T}{\partial x} \rvert_a = 0 = \frac{\partial T}{\partial x} \rvert_b$. In this case, the energy is constant and is given by $E = \int P(x) V(x) dx + c_p \int T(x) dx$, so each time that we step the temperature forward, we have to calculate the potential and thermal energy and then scale the temperature so that the total energy remains fixed.
 
 Fortunately the matrices that we are dealing with are very sparse, so the program used to solve these equations can save on memory by calling sparse matrix libraries.
 
-Implementing these boundary conditions requires that we change our matrices $A$ and $B$, specifically we will need to modify the top and bottom rows. The reason that we can do this is because a matrix represents a system of equations, the first and last rows of the matrices effect the first and last components of the vectors that we are doing finite differences on. For each boundary condition, we need to make sure that the equations represented by our first and last rows reflect our desired boundary conditions.
+Implementing these boundary conditions requires that we change our matrices $A$ and $B$. Specifically, we will need to modify the top and bottom rows. The reason that we can do this is because a matrix represents a system of equations. The first and last rows of the matrices effect the first and last components of the vectors that we are doing finite differences on. For each boundary condition, we need to make sure that the equations represented by our first and last rows reflect our desired boundary conditions.
 
 \subsubsection{Dirichlet boundary conditions}
-Imagine that we have a $n \times n$ vector $u$ that we want to step forward with finite differences while keeping the first and last components of $u$ fixed. The equation for stepping $u$ forward is given by:
+Imagine that we have a $n \times 1$ vector $u$ that we want to step forward with finite differences while keeping the first and last components of $u$ fixed. The equation for stepping $u$ forward is given by
 
 \begin{equation}
-u^{n+1} = \frac{\mathbb{1} + \frac{\Delta t}{2} B}{\mathbb{1} - \frac{\Delta t}{2} A} u^n
+u^{n+1} = \frac{\mathbb{1} + \frac{\Delta t}{2} B}{\mathbb{1} - \frac{\Delta t}{2} A} u^n,
 \end{equation}
-
-This equation will certainly affect the first and last components of $u$, in order to avoid this, we need to make sure that the first and last rows of $(\mathbb{1} + \frac{\Delta t}{2} B)$ and $(\mathbb{1} - \frac{\Delta t}{2} A)$ are the same as the first and last rows of the identity matrix.  One must take care when using the energy to normalize when considering Dirichlet boundary conditions, this is because the energy in the system is no longer conserved. To account for this, we calculate the heat flowing through the boundaries at each step and subtract this from the energy of the system before we normalized the system.
+this equation will certainly affect the first and last components of $u$. In order to avoid this, we need to make sure that the first and last rows of $(\mathbb{1} + \frac{\Delta t}{2} B)$ and $(\mathbb{1} - \frac{\Delta t}{2} A)$ are the same as the first and last rows of the identity matrix.  One must take care when using the energy to normalize when considering Dirichlet boundary conditions, because the energy in the system is no longer conserved. To account for this, we calculate the heat flowing through the boundaries at each step and subtract this from the energy of the system before we normalized the system.
 
 \subsubsection{Neumann boundary conditions}
 The derivative at the boundaries can be made to be zero at the boundaries by making sure that the first and last rows of our matrices represent the equations $u_J - u_{J-1} = 0$ and $u_0 - u_1 = 0$ respectively. This can be done by replacing the first row with $\{ 1, \, -1, \, 0, \, \dots \, , \, 0 \}$ and the last row with $\{0, \, 0, \, \dots, \, 0, \, -1, \, 1 \}$.
@@ -255,11 +254,11 @@ A =
 			     &                   &                   &                  &           &                                         &           \\
 	0                &                   & \dots           &                   &  c_{J-2}^{n+1} & a_{J-1}^{n+1}  & b_J^{n+1} \\
 	b_J^{n+1}                &                   & \dots           &                   &                         &  c_{J-1}^{n+1} & a_J^{n+1}
-\end{bmatrix}
+\end{bmatrix}.
 \end{equation}
-This is equivalent to stretching out the matrix in a periodic fashion, we note that the matrix for periodic boundary conditions cannot be written in tridiagonal form. When the matrices involved are tridiagonal, we can inform the compiler of our program so that it can used highly optimized routines for solving the equations. However, in the case of periodic boundary conditions, we simply inform the compiler that the matrices are sparse, this means that we do not get the same speed for periodic boundary conditions as we do for other boundary conditions.
+This is equivalent to stretching out the matrix in a periodic fashion, we note that the matrix for periodic boundary conditions cannot be written in tridiagonal form. When the matrices involved are tridiagonal, we can inform the compiler of our program so that it can used highly optimized routines for solving the equations. In the case of periodic boundary conditions, however, we simply inform the compiler that the matrices are sparse, this means that we do not get the same speed for periodic boundary conditions as we do for other boundary conditions.
 
-All of these boundary conditions were implemented in Julia which is a high level language for scientific computing \cite{Bezanson2014}. A function was made so that the user can decide which boundary condition that they want through a keyword argument and then the program will implement finite differences for that boundary type. An example of finite differencing with periodic boundary conditions is shown in Figure \ref{fig:periodicSimulation}
+All of these boundary conditions were implemented in Julia which is a high level open source language for scientific computing \cite{Bezanson2014}. A function was made so that the user can decide which boundary condition that they want through a keyword argument and then the program will implement finite differences for that boundary type. An example of finite differencing with periodic boundary conditions is shown in Figure \ref{fig:periodicSimulation}.
 \begin{figure}
 %	\center
 %	\textbf{Periodic boundary conditions}
@@ -270,7 +269,7 @@ All of these boundary conditions were implemented in Julia which is a high level
 	\begin{subfigure}{0.49\textwidth}
 		\includegraphics[width=\textwidth]{PeriodicFinal}
 	\end{subfigure}
-	\caption{\textbf{An example of a periodic system visualized in one dimension.} A simulation of equations \ref{eqn:dimensionlessSmoluchowski} and \ref{eqn:dimensionlessHeat} using finite differences, $\Delta t = 1 \times 10^{-4}$ and the number of points on the x-axis is 1000, all quantities are dimensionless, this simulation involved 30,000 steps. We have $\alpha = 5 \cdot 10^{-3}$ and $\beta = 1 \cdot 10^{-2}$ we are imposing periodic boundary conditions on both the temperature and the probability distribution. \label{fig:periodicSimulation}}
+	\caption{\textbf{An example of a periodic system visualized in one dimension.} A simulation of equations \ref{eqn:dimensionlessSmoluchowski} and \ref{eqn:dimensionlessHeat} using finite differences, $\Delta t = 1 \times 10^{-4}$ and the number of points on the x-axis is 1000, all quantities are dimensionless, this simulation involved 30,000 steps. We have $\alpha = 5 \times 10^{-3}$ and $\beta = 1 \times 10^{-2}$ we are imposing periodic boundary conditions on both the temperature and the probability distribution. \label{fig:periodicSimulation}}
 \end{figure}
 
 \section{Testing the numerics}
@@ -280,10 +279,9 @@ The idea behind finite differences is that as the discretization size goes to ze
 
 The Smoluchowski equation has a steady state probability density that takes on the form
 \begin{equation}
-P_{ss}(x) = N \exp{\left(-\int_a^x \frac{V'(x')}{T(x')} dx' \right)} \label{eqn:analSteadyState}
+P_{ss}(x) = N \exp{\left(-\int_a^x \frac{V'(x')}{T(x')} dx' \right)}. \label{eqn:analSteadyState}
 \end{equation}
-
-Figure \ref{fig:smoluchowskiCompare} shows the a simulation where we began the system in the analytically calculated steady state, we then used finite differences to step forward 50,000 steps with $\Delta t = 10^{-4}$. After this simulation, we only found a minimal divergence from the steady state.
+Figure \ref{fig:smoluchowskiCompare} shows the a simulation where we began the system in the analytically calculated steady state, we then used finite differences to step forward 50,000 steps with $\Delta t = 1 \times 10^{-4}$. After this simulation, we only found a minimal divergence from the steady state.
 \begin{figure}
 	\begin{subfigure}{0.49\textwidth}
 	\includegraphics[width=\columnwidth]{smoluchowskiAnalytic}
@@ -291,35 +289,34 @@ Figure \ref{fig:smoluchowskiCompare} shows the a simulation where we began the s
 	\begin{subfigure}{0.49\textwidth}
 	\includegraphics[width=\columnwidth]{smoluchowskiAnalyticNormDiff}
 	\end{subfigure}
-	\caption{\textbf{Finite differences in the steady state.} The steady state for the system was calculated using equation ~\ref{eqn:analSteadyState}, we start the system off in this state and then simulate the system forward 50,000 steps with $\Delta t = 10^{-4}$ and $\Delta x = 0.02$. (a) shows the analytical steady state with the state after the simulation, (b) shows the absolute difference between these two vectors. Even after 50,000 steps the system has not deviated from the analytical steady state significantly. \label{fig:smoluchowskiCompare}}
+	\caption{\textbf{Finite differences in the steady state.} The steady state for the system was calculated using equation ~\ref{eqn:analSteadyState}, we start the system off in this state and then simulate the system forward 50,000 steps with $\Delta t = 10^{-4}$ and $\Delta x = 2 \times 10^{-2}$. (a) The analytical steady state with the state after the simulation. (b) The absolute difference between these two vectors. Even after 50,000 steps the system has not deviated from the analytical steady state significantly. \label{fig:smoluchowskiCompare}}
 \end{figure}
 
-The heat equation can be solved using a Fourier series technique, in the case where there are no sources of heat, we have
+The heat equation can be solved using a Fourier series technique. In the case where there are no sources of heat, we have
 \begin{equation}
-\frac{\partial T}{\partial t} = \beta \frac{\partial^2 T}{\partial x^2}
+\frac{\partial T}{\partial t} = \beta \frac{\partial^2 T}{\partial x^2}.
 \end{equation}
-the initial condition for the temperature will be denoted by,
+The initial condition for the temperature will be denoted by,
 \begin{equation}
-T(x, 0) = f(x)
+T(x, 0) = f(x).
 \end{equation}
-
 %Lets say that the boundaries are at $x = \pm \infty$ and that the derivative of the temperature is zeros at the boudaries. The solution to the heat equation is given by:
 With boundaries $x=\pm \infty$ with vanishing $\frac{\partial T(x, \, t)}{\partial x}$, the time-dependent solution of the heat equation can be given as:
 
 \begin{equation}
-T(x, t) = \sum_{n=1}^\infty D_n \sin \left(\frac{n \pi x}{L} \right) \exp\left(\frac{-n^2 \pi^2 \beta t}{L^2}\right)  \label{eqn:analTemperature}
+T(x, t) = \sum_{n=1}^\infty D_n \sin \left(\frac{n \pi x}{L} \right) \exp\left(\frac{-n^2 \pi^2 \beta t}{L^2}\right), \label{eqn:analTemperature}
 \end{equation}
 where
 \begin{equation}
-D_n = \frac{2}{L} \int_0^L f(x) \sin \left(\frac{n \pi x}{L} \right) dx
+D_n = \frac{2}{L} \int_0^L f(x) \sin \left(\frac{n \pi x}{L} \right) dx.
 \end{equation}
-Say that we begin with a Gaussian function for the temperature, so that:
+Say that we begin with a Gaussian function for the temperature, such that
 \begin{equation}
-T(x, \, 0) = f(x) =  \exp{\left (-\frac{x^2}{4 \beta} \right)}
+T(x, \, 0) = f(x) =  \exp{\left (-\frac{x^2}{4 \beta} \right)},
 \end{equation}
-then as time goes on, the solution will be given by:
+then as time goes on, the solution will be given by
 \begin{equation}
-T(x, \, t) = \frac{1}{\sqrt{t + 1}} \exp{ \left(-\frac{x^2}{4 \beta (t + 1)} \right)}
+T(x, \, t) = \frac{1}{\sqrt{t + 1}} \exp{ \left(-\frac{x^2}{4 \beta (t + 1)} \right)}.
 \end{equation}
 We can compare these analytical results to the numerical ones obtained through finite differences, this is done in Figures ~\ref{fig:smoluchowskiCompare} and \ref{fig:temperatureCompare}. These figures show that even after many steps, the calculated solution has not deviated from the analytical one.
 
@@ -331,7 +328,7 @@ We can compare these analytical results to the numerical ones obtained through f
 	\begin{subfigure}{0.45\textwidth}
 	\includegraphics[width=\columnwidth]{temperatureAbsDiff}
 	\end{subfigure}
-	\caption{\textbf{Finite differences on the heat equation.} We simulate a situation where there are no sources for the heat equation and use equation \ref{eqn:analTemperature} to obtain the analytical result we then compare this to the result of finite differences with $\Delta t = 10^{-2}$ and $\Delta x = 0.02$. \label{fig:temperatureCompare}}
+	\caption{\textbf{Finite differences on the heat equation.} We simulate a situation where there are no sources for the heat equation and use equation \ref{eqn:analTemperature} to obtain the analytical result we then compare this to the result of finite differences with $\Delta t = 1 \times 10^{-2}$ and $\Delta x = 2 \times 10^{-2}$. \label{fig:temperatureCompare}}
 \end{figure}
 
 \subsection{Convergence tests}
@@ -348,11 +345,11 @@ Convergence tests involve decreasing the discretization size and checking whethe
 	\begin{subfigure}{0.49\textwidth}
 		\includegraphics[width=\columnwidth]{probabilityConvergenceRate}
 	\end{subfigure}
-\caption{\textbf{The convergence of the probability distribution.} As $\Delta t$ is decreased, the spatial discretization $\Delta x$ is kept constant at 0.006. (a) the Smoluchoski equation is simulated forward for 1.0 seconds each line shows the result with a different value of the time step $\Delta t$. (b) the normed difference between each of the successive vectors is calculated and the result is plotted on  a log scale, the slope of this graph is called the convergence rate.}
+\caption{\textbf{The convergence of the probability distribution.} As $\Delta t$ is decreased, the spatial discretization $\Delta x$ is kept constant at $6 \times 10^{-3}$. (a) The Smoluchoski equation is simulated forward for 1.0 seconds each line shows the result with a different value of the time step $\Delta t$. (b) The normed difference between each of the successive vectors is calculated and the result is plotted on  a log scale, the slope of this graph is called the convergence rate.}
 \label{fig:Convergence}
 \end{figure}
 
-Likewise, we can do convergence tests for the coupled system, for brevity we have only included the results for the evolution of the temperature. All of these plots show that the numerical solution converges exponentially, the convergence tests themselves do not prove that the numerical algorithms properly represent the equations \ref{eqn:dimensionlessSmoluchowski} and \ref{eqn:dimensionlessHeat}. However, combined with our analytical tests, they give us confidence that the numerics do agree with the true solution.
+Likewise, we can do convergence tests for the coupled system, for brevity we have only included the results for the evolution of the temperature. All of these plots show that the numerical solution converges exponentially. The convergence tests themselves do not prove that the numerical algorithms properly represent the equations \ref{eqn:dimensionlessSmoluchowski} and \ref{eqn:dimensionlessHeat}, however, combined with our analytical tests, they give us confidence that the numerics do agree with the true solution.
 
 \begin{figure}
 	\begin{subfigure}{0.49\textwidth}
@@ -392,5 +389,5 @@ One can also perform convergence tests by increasing the number of points, from 
 		\includegraphics[width=\columnwidth]{temperatureConvergenceSpace}
 		\caption{}
 	\end{subfigure}
-\caption{\textbf{Convergence tests for $\Delta x$.} $\Delta t$ is held fixed at $1 \times 10^{-5}$ and $\alpha = 5 \times 10^{-4}$ and $\beta = 1 \times 10^{-2}$. (a) The initial configuration of the system, both the potential and the initial temperature are chosen to be complicated functions with large derivatives so that we can see how sensitive the numerics are to gradients. (b, c) The system after 40,000 steps forward in time, here we have not used the filling plot style to show the probability distribution so that one can see the difference between the different lines. (d) For each vector that was found through finite differences, we calculate its difference from the previous one, the $x$ axis shows the length of each of the vectors. The $y$ axis shows the log of these differences (e) Convergence of the temperature with an increasing number of points. \label{fig:spaceConvergence}}
+\caption{\textbf{Convergence tests for $\Delta x$.} $\Delta t$ is held fixed at $1 \times 10^{-5}$ and $\alpha = 5 \times 10^{-4}$ and $\beta = 1 \times 10^{-2}$. (a) The initial configuration of the system, both the potential and the initial temperature are chosen to be functions with large derivatives so that we can see how sensitive the numerics are to gradients. (b, c) The system after 40,000 steps forward in time, here we have not used the filling plot style to show the probability distribution so that one can see the difference between the different lines. (d) For each vector that was found through finite differences, we calculate its difference from the previous one, the $x$ axis shows the length of each of the vectors. The $y$ axis shows the log of these differences (e) Convergence of the temperature with an increasing number of points. \label{fig:spaceConvergence}}
 \end{figure}
