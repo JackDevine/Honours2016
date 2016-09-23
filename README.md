@@ -1,5 +1,5 @@
 # Honours2016
-Honours project on Brownian dynamics, the source code is in the `src` directory and includes unit tests for the important functions in the project.
+Honours project on Brownian dynamics, the source code is in the `src` directory and includes unit tests for the important functions in the project, the most important file is called finiteDifferences.jl, here you will find my implementation pf finite differences.
 
 In the `notebooks` directory, you will find some notebooks that walk through examples on how to use the code and some important results from the project.
 
