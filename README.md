@@ -89,3 +89,4 @@ ylabel("Potential, Probability, temperature", fontsize = 30)
 ylim([0, 1.1])
 legend(["Potential", "Temperature", "Probaility"], loc=2)
 ```
+This will result in the Figure A.1 in the thesis 
