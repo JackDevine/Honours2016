@@ -27,25 +27,25 @@ and
 \begin{equation}
 T(x) = \xi x + d.
 \end{equation}
-We can now apply boundary conditions to the temperature, these can be either Dirichlet
+We can now apply boundary conditions to the temperature, these can be either Neumann
 \begin{eqnarray}
 \left.\frac{\partial T}{\partial x}\right\rvert_{\partial \Omega} = 0,
 \end{eqnarray}
-or Neumann,
+or Dirichlet,
 \begin{equation}
 T \rvert_{\partial \Omega} = T_0.
 \end{equation}
-In either case, $\xi = 0$ which implies that the temperature is constant. In this case equation \ref{eqn:steadyTemperature} becomes the Boltzmann distribution
+In the case of Neumann boundary conditions, $\xi = 0$ since the slope is zero at the boundaries. For Dirichlet boundary conditions, $\xi = 0$ and $d = T_0$ both of these imply that the temperature is a constant which we write as $T$. In this case equation \ref{eqn:steadyTemperature} becomes the Boltzmann distribution
 \begin{equation}
-P(x) = N \exp{\left (-\frac{V(x)}{k_B T(x)} \right)}.
+P(x) = N \exp{\left (-\frac{V(x)}{k_B T} \right)}.
 \end{equation}
 An example of the Boltzmann distribution is shown in Figure \ref{fig:steadyODE}, in this figure we have a confining potential causing the probability density to go to zero for large $x$. It is interesting to note that in the steady state, the temperature gradients become flat. This is because after enough time the diffusion term in equation \ref{eqn:TemperatureEvolution} causes temperature gradients to flatten out.
 
-Meanwhile, a tilted periodic potentials can be written as $V(x) = -f x + v_0(x)$ for some constant $f$ and a periodic function $v_0(x)$. In this case, equation \ref{eqn:steadyTemperature} becomes
+In the case of a tilted periodic potential $V(x) = -f x + v_0(x)$ for some constant $f$ and a periodic function $v_0(x)$, for the tilted periodic potential the boundaries are at infinity and $V(x) \to -\infty$ as $x \to \infty$. In this case, equation \ref{eqn:steadyTemperature} becomes
 \begin{equation}
 T(x) = \frac{\kappa J_s}{D} \int_0^x -f x' dx' + \frac{\kappa J_s}{D} \int_0^x v_0(x') dx' + \xi x + d.
 \end{equation}
-The first term on the right hand side of this equation will grow like $x^2$. The reason that the temperature is growing is because as the Brownian particle moves down the potential, it loses potential energy. This potential energy is converted into thermal energy, explaining why the temperature increases with $x$. We therefore conclude that the tilted periodic potential does not have a meaningful steady state.
+The first term on the right hand side of this equation will grow like $x^2$. The reason that the temperature is growing is because as the Brownian particle moves down the potential, it loses potential energy. This potential energy is converted into thermal energy. so we conclude that the tilted periodic potential does not have a meaningful steady state.
 %In the case of a confined potential, this steady state is given by the Boltzmann distribution
 %\begin{equation}
 %P(x) = N \exp(\frac{V(x)}{k_B T}).
@@ -330,7 +330,7 @@ The idea behind finite differences is that as the discretization size goes to ze
 	\caption{\textbf{Finite differences in the steady state.} The steady state for the system is given by the Boltzmann distribution, we start the system off in this state and then simulate the system forward 50,000 steps with $\Delta t = 10^{-4}$ and $\Delta x = 2 \times 10^{-2}$. (a) The analytical steady state with the state after the simulation. (b) The absolute difference between these two vectors. Even after 50,000 steps the system has not deviated from the analytical steady state significantly. \label{fig:smoluchowskiCompare}}
 \end{figure}
 
-For a confining potential and with $\alpha = 0$, the Smoluchowski equation (equation \ref{eqn:dimensionlessSmoluchowski}) has a steady state probability density given by the Boltzmann distribution
+For a confining potential and with $\alpha = 0$, the Smoluchowski equation (equation \ref{eqn:dimensionlessSmoluchowski}) has a steady state probability density given by the Boltzmann distribution.
 Figure \ref{fig:smoluchowskiCompare} shows the a simulation where we began the system in the analytically calculated steady state, we then used finite differences to step forward 50,000 steps with $\Delta t = 1 \times 10^{-4}$. After this simulation, we only found a minimal divergence from the steady state.
 
 The heat equation (equation \ref{eqn:dimensionlessHeat}) can be solved using a Fourier series technique. In the case where there are no sources of heat, we have

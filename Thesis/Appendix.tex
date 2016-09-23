@@ -4,3 +4,24 @@
 \epigraph{I am a fish.}{\textbf{Dr. Philip Brydon -- 2016}}
 
 There are a lot of interesting phenomena that occur when one explores the system that we explored in detail. In this appendix, we would like to share some of the exciting results that we found during the project, these results do not directly contribute to the narrative of the thesis which is why they were not included in the main body of the text. Despite not being a part of the main body, we feel that the reader would be at a loss without being made aware of these phenomena.
+
+Figure \ref{fig:exciting} shows an example of a complicated periodic potential, here we see that the evolution of the system is highly non-linear.
+\begin{figure}
+	\begin{subfigure}{0.49\textwidth}
+		\includegraphics[width=\textwidth]{excitingInit}
+	\end{subfigure}
+	\begin{subfigure}{0.49\textwidth}
+		\includegraphics[width=\textwidth]{excitingFinal}
+	\end{subfigure}
+	\caption{\textbf{Periodic boundary conditions with a complex periodic potential} $\alpha = 5 \times 10^{-3}$ and $\beta = 1 \times 10^{-2}$. (a) shows the initial configuration (b) shows the system after 1.5 dimensionless time units. \label{fig:exciting}}
+\end{figure}
+
+\subsubsection{Stochastic methods}
+As mentioned in the introduction the underlying nature of Brownian motion is stochastic and can be understood through the Langevin equation. We solved the Langevin equation using the Euler-Maryama method for stochastic equations. An example of this is shown in Figure \ref{fig:stochastic}, here we see that the stochastic approach truly does have the same physics as equation \ref{eqn:Smoluchowski}.
+
+
+\begin{figure}
+	\center
+	\includegraphics[width=0.9\textwidth]{Stochastic}
+	\caption{\textbf{A stochastic simulation of the Langevin equation} A simulation of 1000 particles on a tilted periodic potential, all particles began at position 0 and were simulated forward for 2 seconds with a time step of 0.002 seconds. \label{fig:stochastic}}
+\end{figure}
