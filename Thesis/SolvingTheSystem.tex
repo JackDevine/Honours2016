@@ -3,11 +3,11 @@
 %\epigraph{People either write code that works, or they don't.}{\textbf{Colin Fox -- 2016}}
 Now that we have determined that our system is physical and we have made insights into the qualitative nature of our system, we must build techniques for solving the system so that we can gain quantitative insights. We will begin in ~\autoref{SteadyState} by using analytical techniques to find stationary solutions to our equations of motion.
 \section{Steady state solution} \label{SteadyState}
-In order to see how the equations of motion behave with time, we have to resort to numerical methods (see \autoref{numerics}). However we note that for a given potential there will be a stationary solution that we will refer to as the ``steady state''. In the steady state we have
+In order to see how the equations of motion behave with time, we have to resort to numerical methods (see \autoref{numerics}). However, we note that for a given potential there will be a stationary solution that we will refer to as the ``steady state''. In the steady state we have
 \begin{equation}
 \frac{\partial P(x, \, t)}{\partial t} = 0 = \frac{\partial J(x, \, t)}{\partial t},
 \end{equation}
-this implies that the current in the steady state is constant, we will denote this with $J_s$. In the steady state, the temperature is not changing so
+this implies that the current in the steady state is constant, we will denote this with $J_s$. In the steady state, the temperature is not changing, so
 \begin{equation}
 \frac{\partial T(x, \, t)}{\partial t} = 0 = -\kappa J_s \partial_x V(x, \, t) + D \frac{\partial^2 T(x, \, t)}{\partial x^2}. \label{eqn:steadyTemp}
 \end{equation}
@@ -35,7 +35,7 @@ or Dirichlet,
 \begin{equation}
 T \rvert_{\partial \Omega} = T_0.
 \end{equation}
-In the case of Neumann boundary conditions, $\xi = 0$ since the slope is zero at the boundaries. For Dirichlet boundary conditions, $\xi = 0$ and $d = T_0$ both of these imply that the temperature is a constant which we write as $T$. In this case equation \ref{eqn:steadyTemperature} becomes the Boltzmann distribution
+In the case of Neumann boundary conditions, $\xi = 0$ since the slope is zero at the boundaries. For Dirichlet boundary conditions, $\xi = 0$ and $d = T_0$ both of these imply that the temperature is a constant which we write as $T$. In this case, equation \ref{eqn:steadyTemperature} becomes the Boltzmann distribution
 \begin{equation}
 P(x) = N \exp{\left (-\frac{V(x)}{k_B T} \right)}.
 \end{equation}
@@ -45,7 +45,7 @@ In the case of a tilted periodic potential $V(x) = -f x + v_0(x)$ for some const
 \begin{equation}
 T(x) = \frac{\kappa J_s}{D} \int_0^x -f x' dx' + \frac{\kappa J_s}{D} \int_0^x v_0(x') dx' + \xi x + d.
 \end{equation}
-The first term on the right hand side of this equation will grow like $x^2$. The reason that the temperature is growing is because as the Brownian particle moves down the potential, it loses potential energy. This potential energy is converted into thermal energy. so we conclude that the tilted periodic potential does not have a meaningful steady state.
+The first term on the right hand side of this equation will grow like $x^2$. The reason that the temperature is growing is because as the Brownian particle moves down the potential, it loses potential energy. This potential energy is converted into thermal energy. Given that we cannot allow the temperature to diverge in this fashion, we conclude that the tilted periodic potential does not have a meaningful steady state.
 %In the case of a confined potential, this steady state is given by the Boltzmann distribution
 %\begin{equation}
 %P(x) = N \exp(\frac{V(x)}{k_B T}).
